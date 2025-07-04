@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VetClinicManager", "VetClinicManager\VetClinicManager.csproj", "{B73F98DF-791A-4D3E-B666-557C5D7BC50B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VetClinicManager.Tests.Unit", "VetClinicManager.Tests.Unit\VetClinicManager.Tests.Unit.csproj", "{C4245485-D520-415D-8727-5467853CD22D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B73F98DF-791A-4D3E-B666-557C5D7BC50B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B73F98DF-791A-4D3E-B666-557C5D7BC50B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B73F98DF-791A-4D3E-B666-557C5D7BC50B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B73F98DF-791A-4D3E-B666-557C5D7BC50B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4245485-D520-415D-8727-5467853CD22D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4245485-D520-415D-8727-5467853CD22D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4245485-D520-415D-8727-5467853CD22D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4245485-D520-415D-8727-5467853CD22D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
