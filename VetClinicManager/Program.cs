@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using VetClinicManager.Data;
 using VetClinicManager.Models;
+using VetClinicManager.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddTransient<SeedData>();
+builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
 
 var app = builder.Build();
 
