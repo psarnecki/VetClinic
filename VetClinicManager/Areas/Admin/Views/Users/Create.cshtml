@@ -1,0 +1,101 @@
+@model VetClinicManager.Areas.Admin.DTOs.Users.UserCreateDto
+
+@{
+    ViewData["Title"] = "Create User";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-8 col-lg-6">
+            <form asp-area="Admin" asp-controller="Users" asp-action="Create" method="post">
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+                {
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+                }
+
+                <fieldset class="mb-4">
+                    <legend class="h5">Basic Information</legend>
+                    <div class="form-group mb-3">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" type="email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </fieldset>
+                
+                <fieldset class="mb-4">
+                    <legend class="h5">Login Details</legend>
+                    <div class="form-group mb-3 position-relative">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" type="password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3 position-relative">
+                        <label asp-for="ConfirmPassword" class="form-label"></label>
+                        <input asp-for="ConfirmPassword" class="form-control" type="password" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend class="h5">Professional Information</legend>
+                    <div class="form-group mb-3">
+                        <label asp-for="Specialization" class="form-label"></label>
+                        <input asp-for="Specialization" class="form-control" />
+                        <span asp-validation-for="Specialization" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="SelectedRoles" class="form-label"></label><br/>
+                        @if (Model.AvailableRoles != null)
+                        {
+                            @for (int i = 0; i < Model.AvailableRoles.Count; i++)
+                            {
+                                var role = Model.AvailableRoles[i];
+                                <div class="form-check form-check-inline">
+                                    <input type="checkbox"
+                                           name="SelectedRoles"
+                                           value="@role"
+                                           id="role_@i"
+                                           class="form-check-input"
+                                           @(Model.SelectedRoles != null && Model.SelectedRoles.Contains(role) ? "checked" : "") />
+                                    <label class="form-check-label" for="role_@i">@role</label>
+                                </div>
+                            }
+                        }
+                        <span asp-validation-for="SelectedRoles" class="text-danger d-block"></span>
+                    </div>
+                </fieldset>
+                
+
+                <div class="form-group mt-4 d-flex">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-outline-secondary ms-2">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

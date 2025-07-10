@@ -19,9 +19,11 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5"/>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+        <PackageReference Include="Riok.Mapperly" Version="4.3.0-next.2" />
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Areas\Admin\DTOs\" />
       <Folder Include="DTOs\" />
       <Folder Include="Mappers\" />
       <Folder Include="wwwroot\uploads\" />

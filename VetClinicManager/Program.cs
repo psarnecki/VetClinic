@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using VetClinicManager.Areas.Admin.Mappers;
 using VetClinicManager.Data;
 using VetClinicManager.Models;
 using VetClinicManager.Services;
@@ -24,6 +25,10 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddTransient<SeedData>();
 builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
+
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<UserMapper>();
 
 var app = builder.Build();
 
@@ -53,18 +58,21 @@ else
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
+app.MapAreaControllerRoute(
+    "Admin",
+    "Admin",
+    "Admin/{controller=Users}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages()
-    .WithStaticAssets();
+app.MapRazorPages();
 
 app.Run();

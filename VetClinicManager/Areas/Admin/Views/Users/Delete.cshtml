@@ -1,0 +1,58 @@
+@model VetClinicManager.Areas.Admin.DTOs.Users.UserDeleteDto
+
+@{
+    ViewData["Title"] = "Delete User";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    <hr />
+
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Confirmation</h4>
+        <p>Are you sure you want to permanently delete this user? <strong>This action cannot be undone.</strong></p>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            User details to be deleted
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 col-md-2">
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </dt>
+                <dd class="col-sm-9 col-md-10">
+                    @Html.DisplayFor(model => model.FirstName)
+                </dd>
+
+                <dt class="col-sm-3 col-md-2">
+                    @Html.DisplayNameFor(model => model.LastName)
+                </dt>
+                <dd class="col-sm-9 col-md-10">
+                    @Html.DisplayFor(model => model.LastName)
+                </dd>
+
+                <dt class="col-sm-3 col-md-2">
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+                <dd class="col-sm-9 col-md-10">
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <form asp-area="Admin" asp-controller="Users" asp-action="Delete" method="post" class="mt-4">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Yes, delete user</button>
+        <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-outline-secondary ms-2">
+            Cancel
+        </a>
+    </form>
+</div>
+
+@section Scripts {
+    
+}
