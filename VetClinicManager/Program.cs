@@ -20,6 +20,13 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.Requi
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.LogoutPath = "/Identity/Account/Logout";
+});
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -62,6 +69,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAreaControllerRoute(
