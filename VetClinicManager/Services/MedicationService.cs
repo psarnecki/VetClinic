@@ -31,14 +31,14 @@ public class MedicationService : IMedicationService
     }
 
     // For Details GET action
-    public async Task<MedicationDeleteDto?> GetMedicationForDetailsAsync(int id)
+    public async Task<MedicationDetailsDto?> GetMedicationForDetailsAsync(int id)
     {
         var medication = await _context.Medications
             .AsNoTracking()
             .FirstOrDefaultAsync(m => m.Id == id);
 
         if (medication == null) return null;
-        var detailsDto = _medicationMapper.ToMedicationDeleteDto(medication);
+        var detailsDto = _medicationMapper.ToMedicationDetailsDto(medication);
         
         return detailsDto;
     }

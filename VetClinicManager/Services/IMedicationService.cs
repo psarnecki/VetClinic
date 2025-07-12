@@ -8,7 +8,7 @@ public interface IMedicationService
     Task<List<MedicationListDto>> GetAllMedicationsAsync();
 
     // For Details GET action
-    Task<MedicationDeleteDto?> GetMedicationForDetailsAsync(int id);
+    Task<MedicationDetailsDto?> GetMedicationForDetailsAsync(int id);
 
     // For Create POST action
     Task<MedicationListDto> CreateMedicationAsync(MedicationCreateDto createDto);

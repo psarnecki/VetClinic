@@ -9,6 +9,9 @@ public partial class MedicationMapper
 {
     // Mapping from Medication to MedicationListDto - single entity object (Index)
     public partial MedicationListDto ToMedicationListDto(Medication medication);
+    
+    // Mapping from Medication to MedicationDetailsDto (Details GET)
+    public partial MedicationDetailsDto ToMedicationDetailsDto(Medication medication);
 
     // Mapping from Medication to MedicationEditDto (Edit GET)
     public partial MedicationEditDto ToMedicationEditDto(Medication medication);
