@@ -1,0 +1,33 @@
+@model VetClinicManager.Areas.Admin.DTOs.Medications.MedicationDetailsDto
+
+@{
+    ViewData["Title"] = "Medication/Material Details";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]: @Model.Name</h1>
+    <hr />
+
+    <div class="card">
+        <div class="card-header">
+            Product Information
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 col-md-2">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class="col-sm-9 col-md-10">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-area="Admin" asp-controller="Medications" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        <a asp-area="Admin" asp-controller="Medications" asp-action="Index" class="btn btn-outline-secondary ms-2">Back to List</a>
+    </div>
+
+</div>
