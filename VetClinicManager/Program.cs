@@ -34,8 +34,10 @@ builder.Services.AddTransient<SeedData>();
 builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IMedicationService, MedicationService>();
 
 builder.Services.AddScoped<UserMapper>();
+builder.Services.AddScoped<MedicationMapper>();
 
 var app = builder.Build();
 
