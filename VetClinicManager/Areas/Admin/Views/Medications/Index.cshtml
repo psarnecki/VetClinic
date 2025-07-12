@@ -1,0 +1,50 @@
+@model IEnumerable<VetClinicManager.Areas.Admin.DTOs.Medications.MedicationListDto>
+
+@{
+    ViewData["Title"] = "Medication/Material Management";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+
+    <p class="mt-3">
+        <a asp-area="Admin" asp-controller="Medications" asp-action="Create" class="btn btn-success">Add New Medication/Material</a>
+    </p>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info mt-3" role="alert">
+            No medications or materials found in the system.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Name)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@Html.DisplayFor(modelItem => item.Name)</strong>
+                            </td>
+                            <td>
+                                <a asp-area="Admin" asp-controller="Medications" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary" title="Edit medication/material">Edit</a>
+                                <a asp-area="Admin" asp-controller="Medications" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info ms-1" title="Medication/material details">Details</a>
+                                <a asp-area="Admin" asp-controller="Medications" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger ms-1" title="Delete medication/material">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>
