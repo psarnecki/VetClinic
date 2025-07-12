@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using VetClinicManager.Areas.Admin.DTOs.Medications;
 using VetClinicManager.Services;
 
@@ -21,6 +20,7 @@ namespace VetClinicManager.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var medicationListDtos = await _medicationService.GetAllMedicationsAsync();
+            
             return View(medicationListDtos);
         }
 
@@ -28,17 +28,11 @@ namespace VetClinicManager.Areas.Admin.Controllers
         [Authorize(Roles = "Admin,Receptionist,Vet")]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            
             var medicationDto = await _medicationService.GetMedicationForDetailsAsync(id.Value);
-
-            if (medicationDto == null)
-            {
-                return NotFound();
-            }
+            
+            if (medicationDto == null) return NotFound();
 
             return View("Details", medicationDto);
         }
@@ -56,12 +50,9 @@ namespace VetClinicManager.Areas.Admin.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(MedicationCreateDto createDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(createDto);
-            }
-
-            var resultDto = await _medicationService.CreateMedicationAsync(createDto);
+            if (!ModelState.IsValid) return View(createDto);
+            
+            _ = await _medicationService.CreateMedicationAsync(createDto);
 
             return RedirectToAction(nameof(Index));
         }
@@ -70,17 +61,11 @@ namespace VetClinicManager.Areas.Admin.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            
             var editDto = await _medicationService.GetMedicationForEditAsync(id.Value);
 
-            if (editDto == null)
-            {
-                return NotFound();
-            }
+            if (editDto == null) return NotFound();
 
             return View(editDto);
         }
@@ -111,18 +96,12 @@ namespace VetClinicManager.Areas.Admin.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            
             var deleteDto = await _medicationService.GetMedicationForDeleteAsync(id.Value);
 
-            if (deleteDto == null)
-            {
-                return NotFound();
-            }
-
+            if (deleteDto == null) return NotFound();
+            
             return View(deleteDto);
         }
 

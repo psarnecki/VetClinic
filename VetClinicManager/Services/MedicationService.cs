@@ -38,6 +38,7 @@ public class MedicationService : IMedicationService
             .FirstOrDefaultAsync(m => m.Id == id);
 
         if (medication == null) return null;
+        
         var detailsDto = _medicationMapper.ToMedicationDetailsDto(medication);
         
         return detailsDto;
@@ -59,7 +60,9 @@ public class MedicationService : IMedicationService
     public async Task<MedicationEditDto?> GetMedicationForEditAsync(int id)
     {
         var medication = await _context.Medications.FindAsync(id);
+        
         if (medication == null) return null;
+        
         var editDto = _medicationMapper.ToMedicationEditDto(medication);
         
         return editDto;
@@ -69,7 +72,9 @@ public class MedicationService : IMedicationService
     public async Task<bool> UpdateMedicationAsync(MedicationEditDto editDto)
     {
         var medication = await _context.Medications.FindAsync(editDto.Id);
+        
         if (medication == null) return false;
+        
         _medicationMapper.UpdateMedicationFromDto(editDto, medication);
 
         try
@@ -91,6 +96,7 @@ public class MedicationService : IMedicationService
              .FirstOrDefaultAsync(m => m.Id == id);
          
          if (medication == null) return null;
+         
          var deleteDto = _medicationMapper.ToMedicationDeleteDto(medication); 
          
          return deleteDto;

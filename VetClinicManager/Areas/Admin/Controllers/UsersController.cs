@@ -20,6 +20,7 @@ namespace VetClinicManager.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var userListDtos = await _userService.GetAllUsersWithRolesAsync();
+            
             return View(userListDtos);
         }
 
@@ -43,18 +44,12 @@ namespace VetClinicManager.Areas.Admin.Controllers
         {
             model.AvailableRoles = await _userService.GetAllAvailableRolesAsync();
 
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
+            if (!ModelState.IsValid) return View(model);
+            
             var (result, user) = await _userService.CreateUserAsync(model);
 
-            if (result.Succeeded)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
+            if (result.Succeeded) return RedirectToAction(nameof(Index));
+            
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
@@ -66,18 +61,12 @@ namespace VetClinicManager.Areas.Admin.Controllers
         // GET: Admin/Users/Edit/5
         public async Task<IActionResult> Edit(string? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            
             var model = await _userService.GetUserForEditAsync(id);
 
-            if (model == null)
-            {
-                return NotFound();
-            }
-
+            if (model == null) return NotFound();
+            
             return View(model);
         }
 
@@ -86,25 +75,16 @@ namespace VetClinicManager.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, UserEditDto model)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
+            if (id != model.Id) return NotFound();
 
             model.AvailableRoles = await _userService.GetAllAvailableRolesAsync();
 
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            if (!ModelState.IsValid) return View(model);
 
             var result = await _userService.UpdateUserAsync(model);
 
-            if (result.Succeeded)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
+            if (result.Succeeded) return RedirectToAction(nameof(Index));
+            
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
@@ -116,18 +96,12 @@ namespace VetClinicManager.Areas.Admin.Controllers
         // GET: Admin/Users/Delete/5
         public async Task<IActionResult> Delete(string? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            
             var model = await _userService.GetUserForDeleteAsync(id);
 
-            if (model == null)
-            {
-                return NotFound();
-            }
-
+            if (model == null) return NotFound();
+            
             return View(model);
         }
 
@@ -138,14 +112,11 @@ namespace VetClinicManager.Areas.Admin.Controllers
         {
             var result = await _userService.DeleteUserAsync(id);
 
-            if (result.Succeeded)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            if (result.Succeeded) return RedirectToAction(nameof(Index));
 
-            string errorMessage = "Failed to delete user: " +
-                                  string.Join(", ", result.Errors.Select(e => e.Description));
+            string errorMessage = "Failed to delete user: " + string.Join(", ", result.Errors.Select(e => e.Description));
             TempData["ErrorMessage"] = errorMessage;
+            
             return RedirectToAction(nameof(Index));
         }
     }

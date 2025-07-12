@@ -69,11 +69,9 @@ public class UserService : IUserService
     public async Task<UserEditDto?> GetUserForEditAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-        {
-            return null;
-        }
-
+        
+        if (user == null) return null;
+        
         var allRoles = await GetAllAvailableRolesAsync();
         var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -89,6 +87,7 @@ public class UserService : IUserService
     public async Task<IdentityResult> UpdateUserAsync(UserEditDto userDto)
     {
         var user = await _userManager.FindByIdAsync(userDto.Id);
+        
         if (user == null)
         {
              return IdentityResult.Failed(new IdentityError { Description = "User not found." });
@@ -135,11 +134,11 @@ public class UserService : IUserService
     public async Task<UserDeleteDto?> GetUserForDeleteAsync(string userId)
     {
          var user = await _userManager.FindByIdAsync(userId);
-         if (user == null)
-         {
-             return null;
-         }
+         
+         if (user == null) return null;
+         
          var model = _userMapper.ToUserDeleteDto(user);
+         
          return model;
     }
 
@@ -147,12 +146,11 @@ public class UserService : IUserService
     public async Task<IdentityResult> DeleteUserAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-        {
-            return IdentityResult.Success;
-        }
+        
+        if (user == null) return IdentityResult.Success;
         
         var result = await _userManager.DeleteAsync(user);
+        
         return result; 
     }
 }
