@@ -4,7 +4,7 @@ using VetClinicManager.Models.Enums;
 
 namespace VetClinicManager.DTOs.Animals;
 
-public class CreateAnimalDto
+public class AnimalCreateDto
 {
     [Required(ErrorMessage = "Name is required.")]
     [MaxLength(100)]
