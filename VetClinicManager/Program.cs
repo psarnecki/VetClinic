@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using VetClinicManager.Areas.Admin.Mappers;
 using VetClinicManager.Data;
+using VetClinicManager.Mappers;
 using VetClinicManager.Models;
 using VetClinicManager.Services;
 
@@ -38,6 +39,8 @@ builder.Services.AddScoped<IMedicationService, MedicationService>();
 
 builder.Services.AddScoped<UserMapper>();
 builder.Services.AddScoped<MedicationMapper>();
+builder.Services.AddScoped<AnimalMapper>();
+builder.Services.AddScoped<UserBriefMapper>();
 
 var app = builder.Build();
 
