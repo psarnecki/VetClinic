@@ -167,7 +167,7 @@ public class AnimalService : IAnimalService
     }
     
     // For Delete GET action
-    public async Task<AnimalEditDto?> GetAnimalForDeleteAsync(int id)
+    public async Task<AnimalDeleteDto?> GetAnimalForDeleteAsync(int id)
     {
         var animal = await _context.Animals
             .AsNoTracking()
@@ -175,7 +175,7 @@ public class AnimalService : IAnimalService
         
         if (animal == null) return null;
         
-        return _animalMapper.ToEditDto(animal);
+        return _animalMapper.ToDeleteDto(animal);
     }
     
     // For Create/Edit view owner select list

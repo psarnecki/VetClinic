@@ -26,7 +26,7 @@ public interface IAnimalService
     // For Edit GET action
     Task<AnimalEditDto?> GetAnimalForEditAsync(int id);
     // For Delete GET action
-    Task<AnimalEditDto?> GetAnimalForDeleteAsync(int id);
+    Task<AnimalDeleteDto?> GetAnimalForDeleteAsync(int id);
 
     // For Create/Edit view owner select list
     Task<SelectList> GetOwnersForSelectListAsync(string? selectedOwnerId = null);

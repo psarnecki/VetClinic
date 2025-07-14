@@ -30,6 +30,9 @@ public partial class AnimalMapper
     // Maps Animal entity to a DTO for the edit form
     public partial AnimalEditDto ToEditDto(Animal animal);
     
+    // Maps Animal entity to a DTO for delete confirmation view
+    public partial AnimalDeleteDto ToDeleteDto(Animal animal);
+    
     // --- Mappings from DTOs to Entity ---
     
     // Maps a DTO from create form to a new Animal entity
