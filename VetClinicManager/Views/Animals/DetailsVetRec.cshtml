@@ -1,0 +1,128 @@
+@model VetClinicManager.DTOs.Animals.AnimalDetailsVetRecDto
+
+@{
+    ViewData["Title"] = "Animal Details";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]: @Model.Name</h1>
+
+    <hr />
+
+    <div class="row">
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <div class="col-md-4 mb-3">
+                <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow"/>
+            </div>
+        }
+        
+        <div class="@(string.IsNullOrEmpty(Model.ImageUrl) ? "col-md-12" : "col-md-8")">
+            <h4>Animal Information</h4>
+            <hr />
+            <dl class="row">
+                <dt class = "col-sm-3">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class = "col-sm-9">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+
+                @if (!string.IsNullOrEmpty(Model.MicrochipId))
+                {
+                    <dt class = "col-sm-3">
+                        @Html.DisplayNameFor(model => model.MicrochipId)
+                    </dt>
+                    <dd class = "col-sm-9">
+                        @Html.DisplayFor(model => model.MicrochipId)
+                    </dd>
+                }
+
+                <dt class = "col-sm-3">
+                    @Html.DisplayNameFor(model => model.Species)
+                </dt>
+                <dd class = "col-sm-9">
+                    @Html.DisplayFor(model => model.Species)
+                </dd>
+
+                <dt class = "col-sm-3">
+                    @Html.DisplayNameFor(model => model.Breed)
+                </dt>
+                <dd class = "col-sm-9">
+                    @Html.DisplayFor(model => model.Breed)
+                </dd>
+
+                @if (Model.DateOfBirth.HasValue)
+                {
+                    <dt class = "col-sm-3">
+                        @Html.DisplayNameFor(model => model.DateOfBirth)
+                    </dt>
+                    <dd class = "col-sm-9">
+                        @Html.DisplayFor(model => model.DateOfBirth)
+                    </dd>
+                }
+
+                <dt class = "col-sm-3">
+                    @Html.DisplayNameFor(model => model.BodyWeight)
+                </dt>
+                <dd class = "col-sm-9">
+                    @Html.DisplayFor(model => model.BodyWeight) kg
+                </dd>
+
+                <dt class = "col-sm-3">
+                    @Html.DisplayNameFor(model => model.Gender)
+                </dt>
+                <dd class = "col-sm-9">
+                    @Html.DisplayFor(model => model.Gender)
+                </dd>
+
+                @if (Model.LastVisitDate.HasValue)
+                {
+                    <dt class = "col-sm-3">
+                        @Html.DisplayNameFor(model => model.LastVisitDate)
+                    </dt>
+                    <dd class = "col-sm-9">
+                        @Html.DisplayFor(model => model.LastVisitDate)
+                    </dd>
+                }
+
+                <dt class = "col-sm-3">
+                    @Html.DisplayNameFor(model => model.Owner)
+                </dt>
+                <dd class = "col-sm-9">
+                    @if (Model.Owner != null)
+                    {
+                        @(Model.Owner.FirstName + " " + Model.Owner.LastName)
+                    }
+                    else
+                    {
+                        <span class="text-muted">No assigned owner</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        @if (Model.HasHealthRecord)
+        {
+            <a asp-controller="HealthRecords" asp-action="Details" asp-route-id="@Model.HealthRecordId" class="btn @Model.HealthRecordButtonClass">
+                @Model.HealthRecordButtonText
+            </a>
+        }
+        else
+        {
+            <a asp-controller="HealthRecords" asp-action="Create" asp-route-animalId="@Model.Id" class="btn @Model.HealthRecordButtonClass">
+                @Model.HealthRecordButtonText
+            </a>
+        }
+        
+        <a asp-action="Index" class="btn btn-outline-secondary ms-2">Back to Animal List</a>
+    </div>
+
+</div>
+
+@section Scripts {
+    
+}
