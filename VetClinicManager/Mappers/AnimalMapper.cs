@@ -41,7 +41,6 @@ public partial class AnimalMapper
     // Updates an existing Animal entity from an edit form DTO
     [MapperIgnoreTarget(nameof(Animal.Id))]
     [MapperIgnoreTarget(nameof(Animal.Owner))]
-    [MapperIgnoreTarget(nameof(Animal.OwnerId))]
     [MapperIgnoreTarget(nameof(Animal.ImageUrl))]
     public partial void UpdateFromDto(AnimalEditDto dto, Animal animal);
 }
