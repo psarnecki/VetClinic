@@ -1,33 +1,30 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace VetClinicManager.Models;
+namespace VetClinicManager.DTOs.HealthRecords;
 
-public class HealthRecord
+public class HealthRecordDetailsDto
 {
-    [Key]
     public int Id { get; set; }
-    
-    [Required]
-    [ForeignKey("Animal")]
     public int AnimalId { get; set; }
-    public Animal Animal { get; set; }
     
-    [Display(Name = "Sterilized/Castrated")]
+    public string AnimalName { get; set; } = string.Empty;
+
+    [Display(Name = "Sterilized / Castrated")]
     public bool IsSterilized { get; set; }
-    
-    [MaxLength(500)]
+
     [Display(Name = "Chronic Diseases")]
     public string? ChronicDiseases { get; set; }
-    
-    [MaxLength(500)]
+
+    [Display(Name = "Allergies")]
     public string? Allergies { get; set; }
-    
-    [MaxLength(500)]
+
     [Display(Name = "Vaccinations")]
     public string? Vaccinations { get; set; }
-    
+
     [Display(Name = "Last Vaccination Date")]
     [DataType(DataType.Date)]
     public DateTime? LastVaccinationDate { get; set; }
+
+    public string IsSterilizedText => IsSterilized ? "Yes" : "No";
+    public string IsSterilizedBadgeClass => IsSterilized ? "bg-success" : "bg-secondary";
 }
