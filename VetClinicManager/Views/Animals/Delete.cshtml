@@ -1,0 +1,70 @@
+@model VetClinicManager.DTOs.Animals.AnimalDeleteDto
+
+@{
+    ViewData["Title"] = "Delete Animal";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">Confirmation</h4>
+        <p>Are you sure you want to permanently delete this animal? <strong>This action cannot be undone.</strong></p>
+    </div>
+
+    <div> 
+        <h4>Animal to be deleted:</h4>
+        <hr />
+        
+        <dl class="row">
+            <dt class = "col-sm-3">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class = "col-sm-9">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+            @if (!string.IsNullOrEmpty(Model.Breed))
+            {
+                <dt class = "col-sm-3">
+                    @Html.DisplayNameFor(model => model.Breed)
+                </dt>
+                <dd class = "col-sm-9">
+                    @Html.DisplayFor(model => model.Breed)
+                </dd>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Species))
+            {
+                <dt class = "col-sm-3">
+                    @Html.DisplayNameFor(model => model.Species)
+                </dt>
+                <dd class = "col-sm-9">
+                    @Html.DisplayFor(model => model.Species)
+                </dd>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.MicrochipId))
+            {
+                <dt class = "col-sm-3">
+                    @Html.DisplayNameFor(model => model.MicrochipId)
+                </dt>
+                <dd class = "col-sm-9">
+                    @Html.DisplayFor(model => model.MicrochipId)
+                </dd>
+            }
+        </dl>
+    </div>
+    
+    <hr />
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group d-flex mt-3">
+             <input type="submit" value="Delete" class="btn btn-danger" />
+             <a asp-action="Index" class="btn btn-outline-secondary ms-2">Back to List</a>
+        </div>
+    </form>
+
+</div>

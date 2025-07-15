@@ -1,0 +1,98 @@
+@model VetClinicManager.DTOs.Animals.AnimalEditDto
+
+@{
+    ViewData["Title"] = "Edit Animal";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]: @Model.Name</h1>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Edit" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="MicrochipId" class="form-label"></label>
+                    <input asp-for="MicrochipId" class="form-control" />
+                    <span asp-validation-for="MicrochipId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Species" class="form-label"></label>
+                    <input asp-for="Species" class="form-control" />
+                    <span asp-validation-for="Species" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Breed" class="form-label"></label>
+                    <input asp-for="Breed" class="form-control" />
+                    <span asp-validation-for="Breed" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="DateOfBirth" class="form-label"></label>
+                    <input asp-for="DateOfBirth" class="form-control" type="date"/>
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="BodyWeight" class="form-label"></label>
+                    <input asp-for="BodyWeight" class="form-control" type="number" step="0.1" />
+                    <span asp-validation-for="BodyWeight" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Gender" class="form-label"></label>
+                    <select asp-for="Gender" class="form-control" asp-items="Model.Genders">
+                         <option value="">--- Select Gender ---</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="mb-3">
+                        <label>Current Photo</label>
+                        <div>
+                            <img src="@Model.ImageUrl" class="img-thumbnail" style="max-width: 200px;" alt="Animal photo" />
+                        </div>
+                    </div>
+                }
+                
+                <div class="form-group mb-3">
+                    <label asp-for="ImageFile" class="form-label">@(string.IsNullOrEmpty(Model.ImageUrl) ? "Add Photo" : "Change Photo")</label>
+                    <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                     <label asp-for="OwnerId" class="form-label"></label>
+                    <select asp-for="OwnerId" class="form-control" asp-items="Model.Owners">
+                        <option value="">--- Select Owner ---</option>
+                    </select>
+                    <span asp-validation-for="OwnerId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mt-3 d-flex">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-outline-secondary ms-2">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -24,8 +24,7 @@
 
     <ItemGroup>
       <Folder Include="Areas\Admin\DTOs\" />
-      <Folder Include="DTOs\" />
-      <Folder Include="Mappers\" />
+      <Folder Include="DTOs\Users\" />
       <Folder Include="wwwroot\uploads\" />
     </ItemGroup>
 

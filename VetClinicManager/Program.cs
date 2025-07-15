@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using VetClinicManager.Areas.Admin.Mappers;
 using VetClinicManager.Data;
+using VetClinicManager.Mappers;
 using VetClinicManager.Models;
 using VetClinicManager.Services;
 
@@ -35,9 +36,13 @@ builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
+builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IAnimalService, AnimalService>();
 
 builder.Services.AddScoped<UserMapper>();
 builder.Services.AddScoped<MedicationMapper>();
+builder.Services.AddScoped<AnimalMapper>();
+builder.Services.AddScoped<UserBriefMapper>();
 
 var app = builder.Build();
 
