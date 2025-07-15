@@ -13,7 +13,7 @@ public partial class AnimalMapper
     
     // --- Mappings to DTOs ---
     
-    // Maps Animal entity to a DTO for lists viewed by staff (includes Owner).
+    // Maps Animal entity to a DTO for lists viewed by staff (includes Owner)
     [MapProperty(nameof(Animal.Owner), nameof(AnimalListVetRecDto.Owner))] 
     public partial AnimalListVetRecDto ToListVetRecDto(Animal animal);
     

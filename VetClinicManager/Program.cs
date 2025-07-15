@@ -43,6 +43,7 @@ builder.Services.AddScoped<UserMapper>();
 builder.Services.AddScoped<MedicationMapper>();
 builder.Services.AddScoped<AnimalMapper>();
 builder.Services.AddScoped<UserBriefMapper>();
+builder.Services.AddScoped<HealthRecordMapper>();
 
 var app = builder.Build();
 
