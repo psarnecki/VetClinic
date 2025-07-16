@@ -12,4 +12,5 @@ public class Medication
     public string Name { get; set; }
 
     public ICollection<AnimalMedication> AnimalMedications { get; set; } = new List<AnimalMedication>();
+    public ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
 }
