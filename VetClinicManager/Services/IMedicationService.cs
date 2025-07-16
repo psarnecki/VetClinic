@@ -9,22 +9,15 @@ public interface IMedicationService
 
     // For Details GET action
     Task<MedicationDetailsDto?> GetMedicationForDetailsAsync(int id);
-
-    // For Create POST action
-    Task<MedicationListDto> CreateMedicationAsync(MedicationCreateDto createDto);
-
     // For Edit GET action
     Task<MedicationEditDto?> GetMedicationForEditAsync(int id);
-
-    // For Edit POST action
-    Task<bool> UpdateMedicationAsync(MedicationEditDto editDto);
-
     // For Delete GET action
     Task<MedicationDeleteDto?> GetMedicationForDeleteAsync(int id);
 
+    // For Create POST action
+    Task<MedicationListDto> CreateMedicationAsync(MedicationCreateDto createDto);
+    // For Edit POST action
+    Task<bool> UpdateMedicationAsync(MedicationEditDto editDto);
     // For Delete POST action
     Task<bool> DeleteMedicationAsync(int id);
-    
-    // Helper method for checking if medication exists
-    Task<bool> MedicationExistsAsync(int id);
 }

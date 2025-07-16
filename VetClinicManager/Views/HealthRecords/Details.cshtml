@@ -1,0 +1,78 @@
+@model VetClinicManager.DTOs.HealthRecords.HealthRecordDetailsDto
+
+@{
+    ViewData["Title"] = $"Health Record for {Model.AnimalName}";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+        
+    <hr />
+
+    <h4>Health Record Information</h4>
+    
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.IsSterilized)
+        </dt>
+        <dd class="col-sm-9">
+            <span class="badge @Model.IsSterilizedBadgeClass">@Model.IsSterilizedText</span> 
+        </dd>
+
+        @if (!string.IsNullOrEmpty(Model.ChronicDiseases))
+        {
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.ChronicDiseases)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.ChronicDiseases)
+            </dd>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.Allergies))
+        {
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Allergies)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Allergies)
+            </dd>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.Vaccinations))
+        {
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Vaccinations)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Vaccinations)
+            </dd>
+        }
+
+        @if (Model.LastVaccinationDate.HasValue)
+        {
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.LastVaccinationDate)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.LastVaccinationDate)
+            </dd>
+        }
+    </dl>
+
+    <div class="mt-4 d-flex">
+        @if (User.IsInRole("Admin") || User.IsInRole("Vet"))
+        {
+            <a asp-controller="HealthRecords" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit Health Record</a>
+            <a asp-controller="HealthRecords" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger ms-2">Delete</a>
+            
+            <span class="ms-2"></span>
+        }
+        <a asp-controller="Animals" asp-action="Index" class="btn btn-outline-secondary">Back to Animals List</a>
+    </div>
+
+</div>
+
+@section Scripts {
+    
+}

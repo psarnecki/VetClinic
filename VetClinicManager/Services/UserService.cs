@@ -41,7 +41,38 @@ public class UserService : IUserService
     {
         return await _roleManager.Roles.Select(r => r.Name).ToListAsync();
     }
+    
+    // For Edit GET action
+    public async Task<UserEditDto?> GetUserForEditAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        
+        if (user == null) return null;
+        
+        var allRoles = await GetAllAvailableRolesAsync();
+        var userRoles = await _userManager.GetRolesAsync(user);
 
+        var model = _userMapper.ToUserEditDto(user);
+
+        model.AvailableRoles = allRoles;
+        model.SelectedRoles = userRoles.ToList();
+
+        return model;
+    }
+    
+    // For Delete GET action
+    public async Task<UserDeleteDto?> GetUserForDeleteAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+         
+        if (user == null) return null;
+         
+        var model = _userMapper.ToUserDeleteDto(user);
+         
+        return model;
+    }
+
+    // For Create POST action
     public async Task<(IdentityResult result, User? user)> CreateUserAsync(UserCreateDto userDto)
     {
         var user = _userMapper.ToUser(userDto);
@@ -64,25 +95,7 @@ public class UserService : IUserService
 
         return (result, null);
     }
-
-    // For Edit GET action
-    public async Task<UserEditDto?> GetUserForEditAsync(string userId)
-    {
-        var user = await _userManager.FindByIdAsync(userId);
-        
-        if (user == null) return null;
-        
-        var allRoles = await GetAllAvailableRolesAsync();
-        var userRoles = await _userManager.GetRolesAsync(user);
-
-        var model = _userMapper.ToUserEditDto(user);
-
-        model.AvailableRoles = allRoles;
-        model.SelectedRoles = userRoles.ToList();
-
-        return model;
-    }
-
+    
     // For Edit POST action
     public async Task<IdentityResult> UpdateUserAsync(UserEditDto userDto)
     {
@@ -129,19 +142,7 @@ public class UserService : IUserService
 
         return IdentityResult.Success;
     }
-
-    // For Delete GET action
-    public async Task<UserDeleteDto?> GetUserForDeleteAsync(string userId)
-    {
-         var user = await _userManager.FindByIdAsync(userId);
-         
-         if (user == null) return null;
-         
-         var model = _userMapper.ToUserDeleteDto(user);
-         
-         return model;
-    }
-
+    
     // For Delete POST action
     public async Task<IdentityResult> DeleteUserAsync(string userId)
     {

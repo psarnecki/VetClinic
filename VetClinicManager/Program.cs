@@ -38,11 +38,13 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
+builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 
 builder.Services.AddScoped<UserMapper>();
 builder.Services.AddScoped<MedicationMapper>();
 builder.Services.AddScoped<AnimalMapper>();
 builder.Services.AddScoped<UserBriefMapper>();
+builder.Services.AddScoped<HealthRecordMapper>();
 
 var app = builder.Build();
 

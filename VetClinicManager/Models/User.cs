@@ -5,12 +5,12 @@ namespace VetClinicManager.Models;
 
 public class User : IdentityUser
 {
-    [MaxLength(80)]
     [Required]
+    [MaxLength(80)]
     public string FirstName { get; set; }
     
-    [MaxLength(80)]
     [Required]
+    [MaxLength(80)]
     public string LastName { get; set; }
 
     [MaxLength(200)]

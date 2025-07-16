@@ -43,19 +43,7 @@ public class MedicationService : IMedicationService
         
         return detailsDto;
     }
-
-
-    // For Create POST action
-    public async Task<MedicationListDto> CreateMedicationAsync(MedicationCreateDto createDto)
-    {
-        var medication = _medicationMapper.ToMedication(createDto);
-        _context.Add(medication);
-        await _context.SaveChangesAsync();
-        var resultDto = _medicationMapper.ToMedicationListDto(medication);
-        
-        return resultDto;
-    }
-
+    
     // For Edit GET action
     public async Task<MedicationEditDto?> GetMedicationForEditAsync(int id)
     {
@@ -66,6 +54,31 @@ public class MedicationService : IMedicationService
         var editDto = _medicationMapper.ToMedicationEditDto(medication);
         
         return editDto;
+    }
+    
+    // For Delete GET action
+    public async Task<MedicationDeleteDto?> GetMedicationForDeleteAsync(int id)
+    {
+        var medication = await _context.Medications
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.Id == id);
+         
+        if (medication == null) return null;
+         
+        var deleteDto = _medicationMapper.ToMedicationDeleteDto(medication); 
+         
+        return deleteDto;
+    }
+    
+    // For Create POST action
+    public async Task<MedicationListDto> CreateMedicationAsync(MedicationCreateDto createDto)
+    {
+        var medication = _medicationMapper.ToMedication(createDto);
+        _context.Add(medication);
+        await _context.SaveChangesAsync();
+        var resultDto = _medicationMapper.ToMedicationListDto(medication);
+        
+        return resultDto;
     }
 
     // For Edit POST action
@@ -88,20 +101,6 @@ public class MedicationService : IMedicationService
         }
     }
 
-    // For Delete GET action
-    public async Task<MedicationDeleteDto?> GetMedicationForDeleteAsync(int id)
-    {
-         var medication = await _context.Medications
-             .AsNoTracking()
-             .FirstOrDefaultAsync(m => m.Id == id);
-         
-         if (medication == null) return null;
-         
-         var deleteDto = _medicationMapper.ToMedicationDeleteDto(medication); 
-         
-         return deleteDto;
-    }
-
     // For Delete POST action
     public async Task<bool> DeleteMedicationAsync(int id)
     {
@@ -117,11 +116,5 @@ public class MedicationService : IMedicationService
         var savedChanges = await _context.SaveChangesAsync();
         
         return savedChanges > 0;
-    }
-    
-    // For existence check helper
-    public async Task<bool> MedicationExistsAsync(int id)
-    {
-        return await _context.Medications.AnyAsync(e => e.Id == id);
     }
 }
