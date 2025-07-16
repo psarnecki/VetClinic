@@ -1,0 +1,62 @@
+@model VetClinicManager.DTOs.HealthRecords.HealthRecordEditDto
+
+@{
+    ViewData["Title"] = $"Edit Health Record for {Model.AnimalName}";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="AnimalId" />
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="form-group form-check mb-3">
+                    <input class="form-check-input" asp-for="IsSterilized" />
+                    <label class="form-check-label" asp-for="IsSterilized"></label>
+                    <span asp-validation-for="IsSterilized" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="ChronicDiseases" class="form-label"></label>
+                    <input asp-for="ChronicDiseases" class="form-control" />
+                    <span asp-validation-for="ChronicDiseases" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Allergies" class="form-label"></label>
+                    <input asp-for="Allergies" class="form-control" />
+                    <span asp-validation-for="Allergies" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Vaccinations" class="form-label"></label>
+                    <input asp-for="Vaccinations" class="form-control" />
+                    <span asp-validation-for="Vaccinations" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="LastVaccinationDate" class="form-label"></label>
+                    <input asp-for="LastVaccinationDate" class="form-control" type="date"/>
+                    <span asp-validation-for="LastVaccinationDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mt-3 d-flex">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                    <a asp-controller="HealthRecords" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary ms-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

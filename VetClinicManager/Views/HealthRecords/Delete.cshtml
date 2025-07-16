@@ -1,0 +1,23 @@
+@model VetClinicManager.DTOs.HealthRecords.HealthRecordDeleteDto
+
+@{
+    ViewData["Title"] = "Delete Health Record";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"] for @Model.AnimalName</h1>
+
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">Confirmation</h4>
+        <p>Are you sure you want to permanently delete this health record? <strong>This action cannot be undone.</strong></p>
+    </div>
+    
+    <form asp-action="Delete" method="post" class="mt-4">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group d-flex mt-3">
+            <button type="submit" class="btn btn-danger">Yes, delete this record</button>
+            <a asp-controller="HealthRecords" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </div>
+    </form>
+</div>

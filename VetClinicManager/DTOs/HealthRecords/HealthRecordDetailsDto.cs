@@ -26,5 +26,5 @@ public class HealthRecordDetailsDto
     public DateTime? LastVaccinationDate { get; set; }
 
     public string IsSterilizedText => IsSterilized ? "Yes" : "No";
-    public string IsSterilizedBadgeClass => IsSterilized ? "bg-success" : "bg-secondary";
+    public string IsSterilizedBadgeClass => IsSterilized ? "bg-success" : "bg-danger";
 }
