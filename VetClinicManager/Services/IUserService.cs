@@ -11,19 +11,15 @@ public interface IUserService
 
     // For Create GET and Edit GET actions
     Task<List<string>> GetAllAvailableRolesAsync();
-
-    // For Create POST action
-    Task<(IdentityResult result, User? user)> CreateUserAsync(UserCreateDto userDto);
-
     // For Edit GET action
     Task<UserEditDto?> GetUserForEditAsync(string userId);
-
-    // For Edit POST action
-    Task<IdentityResult> UpdateUserAsync(UserEditDto userDto);
-
     // For Delete GET action
     Task<UserDeleteDto?> GetUserForDeleteAsync(string userId);
 
+    // For Create POST action
+    Task<(IdentityResult result, User? user)> CreateUserAsync(UserCreateDto userDto);
+    // For Edit POST action
+    Task<IdentityResult> UpdateUserAsync(UserEditDto userDto);
     // For Delete POST action
     Task<IdentityResult> DeleteUserAsync(string userId);
 
