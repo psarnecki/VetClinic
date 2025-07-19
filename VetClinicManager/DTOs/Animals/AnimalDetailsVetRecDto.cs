@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using VetClinicManager.DTOs.Users.UserBriefs;
+using VetClinicManager.DTOs.Shared;
 using VetClinicManager.Models.Enums;
 
 namespace VetClinicManager.DTOs.Animals;
