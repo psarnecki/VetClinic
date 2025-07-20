@@ -45,6 +45,7 @@ builder.Services.AddScoped<MedicationMapper>();
 builder.Services.AddScoped<AnimalMapper>();
 builder.Services.AddScoped<UserBriefMapper>();
 builder.Services.AddScoped<HealthRecordMapper>();
+builder.Services.AddScoped<VisitMapper>();
 
 var app = builder.Build();
 
