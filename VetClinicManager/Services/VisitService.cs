@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetClinicManager.Data;
@@ -178,11 +180,15 @@ public class VisitService : IVisitService
     public SelectList GetStatusesSelectList(VisitStatus? selectedStatus = null)
     {
         var items = Enum.GetValues(typeof(VisitStatus)).Cast<VisitStatus>().Select(e =>
-            new SelectListItem
+        {
+            var memberInfo = e.GetType().GetMember(e.ToString()).First();
+            var displayAttribute = memberInfo.GetCustomAttribute<DisplayAttribute>();
+            return new SelectListItem
             {
                 Value = e.ToString(),
-                Text = e.GetType().GetMember(e.ToString()).First().Name
-            });
+                Text = displayAttribute?.GetName() ?? e.ToString()
+            };
+        });
 
         return new SelectList(items, "Value", "Text", selectedStatus);
     }

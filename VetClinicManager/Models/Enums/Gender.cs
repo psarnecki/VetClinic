@@ -1,8 +1,15 @@
-﻿namespace VetClinicManager.Models.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace VetClinicManager.Models.Enums;
 
 public enum Gender
 {
+    [Display(Name = "Unknown")]
+    Unknown,
+    
+    [Display(Name = "Male")]
     Male,
-    Female,
-    Unknown
+    
+    [Display(Name = "Female")]
+    Female
 }

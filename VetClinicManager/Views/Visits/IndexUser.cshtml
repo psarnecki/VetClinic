@@ -1,0 +1,80 @@
+﻿@model IEnumerable<VetClinicManager.DTOs.Visits.VisitListUserDto>
+@using VetClinicManager.Models.Enums
+
+@{
+    ViewData["Title"] = "My Visits";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    
+    <hr />
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info mt-3" role="alert">
+            You do not have any registered visits yet.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Creation Date</th>
+                    <th>Status</th>
+                    <th>Animal</th>
+                    <th>Assigned Vet</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@Html.DisplayFor(modelItem => item.Title)</strong>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreatedDate)
+                            </td>
+                            <td>
+                                @{
+                                    string statusBadgeClass = item.Status switch
+                                    {
+                                        VisitStatus.Scheduled => "bg-warning text-dark",
+                                        VisitStatus.Completed => "bg-success",
+                                        VisitStatus.InProgress => "bg-primary",
+                                        VisitStatus.Cancelled => "bg-danger",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <span class="badge @statusBadgeClass">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </span>
+                            </td>
+                            <td>
+                                @(item.Animal?.Name) (@(item.Animal?.Species) @(item.Animal?.Breed))
+                            </td>
+                            <td>
+                                @if (item.AssignedVet != null)
+                                {
+                                    <span>@(item.AssignedVet.FirstName) @(item.AssignedVet.LastName)</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Unassigned</span>
+                                }
+                            </td>
+                             <td>
+                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
