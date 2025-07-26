@@ -1,5 +1,4 @@
 ﻿using VetClinicManager.DTOs.HealthRecords;
-using VetClinicManager.Models;
 
 namespace VetClinicManager.Services;
 
@@ -13,11 +12,11 @@ public interface IHealthRecordService
     Task<HealthRecordDeleteDto?> GetForDeleteAsync(int id);
     
     // For Create POST action
-    Task<int> CreateAsync(HealthRecordCreateDto createDto);
+    Task<int> CreateHealthRecordAsync(HealthRecordCreateDto createDto);
     // For Edit POST action
-    Task<bool> UpdateAsync(HealthRecordEditDto editDto);
+    Task<bool> UpdateHealthRecordAsync(HealthRecordEditDto editDto);
     // For Delete POST action
-    Task<bool> DeleteAsync(int id);
+    Task<bool> DeleteHealthRecordAsync(int id);
     
     // Prepare to create DTO with animal validation (checks existence and existing record)
     Task<HealthRecordCreateDto?> PrepareCreateDtoAsync(int animalId);

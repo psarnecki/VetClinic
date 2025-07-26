@@ -6,5 +6,5 @@ public class VisitDetailsUserDto : VisitListUserDto
 {
     public string? Description { get; set; }
     
-    public List<VisitUpdateBriefDto> Updates { get; set; } = new List<VisitUpdateBriefDto>();
+    public List<VisitUpdateBriefDto> Updates { get; set; } = new();
 }

@@ -12,5 +12,5 @@ public class VisitUpdateBriefDto
     
     public string UpdatedByVetName { get; set; }
     
-    public List<PrescriptionBriefDto> Prescriptions { get; set; } = new List<PrescriptionBriefDto>();
+    public List<PrescriptionBriefDto> Prescriptions { get; set; } = new();
 }

@@ -55,7 +55,7 @@ public class HealthRecordsController : Controller
             return View(createDto);
         }
 
-        var newId = await _healthRecordService.CreateAsync(createDto);
+        var newId = await _healthRecordService.CreateHealthRecordAsync(createDto);
         TempData["SuccessMessage"] = "Health record was created successfully.";
         
         return RedirectToAction(nameof(Details), new { id = newId });
@@ -82,7 +82,7 @@ public class HealthRecordsController : Controller
 
         if (ModelState.IsValid)
         {
-            var success = await _healthRecordService.UpdateAsync(editDto);
+            var success = await _healthRecordService.UpdateHealthRecordAsync(editDto);
             if (success)
             {
                 TempData["SuccessMessage"] = "Health record was updated successfully.";
@@ -114,7 +114,7 @@ public class HealthRecordsController : Controller
     [Authorize(Roles = "Admin,Vet")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var success = await _healthRecordService.DeleteAsync(id);
+        var success = await _healthRecordService.DeleteHealthRecordAsync(id);
 
         if (success)
         {

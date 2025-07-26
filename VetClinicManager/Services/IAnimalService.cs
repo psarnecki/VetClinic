@@ -16,6 +16,11 @@ public interface IAnimalService
     // For Owner Details GET action
     Task<AnimalDetailsUserDto?> GetAnimalDetailsForOwnerAsync(int id, string ownerId);
     
+    // For Edit GET action
+    Task<AnimalEditDto?> GetAnimalForEditAsync(int id);
+    // For Delete GET action
+    Task<AnimalDeleteDto?> GetAnimalForDeleteAsync(int id);
+    
     // For Create POST action
     Task<int> CreateAnimalAsync(AnimalCreateDto animalCreateDto);
     // For Edit POST action
@@ -23,11 +28,6 @@ public interface IAnimalService
     // For Delete POST action
     Task<bool> DeleteAnimalAsync(int id);
     
-    // For Edit GET action
-    Task<AnimalEditDto?> GetAnimalForEditAsync(int id);
-    // For Delete GET action
-    Task<AnimalDeleteDto?> GetAnimalForDeleteAsync(int id);
-
     // For Create/Edit view owner select list
     Task<SelectList> GetOwnersForSelectListAsync(string? selectedOwnerId = null);
     // For Create/Edit view gender select list

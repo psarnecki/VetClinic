@@ -39,24 +39,7 @@ public class AnimalService : IAnimalService
         {
             var dto = _animalMapper.ToListVetRecDto(animal);
             dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.CreatedDate) : null;
-            return dto;
-        });
-    }
-
-    // For Owner Index GET action
-    public async Task<IEnumerable<AnimalListUserDto>> GetAnimalsForOwnerAsync(string ownerId)
-    {
-        var animals = await _context.Animals
-            .AsNoTracking()
-            .Where(a => a.OwnerId == ownerId)
-            .Include(a => a.HealthRecord)
-            .Include(a => a.Visits)
-            .ToListAsync();
-
-        return animals.Select(animal =>
-        {
-            var dto = _animalMapper.ToListUserDto(animal);
-            dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.CreatedDate) : null;
+            
             return dto;
         });
     }
@@ -79,6 +62,25 @@ public class AnimalService : IAnimalService
         return dto;
     }
 
+    // For Owner Index GET action
+    public async Task<IEnumerable<AnimalListUserDto>> GetAnimalsForOwnerAsync(string ownerId)
+    {
+        var animals = await _context.Animals
+            .AsNoTracking()
+            .Where(a => a.OwnerId == ownerId)
+            .Include(a => a.HealthRecord)
+            .Include(a => a.Visits)
+            .ToListAsync();
+
+        return animals.Select(animal =>
+        {
+            var dto = _animalMapper.ToListUserDto(animal);
+            dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.CreatedDate) : null;
+            
+            return dto;
+        });
+    }
+
     // For Owner Details GET action
     public async Task<AnimalDetailsUserDto?> GetAnimalDetailsForOwnerAsync(int id, string ownerId)
     {
@@ -94,6 +96,28 @@ public class AnimalService : IAnimalService
         dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.CreatedDate) : null;
     
         return dto;
+    }
+    
+    // For Edit GET action
+    public async Task<AnimalEditDto?> GetAnimalForEditAsync(int id)
+    {
+        var animal = await _context.Animals.FirstOrDefaultAsync(a => a.Id == id);
+        
+        if (animal == null) return null;
+        
+        return _animalMapper.ToEditDto(animal);
+    }
+    
+    // For Delete GET action
+    public async Task<AnimalDeleteDto?> GetAnimalForDeleteAsync(int id)
+    {
+        var animal = await _context.Animals
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.Id == id);
+        
+        if (animal == null) return null;
+        
+        return _animalMapper.ToDeleteDto(animal);
     }
 
     // For Create POST action
@@ -154,28 +178,6 @@ public class AnimalService : IAnimalService
         var savedChanges = await _context.SaveChangesAsync();
         
         return savedChanges > 0;
-    }
-
-    // For Edit GET action
-    public async Task<AnimalEditDto?> GetAnimalForEditAsync(int id)
-    {
-        var animal = await _context.Animals.FirstOrDefaultAsync(a => a.Id == id);
-        
-        if (animal == null) return null;
-        
-        return _animalMapper.ToEditDto(animal);
-    }
-    
-    // For Delete GET action
-    public async Task<AnimalDeleteDto?> GetAnimalForDeleteAsync(int id)
-    {
-        var animal = await _context.Animals
-            .AsNoTracking()
-            .FirstOrDefaultAsync(a => a.Id == id);
-        
-        if (animal == null) return null;
-        
-        return _animalMapper.ToDeleteDto(animal);
     }
     
     // For Create/Edit view owner select list

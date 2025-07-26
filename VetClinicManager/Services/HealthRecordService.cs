@@ -50,7 +50,7 @@ public class HealthRecordService : IHealthRecordService
     }
     
     // For Create POST action
-    public async Task<int> CreateAsync(HealthRecordCreateDto createDto)
+    public async Task<int> CreateHealthRecordAsync(HealthRecordCreateDto createDto)
     {
         var entity = _healthRecordMapper.ToEntity(createDto);
         _context.Add(entity);
@@ -60,7 +60,7 @@ public class HealthRecordService : IHealthRecordService
     }
     
     // For Edit POST action
-    public async Task<bool> UpdateAsync(HealthRecordEditDto editDto)
+    public async Task<bool> UpdateHealthRecordAsync(HealthRecordEditDto editDto)
     {
         var entityInDb = await _context.HealthRecords.FindAsync(editDto.Id);
         
@@ -73,7 +73,7 @@ public class HealthRecordService : IHealthRecordService
     }
     
     // For Delete POST action
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteHealthRecordAsync(int id)
     {
         var entity = await _context.HealthRecords.FindAsync(id);
         
