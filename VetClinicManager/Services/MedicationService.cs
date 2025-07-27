@@ -106,11 +106,12 @@ public class MedicationService : IMedicationService
     {
         var medication = await _context.Medications
             .Include(m => m.AnimalMedications)
+            .Include(m => m.Prescriptions)
             .FirstOrDefaultAsync(m => m.Id == id);
         
         if (medication == null) return true;
         
-        if (medication.AnimalMedications.Any()) return false;
+        if (medication.AnimalMedications.Any() || medication.Prescriptions.Any()) return false;
         
         _context.Medications.Remove(medication); 
         var savedChanges = await _context.SaveChangesAsync();

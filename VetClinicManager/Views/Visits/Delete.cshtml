@@ -1,0 +1,83 @@
+@model VetClinicManager.DTOs.Visits.VisitDeleteDto
+@using VetClinicManager.Models.Enums
+
+@{
+    ViewData["Title"] = "Delete Visit";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]: @Model.Title</h1>
+    
+    <hr />
+
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Confirmation</h4>
+        <p>Are you sure you want to permanently delete this visit? <strong>This operation cannot be undone.</strong></p>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            Details of the visit to be deleted
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4 col-md-3">Title</dt>
+                <dd class="col-sm-8 col-md-9">@Html.DisplayFor(model => model.Title)</dd>
+
+                <dt class="col-sm-4 col-md-3">Animal</dt>
+                <dd class="col-sm-8 col-md-9">
+                    @if (Model.Animal != null) { <span>@Model.Animal.Name (@Model.Animal.Species)</span> }
+                    else { <span class="text-muted">No data</span> }
+                </dd>
+
+                <dt class="col-sm-4 col-md-3">Owner</dt>
+                <dd class="col-sm-8 col-md-9">
+                     @if (Model.Owner != null) { <span>@Model.Owner.FirstName @Model.Owner.LastName</span> }
+                     else { <span class="text-muted">No data</span> }
+                </dd>
+
+                <dt class="col-sm-4 col-md-3">Creation Date</dt>
+                <dd class="col-sm-8 col-md-9">@Model.CreatedDate</dd>
+
+                <dt class="col-sm-4 col-md-3">Status</dt>
+                <dd class="col-sm-8 col-md-9">
+                    @{
+                        string statusBadgeClass = Model.Status switch {
+                            VisitStatus.Scheduled => "bg-warning text-dark",
+                            VisitStatus.Completed => "bg-success",
+                            VisitStatus.InProgress => "bg-primary",
+                            VisitStatus.Cancelled => "bg-danger",
+                            _ => "bg-secondary"
+                        };
+                    }
+                    <span class="badge @statusBadgeClass">@Html.DisplayFor(model => model.Status)</span>
+                </dd>
+
+                <dt class="col-sm-4 col-md-3">Priority</dt>
+                <dd class="col-sm-8 col-md-9">
+                    @{
+                        string priorityBadgeClass = Model.Priority switch {
+                            VisitPriority.Critical => "bg-danger",
+                            VisitPriority.Urgent => "bg-warning text-dark",
+                            VisitPriority.Normal => "bg-info",
+                            _ => "bg-secondary"
+                        };
+                    }
+                    <span class="badge @priorityBadgeClass">@Html.DisplayFor(model => model.Priority)</span>
+                </dd>
+                
+                 <dt class="col-sm-4 col-md-3">Assigned Veterinarian</dt>
+                 <dd class="col-sm-8 col-md-9">
+                    @if (Model.AssignedVet != null) { <span>@Model.AssignedVet.FirstName @Model.AssignedVet.LastName</span> }
+                    else { <span class="text-muted">Unassigned</span> }
+                 </dd>
+            </dl>
+        </div>
+    </div>
+    
+    <form asp-action="Delete" class="mt-4">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a asp-action="Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </form>
+</div>

@@ -1,0 +1,176 @@
+@model VetClinicManager.DTOs.Visits.VisitDetailsVetRecDto
+@using VetClinicManager.Models.Enums
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container">
+    <h2>@Model.Title</h2>
+    
+    <hr />
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Visit Details
+                </div>
+                <div class="card-body">
+                    <p><strong>Status:</strong>
+                        @{
+                            string statusBadgeClass = Model.Status switch
+                            {
+                                VisitStatus.Scheduled => "bg-warning text-dark",
+                                VisitStatus.Completed => "bg-success",
+                                VisitStatus.InProgress => "bg-primary",
+                                VisitStatus.Cancelled => "bg-danger",
+                                _ => "bg-secondary"
+                            };
+                        }
+                        <span class="badge @statusBadgeClass">@Html.DisplayFor(m => m.Status)</span>
+                    </p>
+
+                    <p><strong>Priority:</strong>
+                        @{
+                            string priorityBadgeClass = Model.Priority switch
+                            {
+                                VisitPriority.Critical => "bg-danger",
+                                VisitPriority.Urgent => "bg-warning text-dark",
+                                VisitPriority.Normal => "bg-info",
+                                _ => "bg-secondary"
+                            };
+                        }
+                        <span class="badge @priorityBadgeClass">@Html.DisplayFor(m => m.Priority)</span>
+                    </p>
+                    <p><strong>Date:</strong> @Model.CreatedDate.ToString("g")</p>
+                    <p><strong>Animal:</strong>
+                        @if (Model.Animal != null)
+                        {
+                            <a asp-controller="Animals" asp-action="Details" asp-route-id="@Model.Animal.Id">@Model.Animal.Name</a>
+                            <span>(@Model.Animal.Species @Model.Animal.Breed)</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No data</span>
+                        }
+                    </p>
+                    <p><strong>Owner:</strong> 
+                        @if (Model.Owner != null) {
+                            <span>@Model.Owner.FirstName @Model.Owner.LastName (<a href="mailto:@Model.Owner.Email">@Model.Owner.Email</a>)</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No data</span>
+                        }
+                    </p>
+                    <p><strong>Assigned Veterinarian:</strong> 
+                        @if (Model.AssignedVet != null) {
+                            <span>@Model.AssignedVet.FirstName @Model.AssignedVet.LastName (<a href="mailto:@Model.AssignedVet.Email">@Model.AssignedVet.Email</a>)</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Unassigned</span>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        Description
+                    </div>
+                    <div class="card-body">
+                        <p>@Model.Description</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <h3>Visit History</h3>
+    @if (Model.Updates != null && Model.Updates.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Updated by</th>
+                        <th>Notes</th>
+                        <th>Prescribed Medications</th>
+                        <th>Dosage</th>
+                        <th>Attachments</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var update in Model.Updates.OrderByDescending(u => u.UpdateDate))
+                    {
+                        <tr>
+                            <td>@update.UpdateDate.ToString("d")</td>
+                            <td>@update.UpdatedByVetName</td>
+                            <td>@update.Notes</td>
+                            <td>
+                                @if (update.Prescriptions != null && update.Prescriptions.Any())
+                                {
+                                    <ul class="list-unstyled mb-0">
+                                        @foreach (var prescription in update.Prescriptions)
+                                        {
+                                            <li><strong>@prescription.MedicationName</strong></li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">None</span>
+                                }
+                            </td>
+                            <td>
+                                @if (update.Prescriptions != null && update.Prescriptions.Any())
+                                {
+                                    <ul class="list-unstyled mb-0">
+                                        @foreach (var prescription in update.Prescriptions)
+                                        {
+                                            <li>@prescription.Dosage</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(update.ImageUrl))
+                                {
+                                    <a href="@update.ImageUrl" target="_blank" class="btn btn-sm btn-outline-primary">View</a>
+                                }
+                            </td>
+                            <td>
+                                <a asp-controller="VisitUpdates" asp-action="Edit" asp-route-id="@update.Id" class="btn btn-sm btn-primary">Edit</a>
+                                <a asp-controller="VisitUpdates" asp-action="Delete" asp-route-id="@update.Id" class="btn btn-sm btn-danger ms-1">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">No updates have been registered for this visit.</div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mt-0">
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit Visit</a>
+            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+        </div>
+        <a asp-action="GenerateVisitReport" asp-route-id="@Model.Id" class="btn btn-success" target="_blank">Export to PDF</a>
+    </div>
+</div>

@@ -17,6 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Medication> Medications { get; set; }
     public DbSet<Visit> Visits { get; set; }
     public DbSet<VisitUpdate> VisitUpdates { get; set; }
+    public DbSet<Prescription> Prescriptions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -64,6 +65,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
             .HasForeignKey(vu => vu.VisitId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        // VisitUpdate -> User (N:1)
         modelBuilder.Entity<VisitUpdate>()
             .HasOne(vu => vu.UpdatedByVet)
             .WithMany()
@@ -75,6 +77,20 @@ public class ApplicationDbContext : IdentityDbContext<User>
             .HasMany(m => m.AnimalMedications)
             .WithOne(am => am.Medication)
             .HasForeignKey(am => am.MedicationId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        // VisitUpdate -> Prescriptions (1:N)
+        modelBuilder.Entity<VisitUpdate>()
+            .HasMany(vu => vu.Prescriptions)
+            .WithOne(p => p.VisitUpdate)
+            .HasForeignKey(p => p.VisitUpdateId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        // Medication -> Prescriptions (1:N)
+        modelBuilder.Entity<Medication>()
+            .HasMany(m => m.Prescriptions)
+            .WithOne(p => p.Medication)
+            .HasForeignKey(p => p.MedicationId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

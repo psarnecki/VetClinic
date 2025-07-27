@@ -1,0 +1,75 @@
+@model VetClinicManager.DTOs.Visits.VisitEditDto
+
+@{
+    ViewData["Title"] = "Edit Visit";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    
+    <hr />
+    
+    @if (Model.Animal != null)
+    {
+        <h4 class="text-muted fw-light mb-4">
+            For: <a asp-controller="Animals" asp-action="Details" asp-route-id="@Model.Animal.Id">@Model.Animal.Name</a> (@Model.Animal.Species)
+        </h4>
+    }
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Edit">
+                <input type="hidden" asp-for="Id" />
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Status" class="form-label"></label>
+                    <select asp-for="Status" class="form-control" asp-items="@Model.Statuses">
+                         <option value="">-- Select status --</option>
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Priority" class="form-label"></label>
+                    <select asp-for="Priority" class="form-control" asp-items="@Model.Priorities">
+                         <option value="">-- Select priority --</option>
+                    </select>
+                    <span asp-validation-for="Priority" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="AssignedVetId" class="form-label"></label>
+                    <select asp-for="AssignedVetId" class="form-control" asp-items="@Model.Vets">
+                        <option value="">-- Select a veterinarian --</option>
+                    </select>
+                    <span asp-validation-for="AssignedVetId" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mt-3 d-flex">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-outline-secondary ms-2">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

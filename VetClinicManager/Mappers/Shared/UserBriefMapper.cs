@@ -1,5 +1,5 @@
 ﻿using Riok.Mapperly.Abstractions;
-using VetClinicManager.DTOs.Users.UserBriefs;
+using VetClinicManager.DTOs.Shared;
 using VetClinicManager.Models;
 
 namespace VetClinicManager.Mappers;
@@ -8,5 +8,5 @@ namespace VetClinicManager.Mappers;
 public partial class UserBriefMapper
 {
     // Maps a User entity to its brief DTO representation
-    public partial UserBriefDto ToBriefDto(User user);
+    public partial UserBriefDto ToUserBriefDto(User user);
 }

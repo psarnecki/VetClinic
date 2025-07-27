@@ -32,6 +32,7 @@ public class SeedData
         await SeedVisitsAsync();
         await SeedVisitUpdatesAsync();
         await SeedAnimalMedicationsAsync();
+        await SeedPrescriptionsAsync();
     }
 
     private async Task SeedRolesAsync()
@@ -164,39 +165,6 @@ public class SeedData
         await _context.SaveChangesAsync();
     }
     
-    private async Task SeedAnimalMedicationsAsync()
-    {
-        if (await _context.AnimalMedications.AnyAsync()) return;
-        
-        var animals = await _context.Animals.ToListAsync(); 
-        var medications = await _context.Medications.ToListAsync();
-        var visits = await _context.Visits.ToListAsync();
-        var updates = await _context.VisitUpdates.ToListAsync(); 
-
-        var animalMedications = new List<AnimalMedication>
-        {
-            new AnimalMedication
-            {
-                AnimalId = animals[0].Id,
-                MedicationId = medications[0].Id,
-                StartDate = DateTime.Now.AddDays(-10),
-                EndDate = DateTime.Now.AddDays(-3),
-                VisitUpdateId = updates.FirstOrDefault(u => u.VisitId == visits[0].Id).Id
-            },
-            new AnimalMedication
-            {
-                AnimalId = animals[2].Id,
-                MedicationId = medications[2].Id,
-                StartDate = DateTime.Now.AddDays(-2),
-                EndDate = DateTime.Now.AddDays(5),
-                VisitUpdateId = updates.FirstOrDefault(u => u.VisitId == visits[2].Id).Id
-            }
-        };
-
-        await _context.AnimalMedications.AddRangeAsync(animalMedications);
-        await _context.SaveChangesAsync();
-    }
-    
     private async Task SeedHealthRecordsAsync()
     {
         if (await _context.HealthRecords.AnyAsync()) return;
@@ -237,7 +205,7 @@ public class SeedData
         await _context.HealthRecords.AddRangeAsync(healthRecords);
         await _context.SaveChangesAsync();
     }
-
+    
     private async Task SeedMedicationsAsync()
     {
         if (await _context.Medications.AnyAsync()) return;
@@ -364,6 +332,70 @@ public class SeedData
         };
 
         await _context.VisitUpdates.AddRangeAsync(updates);
+        await _context.SaveChangesAsync();
+    }
+    
+    private async Task SeedAnimalMedicationsAsync()
+    {
+        if (await _context.AnimalMedications.AnyAsync()) return;
+        
+        var animals = await _context.Animals.ToListAsync(); 
+        var medications = await _context.Medications.ToListAsync();
+        var visits = await _context.Visits.ToListAsync();
+        var updates = await _context.VisitUpdates.ToListAsync(); 
+
+        var animalMedications = new List<AnimalMedication>
+        {
+            new AnimalMedication
+            {
+                AnimalId = animals[0].Id,
+                MedicationId = medications[0].Id,
+                StartDate = DateTime.Now.AddDays(-10),
+                EndDate = DateTime.Now.AddDays(-3),
+            },
+            new AnimalMedication
+            {
+                AnimalId = animals[2].Id,
+                MedicationId = medications[2].Id,
+                StartDate = DateTime.Now.AddDays(-2),
+                EndDate = DateTime.Now.AddDays(5),
+            }
+        };
+
+        await _context.AnimalMedications.AddRangeAsync(animalMedications);
+        await _context.SaveChangesAsync();
+    }
+    
+    private async Task SeedPrescriptionsAsync()
+    {
+        if (await _context.Prescriptions.AnyAsync()) return;
+
+        var medications = await _context.Medications.ToListAsync();
+        var visitUpdates = await _context.VisitUpdates.ToListAsync();
+
+        var prescriptions = new List<Prescription>
+        {
+            new Prescription
+            {
+                MedicationId = medications[1].Id,
+                VisitUpdateId = visitUpdates[0].Id,
+                Dosage = "1 tablet, if necessary, for post-vaccination pain."
+            },
+            new Prescription
+            {
+                MedicationId = medications[2].Id,
+                VisitUpdateId = visitUpdates[2].Id,
+                Dosage = "2 drops into the affected ear, twice a day for 7 days."
+            },
+            new Prescription
+            {
+                MedicationId = medications[1].Id,
+                VisitUpdateId = visitUpdates[2].Id,
+                Dosage = "Half a tablet once a day for 3 days."
+            }
+        };
+
+        await _context.Prescriptions.AddRangeAsync(prescriptions);
         await _context.SaveChangesAsync();
     }
 }
