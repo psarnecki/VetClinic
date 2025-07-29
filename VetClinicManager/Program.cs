@@ -40,6 +40,7 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
+builder.Services.AddScoped<IVisitUpdateService, VisitUpdateService>();
 
 builder.Services.AddScoped<UserMapper>();
 builder.Services.AddScoped<MedicationMapper>();
