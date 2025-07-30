@@ -1,0 +1,161 @@
+@model VetClinicManager.DTOs.VisitUpdates.VisitUpdateCreateDto
+
+@{
+    ViewData["Title"] = "Add Visit Update";
+}
+
+<style>
+    #prescriptions-container .prescription-item:first-child > hr {
+        display: none;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">
+            <h2>@ViewData["Title"]</h2>
+            <p class="text-muted">For visit: <strong>@Model.VisitTitle</strong> (@Model.AnimalName)</p>
+            
+            <hr />
+
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="VisitId" />
+
+                <div class="mb-3">
+                    <label asp-for="Notes" class="form-label"></label>
+                    <textarea asp-for="Notes" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ImageFile" class="form-label">Attachment (Image)</label>
+                    <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between align-items-baseline mb-2">
+                        <h5 class="mb-0">Prescribed Medications</h5>
+                        <button type="button" id="add-prescription" class="btn btn-sm btn-success">Add Medication</button>
+                    </div>
+
+                    <div class="row mb-0">
+                        <div class="col-md-4"><label class="form-label small text-muted">Medication</label></div>
+                        <div class="col-md-6"><label class="form-label small text-muted">Dosage</label></div>
+                    </div>
+
+                    <hr class="mt-0 mb-2" />
+
+                    <div id="prescriptions-container">
+                        @if (Model.Prescriptions != null && Model.Prescriptions.Any())
+                        {
+                            @for (var i = 0; i < Model.Prescriptions.Count; i++)
+                            {
+                                <div class="prescription-item row g-1 mb-1 pb-1">
+                                    
+                                    <hr class="my-0" />
+
+                                    <div class="col-md-4">
+                                        <label asp-for="Prescriptions[i].MedicationId" class="form-label d-md-none">Medication</label>
+                                        <select asp-for="Prescriptions[i].MedicationId" class="form-select" asp-items="@Model.Medications"></select>
+                                        <span asp-validation-for="Prescriptions[i].MedicationId" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="Prescriptions[i].Dosage" class="form-label d-md-none">Dosage</label>
+                                        <input asp-for="Prescriptions[i].Dosage" class="form-control"/>
+                                        <span asp-validation-for="Prescriptions[i].Dosage" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-danger remove-prescription w-100">Remove</button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                        <div id="no-prescriptions-message">
+                            <p class="text-muted mb-2">No medications are currently prescribed for this update.</p>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <hr class="mt-1" />
+                
+                <div class="d-flex justify-content-start mt-3">
+                    <button type="submit" class="btn btn-primary me-1">Add Update</button>
+                    <a asp-controller="Visits" asp-action="Details" asp-route-id="@Model.VisitId" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            let prescriptionIndex = @Model.Prescriptions.Count;
+            const medicationOptions = @Html.Raw(Json.Serialize(Model.Medications ?? new SelectList(new List<SelectListItem>())));
+
+            $('#add-prescription').click(function () {
+                $('#no-prescriptions-message').remove();
+
+                const newFormHtml = `
+                        <div class="prescription-item row g-1 mb-1 pb-1">
+
+                            <hr class="my-0" />
+                            
+                            <div class="col-md-4">
+                                <label class="form-label d-md-none">Medication</label>
+                                <select name="Prescriptions[${prescriptionIndex}].MedicationId" class="form-select"></select>
+                                <span class="text-danger field-validation-valid" data-valmsg-for="Prescriptions[${prescriptionIndex}].MedicationId" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label d-md-none">Dosage</label>
+                                <input name="Prescriptions[${prescriptionIndex}].Dosage" class="form-control" type="text" />
+                                <span class="text-danger field-validation-valid" data-valmsg-for="Prescriptions[${prescriptionIndex}].Dosage" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger remove-prescription w-100">Remove</button>
+                            </div>
+                        </div>`;
+
+                const newForm = $(newFormHtml);
+                const selectElement = newForm.find('select');
+
+                selectElement.append($('<option>', { value: '', text: '-- Select a medication --' }));
+                $.each(medicationOptions, function(i, item) {
+                    selectElement.append($('<option>', {
+                        value: item.value,
+                        text: item.text
+                    }));
+                });
+
+                $('#prescriptions-container').append(newForm);
+
+                $('form').data('validator', null);
+                $.validator.unobtrusive.parse($('form'));
+
+                prescriptionIndex++;
+            });
+
+            $(document).on('click', '.remove-prescription', function() {
+                const itemToRemove = $(this).closest('.prescription-item');
+                const container = $('#prescriptions-container');
+                const wasLastItem = container.find('.prescription-item').length === 1;
+
+                itemToRemove.remove();
+
+                if (wasLastItem) {
+                    container.html(`
+                            <div id="no-prescriptions-message" class="mt-3">
+                                <p class="text-muted">No medications are currently prescribed for this update.</p>
+                            </div>
+                        `);
+                }
+            });
+        });
+    </script>
+}
