@@ -25,11 +25,11 @@ public class AnimalsController : Controller
     {
         if (User.IsInRole("Client"))
         {
-            var userId = await _userManager.GetUserAsync(User);
+            var currentUserId = _userManager.GetUserId(User);
             
-            if (userId == null) return Unauthorized();
+            if (currentUserId == null) return Unauthorized();
                 
-            var animals = await _animalService.GetAnimalsForOwnerAsync(userId.Id);
+            var animals = await _animalService.GetAnimalsForOwnerAsync(currentUserId);
             return View("IndexUser", animals);
         }
         else
@@ -46,11 +46,11 @@ public class AnimalsController : Controller
     {
         if (User.IsInRole("Client"))
         {
-            var userId = _userManager.GetUserId(User);
+            var currentUserId = _userManager.GetUserId(User);
             
-            if (userId == null) return Unauthorized();
+            if (currentUserId == null) return Unauthorized();
 
-            var model = await _animalService.GetAnimalDetailsForOwnerAsync(id, userId);
+            var model = await _animalService.GetAnimalDetailsForOwnerAsync(id, currentUserId);
             
             if (model == null) return NotFound();
             

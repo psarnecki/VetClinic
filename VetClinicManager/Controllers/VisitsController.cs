@@ -23,17 +23,17 @@ public class VisitsController : Controller
     [Authorize(Roles = "Admin,Receptionist,Vet,Client")] 
     public async Task<IActionResult> Index()
     {
-        var currentUser = await _userManager.GetUserAsync(User);
+        var currentUserId = _userManager.GetUserId(User);
         
-        if (currentUser == null) return Unauthorized();
+        if (currentUserId == null) return Unauthorized();
 
         if (User.IsInRole("Client"))
         {
-            var visits = await _visitService.GetVisitsForOwnerAsync(currentUser.Id);
+            var visits = await _visitService.GetVisitsForOwnerAsync(currentUserId);
             return View("IndexUser", visits);
         }
 
-        var vetId = User.IsInRole("Vet") ? currentUser.Id : null;
+        var vetId = User.IsInRole("Vet") ? currentUserId : null;
         var staffVisits = await _visitService.GetVisitsForStaffAsync(vetId);
         var viewName = User.IsInRole("Vet") ? "IndexVet" : "IndexReceptionist";
         
@@ -44,13 +44,13 @@ public class VisitsController : Controller
     [Authorize(Roles = "Admin,Receptionist,Vet,Client")] 
     public async Task<IActionResult> Details(int id)
     {
-        var currentUser = await _userManager.GetUserAsync(User);
+        var currentUserId = _userManager.GetUserId(User);
 
-        if (currentUser == null) return Unauthorized();
+        if (currentUserId == null) return Unauthorized();
 
         if (User.IsInRole("Client"))
         {
-            var visit = await _visitService.GetDetailsForOwnerAsync(id, currentUser.Id);
+            var visit = await _visitService.GetDetailsForOwnerAsync(id, currentUserId);
             if (visit == null) return NotFound();
             
             return View("DetailsUser", visit);
@@ -60,7 +60,7 @@ public class VisitsController : Controller
 
         if (staffVisit == null) return NotFound();
 
-        if (User.IsInRole("Vet") && staffVisit.AssignedVet?.Id != currentUser.Id)
+        if (User.IsInRole("Vet") && staffVisit.AssignedVet?.Id != currentUserId)
         {
             TempData["ErrorMessage"] = "You can only access visits assigned to you.";
             return Forbid();
@@ -112,11 +112,11 @@ public class VisitsController : Controller
     [Authorize(Roles = "Admin,Receptionist,Vet")]
     public async Task<IActionResult> Edit(int id)
     {
-        var currentUser = await _userManager.GetUserAsync(User);
+        var currentUserId = _userManager.GetUserId(User);
         
-        if (currentUser == null) return Unauthorized();
+        if (currentUserId == null) return Unauthorized();
 
-        var visitEditDto = await _visitService.GetForEditAsync(id, currentUser.Id, User.IsInRole("Vet"));
+        var visitEditDto = await _visitService.GetForEditAsync(id, currentUserId, User.IsInRole("Vet"));
         
         if (visitEditDto == null) return NotFound();
 
@@ -135,9 +135,9 @@ public class VisitsController : Controller
     {
         if (id != visitEditDto.Id) return NotFound();
         
-        var currentUser = await _userManager.GetUserAsync(User);
+        var currentUserId = _userManager.GetUserId(User);
         
-        if (currentUser == null) return Unauthorized();
+        if (currentUserId == null) return Unauthorized();
 
         if (!ModelState.IsValid)
         {
@@ -145,7 +145,7 @@ public class VisitsController : Controller
             visitEditDto.Statuses = _visitService.GetStatusesSelectList(visitEditDto.Status);
             visitEditDto.Priorities = _visitService.GetPrioritiesSelectList(visitEditDto.Priority);
 
-            var originalVisit = await _visitService.GetForEditAsync(id, currentUser.Id, User.IsInRole("Vet"));
+            var originalVisit = await _visitService.GetForEditAsync(id, currentUserId, User.IsInRole("Vet"));
             if (originalVisit != null)
             {
                 visitEditDto.Animal = originalVisit.Animal;
@@ -154,7 +154,7 @@ public class VisitsController : Controller
             return View(visitEditDto);
         }
 
-        var success = await _visitService.UpdateVisitAsync(id, visitEditDto, currentUser.Id, User.IsInRole("Vet"));
+        var success = await _visitService.UpdateVisitAsync(id, visitEditDto, currentUserId, User.IsInRole("Vet"));
         
         if (!success)
         {
