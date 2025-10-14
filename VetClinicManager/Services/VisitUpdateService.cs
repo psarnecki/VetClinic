@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using VetClinicManager.Data;
+using VetClinicManager.DTOs.Shared;
 using VetClinicManager.DTOs.VisitUpdates;
 using VetClinicManager.Mappers;
+using VetClinicManager.Mappers.Shared;
 
 namespace VetClinicManager.Services;
 
@@ -33,7 +34,6 @@ public class VisitUpdateService : IVisitUpdateService
             VisitId = visitId,
             VisitTitle = visit.Title,
             AnimalName = visit.Animal.Name,
-            Medications = await GetMedicationsSelectListAsync()
         };
     }
     
@@ -51,7 +51,6 @@ public class VisitUpdateService : IVisitUpdateService
         if (visitUpdate.UpdatedByVetId != vetId) throw new UnauthorizedAccessException();
         
         var dto = _visitUpdateMapper.ToEditDto(visitUpdate);
-        dto.Medications = await GetMedicationsSelectListAsync();
         
         return dto;
     }
@@ -134,14 +133,12 @@ public class VisitUpdateService : IVisitUpdateService
     }
     
     // For Medication select list
-    public async Task<SelectList> GetMedicationsSelectListAsync()
+    public async Task<IEnumerable<MedicationBriefDto>> GetMedicationsForSelectListAsync()
     {
-        var items = await _context.Medications
+        return await _context.Medications
             .AsNoTracking()
             .OrderBy(m => m.Name)
-            .Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Name })
+            .ProjectToDto()
             .ToListAsync();
-        
-        return new SelectList(items, "Value", "Text");
     }
 }

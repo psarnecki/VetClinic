@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using VetClinicManager.DTOs.Shared;
 using VetClinicManager.DTOs.VisitUpdates;
 
 namespace VetClinicManager.Services;
@@ -20,5 +20,5 @@ public interface IVisitUpdateService
     Task<int> DeleteVisitUpdateAsync(int id, string vetId);
 
     // For Create/Edit view medications select list
-    Task<SelectList> GetMedicationsSelectListAsync();
+    Task<IEnumerable<MedicationBriefDto>> GetMedicationsForSelectListAsync();
 }

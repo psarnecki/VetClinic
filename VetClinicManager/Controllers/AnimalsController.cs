@@ -1,8 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using VetClinicManager.DTOs.Animals;
 using VetClinicManager.Models;
+using VetClinicManager.Models.Enums;
 using VetClinicManager.Services;
 
 namespace VetClinicManager.Controllers;
@@ -70,10 +74,15 @@ public class AnimalsController : Controller
     [Authorize(Roles = "Admin,Receptionist")]
     public async Task<IActionResult> Create()
     {
+        var owners = await _animalService.GetOwnersForSelectListAsync();
         var model = new AnimalCreateDto
         {
-            Owners = await _animalService.GetOwnersForSelectListAsync(),
-            Genders = _animalService.GetGendersSelectList()
+            Owners = new SelectList(owners.Select(o => new SelectListItem
+            {
+                Value = o.Id,
+                Text = $"{o.FirstName} {o.LastName} ({o.Email})"
+            }), "Value", "Text"),
+            Genders = GetEnumSelectList<Gender>()
         };
         
         return View(model);
@@ -87,8 +96,14 @@ public class AnimalsController : Controller
     {
         if (!ModelState.IsValid)
         {
-            animalCreateDto.Owners = await _animalService.GetOwnersForSelectListAsync(animalCreateDto.OwnerId);
-            animalCreateDto.Genders = _animalService.GetGendersSelectList(animalCreateDto.Gender);
+            var owners = await _animalService.GetOwnersForSelectListAsync();
+            animalCreateDto.Owners = new SelectList(owners.Select(o => new SelectListItem
+            {
+                Value = o.Id,
+                Text = $"{o.FirstName} {o.LastName} ({o.Email})"
+            }), "Value", "Text", animalCreateDto.OwnerId);
+            animalCreateDto.Genders = GetEnumSelectList<Gender>(animalCreateDto.Gender);
+            
             return View(animalCreateDto);
         }
     
@@ -100,16 +115,19 @@ public class AnimalsController : Controller
 
     // GET: Animals/Edit/5
     [Authorize(Roles = "Admin,Receptionist,Vet")]
-    public async Task<IActionResult> Edit(int? id)
+    public async Task<IActionResult> Edit(int id)
     {
-        if (id == null) return NotFound();
-        
-        var model = await _animalService.GetAnimalForEditAsync(id.Value);
+        var model = await _animalService.GetAnimalForEditAsync(id);
         
         if (model == null) return NotFound();
         
-        model.Owners = await _animalService.GetOwnersForSelectListAsync(model.OwnerId);
-        model.Genders = _animalService.GetGendersSelectList(model.Gender);
+        var owners = await _animalService.GetOwnersForSelectListAsync();
+        model.Owners = new SelectList(owners.Select(o => new SelectListItem
+        {
+            Value = o.Id,
+            Text = $"{o.FirstName} {o.LastName} ({o.Email})"
+        }), "Value", "Text", model.OwnerId);
+        model.Genders = GetEnumSelectList<Gender>(model.Gender);
 
         return View(model);
     }
@@ -121,11 +139,18 @@ public class AnimalsController : Controller
     public async Task<IActionResult> Edit(int id, AnimalEditDto animalEditDto)
     {
         if (id != animalEditDto.Id) return BadRequest();
+        
+        var owners = await _animalService.GetOwnersForSelectListAsync();
 
         if (!ModelState.IsValid)
         {
-            animalEditDto.Owners = await _animalService.GetOwnersForSelectListAsync(animalEditDto.OwnerId);
-            animalEditDto.Genders = _animalService.GetGendersSelectList(animalEditDto.Gender);
+            animalEditDto.Owners = new SelectList(owners.Select(o => new SelectListItem
+            {
+                Value = o.Id,
+                Text = $"{o.FirstName} {o.LastName} ({o.Email})"
+            }), "Value", "Text", animalEditDto.OwnerId);
+            animalEditDto.Genders = GetEnumSelectList<Gender>(animalEditDto.Gender);
+            
             return View(animalEditDto);
         }
 
@@ -138,8 +163,12 @@ public class AnimalsController : Controller
         }
 
         ModelState.AddModelError(string.Empty, "Unable to save changes. The animal may have been deleted by another user.");
-        animalEditDto.Owners = await _animalService.GetOwnersForSelectListAsync(animalEditDto.OwnerId);
-        animalEditDto.Genders = _animalService.GetGendersSelectList(animalEditDto.Gender);
+        animalEditDto.Owners = new SelectList(owners.Select(o => new SelectListItem
+        {
+            Value = o.Id,
+            Text = $"{o.FirstName} {o.LastName} ({o.Email})"
+        }), "Value", "Text", animalEditDto.OwnerId);
+        animalEditDto.Genders = GetEnumSelectList<Gender>(animalEditDto.Gender);
         
         return View(animalEditDto);
     }
@@ -175,5 +204,20 @@ public class AnimalsController : Controller
         }
     
         return RedirectToAction(nameof(Index));
+    }
+    
+    private SelectList GetEnumSelectList<TEnum>(object? selectedValue = null) where TEnum : struct, Enum
+    {
+        var items = Enum.GetValues<TEnum>().Select(e =>
+        {
+            var display = typeof(TEnum).GetField(e.ToString())?
+                .GetCustomAttribute<DisplayAttribute>();
+            return new SelectListItem
+            {
+                Value = e.ToString(),
+                Text = display?.GetName() ?? e.ToString()
+            };
+        });
+        return new SelectList(items, "Value", "Text", selectedValue);
     }
 }

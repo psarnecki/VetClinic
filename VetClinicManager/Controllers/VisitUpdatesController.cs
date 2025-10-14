@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using VetClinicManager.DTOs.VisitUpdates;
 using VetClinicManager.Models;
 using VetClinicManager.Services;
@@ -26,6 +27,9 @@ public class VisitUpdatesController : Controller
         
         if (createDto == null) return NotFound("The parent visit for this update could not be found.");
         
+        var medications = await _visitUpdateService.GetMedicationsForSelectListAsync();
+        createDto.Medications = new SelectList(medications, "Id", "Name");
+        
         return View(createDto);
     }
 
@@ -36,7 +40,9 @@ public class VisitUpdatesController : Controller
     {
         if (!ModelState.IsValid)
         {
-            createDto.Medications = await _visitUpdateService.GetMedicationsSelectListAsync();
+            var medications = await _visitUpdateService.GetMedicationsForSelectListAsync();
+            createDto.Medications = new SelectList(medications, "Id", "Name");
+            
             return View(createDto);
         }
         
@@ -55,6 +61,9 @@ public class VisitUpdatesController : Controller
         var editDto = await _visitUpdateService.GetForEditAsync(id, currentUserId);
         
         if (editDto == null) return NotFound();
+        
+        var medications = await _visitUpdateService.GetMedicationsForSelectListAsync();
+        editDto.Medications = new SelectList(medications, "Id", "Name");
 
         return View(editDto);
     }
@@ -68,7 +77,9 @@ public class VisitUpdatesController : Controller
         
         if (!ModelState.IsValid)
         {
-            editDto.Medications = await _visitUpdateService.GetMedicationsSelectListAsync();
+            var medications = await _visitUpdateService.GetMedicationsForSelectListAsync();
+            editDto.Medications = new SelectList(medications, "Id", "Name");
+            
             return View(editDto);
         }
 

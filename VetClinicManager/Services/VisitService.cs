@@ -1,13 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VetClinicManager.Data;
+using VetClinicManager.DTOs.Shared;
 using VetClinicManager.DTOs.Visits;
 using VetClinicManager.Mappers;
 using VetClinicManager.Models;
-using VetClinicManager.Models.Enums;
 
 namespace VetClinicManager.Services;
 
@@ -147,62 +144,31 @@ public class VisitService : IVisitService
     }
 
     // For Animal select list
-    public async Task<SelectList> GetAnimalsSelectListAsync(int? selectedAnimalId = null)
+    public async Task<IEnumerable<AnimalBriefDto>> GetAnimalsForSelectListAsync()
     {
-        var items = await _context.Animals
+        return await _context.Animals
             .AsNoTracking()
             .OrderBy(a => a.Name)
-            .Select(a => new SelectListItem 
+            .Select(a => new AnimalBriefDto 
             {
-                Value = a.Id.ToString(),
-                Text = $"{a.Name} ({a.Species})"
+                Id = a.Id,
+                Name = a.Name,
+                Species = a.Species
             }).ToListAsync();
-    
-        return new SelectList(items, "Value", "Text", selectedAnimalId);
     }
 
     // For Vet select list
-    public async Task<SelectList> GetVetsSelectListAsync(string? selectedVetId = null)
+    public async Task<IEnumerable<UserBriefDto>> GetVetsForSelectListAsync()
     {
         var vets = await _userManager.GetUsersInRoleAsync("Vet");
-        var items = vets
-            .OrderBy(v => v.LastName)
-            .Select(v => new SelectListItem
-            {
-                Value = v.Id,
-                Text = $"{v.FirstName} {v.LastName}"
-            });
-
-        return new SelectList(items, "Value", "Text", selectedVetId);
-    }
-
-    // For Status select list
-    public SelectList GetStatusesSelectList(VisitStatus? selectedStatus = null)
-    {
-        var items = Enum.GetValues(typeof(VisitStatus)).Cast<VisitStatus>().Select(e =>
-        {
-            var memberInfo = e.GetType().GetMember(e.ToString()).First();
-            var displayAttribute = memberInfo.GetCustomAttribute<DisplayAttribute>();
-            return new SelectListItem
-            {
-                Value = e.ToString(),
-                Text = displayAttribute?.GetName() ?? e.ToString()
-            };
-        });
-
-        return new SelectList(items, "Value", "Text", selectedStatus);
-    }
-
-    // For Priority select list
-    public SelectList GetPrioritiesSelectList(VisitPriority? selectedPriority = null)
-    {
-        var items = Enum.GetValues(typeof(VisitPriority)).Cast<VisitPriority>().Select(e =>
-            new SelectListItem
-            {
-                Value = e.ToString(),
-                Text = e.GetType().GetMember(e.ToString()).First().Name
-            });
         
-        return new SelectList(items, "Value", "Text", selectedPriority);
+        return vets
+            .OrderBy(v => v.LastName)
+            .Select(v => new UserBriefDto
+            {
+                Id = v.Id,
+                FirstName = v.FirstName,
+                LastName = v.LastName
+            });
     }
 }

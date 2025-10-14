@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using VetClinicManager.DTOs.Shared;
 using VetClinicManager.DTOs.Visits;
-using VetClinicManager.Models.Enums;
 
 namespace VetClinicManager.Services;
 
@@ -29,8 +28,6 @@ public interface IVisitService
     Task<bool> DeleteVisitAsync(int id);
     
     // For Create/Edit view select lists
-    Task<SelectList> GetAnimalsSelectListAsync(int? selectedAnimalId = null);
-    Task<SelectList> GetVetsSelectListAsync(string? selectedVetId = null);
-    SelectList GetStatusesSelectList(VisitStatus? selectedStatus = null);
-    SelectList GetPrioritiesSelectList(VisitPriority? selectedPriority = null);
+    Task<IEnumerable<AnimalBriefDto>> GetAnimalsForSelectListAsync();
+    Task<IEnumerable<UserBriefDto>> GetVetsForSelectListAsync();
 }
