@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using VetClinicManager.DTOs.AnimalMedications;
 
 namespace VetClinicManager.DTOs.HealthRecords;
 
 public class HealthRecordDetailsDto
 {
     public int Id { get; set; }
+    
     public int AnimalId { get; set; }
     
     public string AnimalName { get; set; } = string.Empty;
@@ -24,6 +26,8 @@ public class HealthRecordDetailsDto
     [Display(Name = "Last Vaccination Date")]
     [DataType(DataType.Date)]
     public DateTime? LastVaccinationDate { get; set; }
+    
+    public List<AnimalMedicationListDto> Medications { get; set; } = new();
 
     public string IsSterilizedText => IsSterilized ? "Yes" : "No";
     public string IsSterilizedBadgeClass => IsSterilized ? "bg-success" : "bg-danger";
