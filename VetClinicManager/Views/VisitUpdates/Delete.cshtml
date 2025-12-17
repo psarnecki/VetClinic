@@ -1,0 +1,47 @@
+@model VetClinicManager.DTOs.VisitUpdates.VisitUpdateDeleteDto
+
+@{
+    ViewData["Title"] = "Delete Visit Update";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    
+    <hr />
+
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Confirmation</h4>
+        <p>Are you sure you want to permanently delete this update? <strong>This operation cannot be undone.</strong></p>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            Details of the update to be deleted
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.UpdateDate)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.UpdateDate)
+                </dd>
+
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Notes)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Notes)
+                </dd>
+            </dl>
+        </div>
+    </div>
+    
+    <form asp-action="Delete" method="post" class="mt-4">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="VisitId" />
+        
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a asp-controller="Visits" asp-action="Details" asp-route-id="@Model.VisitId" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </form>
+</div>

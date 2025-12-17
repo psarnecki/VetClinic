@@ -54,6 +54,7 @@ public partial class VisitMapper
     
     // Maps a collection of Visit entities to a list of DTOs for clients
     public partial IEnumerable<VisitListUserDto> ToListUserDtos(IEnumerable<Visit> visits);
+    
     // Maps a collection of Visit entities to a list of DTOs for staff
     public partial IEnumerable<VisitListVetRecDto> ToListVetRecDtos(IEnumerable<Visit> visits);
 }

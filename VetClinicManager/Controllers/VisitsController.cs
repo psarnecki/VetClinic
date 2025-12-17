@@ -1,8 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using VetClinicManager.DTOs.Visits;
 using VetClinicManager.Models;
+using VetClinicManager.Models.Enums;
 using VetClinicManager.Services;
 
 namespace VetClinicManager.Controllers;
@@ -23,17 +27,17 @@ public class VisitsController : Controller
     [Authorize(Roles = "Admin,Receptionist,Vet,Client")] 
     public async Task<IActionResult> Index()
     {
-        var currentUser = await _userManager.GetUserAsync(User);
+        var currentUserId = _userManager.GetUserId(User);
         
-        if (currentUser == null) return Unauthorized();
+        if (currentUserId == null) return Unauthorized();
 
         if (User.IsInRole("Client"))
         {
-            var visits = await _visitService.GetVisitsForOwnerAsync(currentUser.Id);
+            var visits = await _visitService.GetVisitsForOwnerAsync(currentUserId);
             return View("IndexUser", visits);
         }
 
-        var vetId = User.IsInRole("Vet") ? currentUser.Id : null;
+        var vetId = User.IsInRole("Vet") ? currentUserId : null;
         var staffVisits = await _visitService.GetVisitsForStaffAsync(vetId);
         var viewName = User.IsInRole("Vet") ? "IndexVet" : "IndexReceptionist";
         
@@ -44,13 +48,13 @@ public class VisitsController : Controller
     [Authorize(Roles = "Admin,Receptionist,Vet,Client")] 
     public async Task<IActionResult> Details(int id)
     {
-        var currentUser = await _userManager.GetUserAsync(User);
+        var currentUserId = _userManager.GetUserId(User);
 
-        if (currentUser == null) return Unauthorized();
+        if (currentUserId == null) return Unauthorized();
 
         if (User.IsInRole("Client"))
         {
-            var visit = await _visitService.GetDetailsForOwnerAsync(id, currentUser.Id);
+            var visit = await _visitService.GetDetailsForOwnerAsync(id, currentUserId);
             if (visit == null) return NotFound();
             
             return View("DetailsUser", visit);
@@ -60,7 +64,7 @@ public class VisitsController : Controller
 
         if (staffVisit == null) return NotFound();
 
-        if (User.IsInRole("Vet") && staffVisit.AssignedVet?.Id != currentUser.Id)
+        if (User.IsInRole("Vet") && staffVisit.AssignedVet?.Id != currentUserId)
         {
             TempData["ErrorMessage"] = "You can only access visits assigned to you.";
             return Forbid();
@@ -75,12 +79,23 @@ public class VisitsController : Controller
     [Authorize(Roles = "Admin,Receptionist")]
     public async Task<IActionResult> Create()
     {
+        var animals = await _visitService.GetAnimalsForSelectListAsync();
+        var vets = await _visitService.GetVetsForSelectListAsync();
+        
         var createDto = new VisitCreateDto
         {
-            Animals = await _visitService.GetAnimalsSelectListAsync(),
-            Vets = await _visitService.GetVetsSelectListAsync(),
-            Statuses = _visitService.GetStatusesSelectList(),
-            Priorities = _visitService.GetPrioritiesSelectList()
+            Animals = new SelectList(animals.Select(a => new SelectListItem
+            {
+                Value = a.Id.ToString(),
+                Text = $"{a.Name} ({a.Species})"
+            }), "Value", "Text"),
+            Vets = new SelectList(vets.Select(v => new SelectListItem
+            {
+                Value = v.Id,
+                Text = $"{v.FirstName} {v.LastName}"
+            }), "Value", "Text"),
+            Statuses = GetEnumSelectList<VisitStatus>(),
+            Priorities = GetEnumSelectList<VisitPriority>()
         };
         
         return View(createDto);
@@ -94,10 +109,21 @@ public class VisitsController : Controller
     {
         if (!ModelState.IsValid)
         {
-            createVisitDto.Animals = await _visitService.GetAnimalsSelectListAsync(createVisitDto.AnimalId);
-            createVisitDto.Vets = await _visitService.GetVetsSelectListAsync(createVisitDto.AssignedVetId);
-            createVisitDto.Statuses = _visitService.GetStatusesSelectList(createVisitDto.Status);
-            createVisitDto.Priorities = _visitService.GetPrioritiesSelectList(createVisitDto.Priority);
+            var animals = await _visitService.GetAnimalsForSelectListAsync();
+            var vets = await _visitService.GetVetsForSelectListAsync();
+
+            createVisitDto.Animals = new SelectList(animals.Select(a => new SelectListItem
+            {
+                Value = a.Id.ToString(),
+                Text = $"{a.Name} ({a.Species})"
+            }), "Value", "Text");
+            createVisitDto.Vets = new SelectList(vets.Select(v => new SelectListItem
+            {
+                Value = v.Id,
+                Text = $"{v.FirstName} {v.LastName}"
+            }), "Value", "Text", createVisitDto.AssignedVetId);
+            createVisitDto.Statuses = GetEnumSelectList<VisitStatus>(createVisitDto.Status);
+            createVisitDto.Priorities = GetEnumSelectList<VisitPriority>(createVisitDto.Priority);
             
             return View(createVisitDto);
         }
@@ -112,17 +138,23 @@ public class VisitsController : Controller
     [Authorize(Roles = "Admin,Receptionist,Vet")]
     public async Task<IActionResult> Edit(int id)
     {
-        var currentUser = await _userManager.GetUserAsync(User);
+        var currentUserId = _userManager.GetUserId(User);
         
-        if (currentUser == null) return Unauthorized();
+        if (currentUserId == null) return Unauthorized();
 
-        var visitEditDto = await _visitService.GetForEditAsync(id, currentUser.Id, User.IsInRole("Vet"));
+        var visitEditDto = await _visitService.GetForEditAsync(id, currentUserId, User.IsInRole("Vet"));
         
         if (visitEditDto == null) return NotFound();
+        
+        var vets = await _visitService.GetVetsForSelectListAsync();
 
-        visitEditDto.Vets = await _visitService.GetVetsSelectListAsync(visitEditDto.AssignedVetId);
-        visitEditDto.Statuses = _visitService.GetStatusesSelectList(visitEditDto.Status);
-        visitEditDto.Priorities = _visitService.GetPrioritiesSelectList(visitEditDto.Priority);
+        visitEditDto.Vets = new SelectList(vets.Select(v => new SelectListItem
+        {
+            Value = v.Id,
+            Text = $"{v.FirstName} {v.LastName}"
+        }), "Value", "Text", visitEditDto.AssignedVetId);
+        visitEditDto.Statuses = GetEnumSelectList<VisitStatus>(visitEditDto.Status);
+        visitEditDto.Priorities = GetEnumSelectList<VisitPriority>(visitEditDto.Priority);
 
         return View(visitEditDto);
     }
@@ -135,17 +167,23 @@ public class VisitsController : Controller
     {
         if (id != visitEditDto.Id) return NotFound();
         
-        var currentUser = await _userManager.GetUserAsync(User);
+        var currentUserId = _userManager.GetUserId(User);
         
-        if (currentUser == null) return Unauthorized();
+        if (currentUserId == null) return Unauthorized();
 
         if (!ModelState.IsValid)
         {
-            visitEditDto.Vets = await _visitService.GetVetsSelectListAsync(visitEditDto.AssignedVetId);
-            visitEditDto.Statuses = _visitService.GetStatusesSelectList(visitEditDto.Status);
-            visitEditDto.Priorities = _visitService.GetPrioritiesSelectList(visitEditDto.Priority);
+            var vets = await _visitService.GetVetsForSelectListAsync();
+            
+            visitEditDto.Vets = new SelectList(vets.Select(v => new SelectListItem
+            {
+                Value = v.Id,
+                Text = $"{v.FirstName} {v.LastName}"
+            }), "Value", "Text", visitEditDto.AssignedVetId);
+            visitEditDto.Statuses = GetEnumSelectList<VisitStatus>(visitEditDto.Status);
+            visitEditDto.Priorities = GetEnumSelectList<VisitPriority>(visitEditDto.Priority);
 
-            var originalVisit = await _visitService.GetForEditAsync(id, currentUser.Id, User.IsInRole("Vet"));
+            var originalVisit = await _visitService.GetForEditAsync(id, currentUserId, User.IsInRole("Vet"));
             if (originalVisit != null)
             {
                 visitEditDto.Animal = originalVisit.Animal;
@@ -154,7 +192,7 @@ public class VisitsController : Controller
             return View(visitEditDto);
         }
 
-        var success = await _visitService.UpdateVisitAsync(id, visitEditDto, currentUser.Id, User.IsInRole("Vet"));
+        var success = await _visitService.UpdateVisitAsync(id, visitEditDto, currentUserId, User.IsInRole("Vet"));
         
         if (!success)
         {
@@ -196,5 +234,22 @@ public class VisitsController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+    
+    private SelectList GetEnumSelectList<TEnum>(object? selectedValue = null)
+        where TEnum : struct, Enum
+    {
+        var items = Enum.GetValues<TEnum>().Select(e =>
+        {
+            var display = typeof(TEnum).GetField(e.ToString())?
+                .GetCustomAttribute<DisplayAttribute>();
+            return new SelectListItem
+            {
+                Value = e.ToString(),
+                Text = display?.GetName() ?? e.ToString()
+            };
+        });
+
+        return new SelectList(items, "Value", "Text", selectedValue);
     }
 }

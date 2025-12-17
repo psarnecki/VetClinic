@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using VetClinicManager.DTOs.Animals;
-using VetClinicManager.Models.Enums;
+﻿using VetClinicManager.DTOs.Animals;
+using VetClinicManager.DTOs.Shared;
 
 namespace VetClinicManager.Services;
 
@@ -28,8 +27,6 @@ public interface IAnimalService
     // For Delete POST action
     Task<bool> DeleteAnimalAsync(int id);
     
-    // For Create/Edit view owner select list
-    Task<SelectList> GetOwnersForSelectListAsync(string? selectedOwnerId = null);
-    // For Create/Edit view gender select list
-    SelectList GetGendersSelectList(Gender? selectedGender = null);
+    // For Create/Edit view select list
+    Task<IEnumerable<UserBriefDto>> GetOwnersForSelectListAsync();
 }

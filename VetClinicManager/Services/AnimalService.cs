@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VetClinicManager.Data;
 using VetClinicManager.DTOs.Animals;
+using VetClinicManager.DTOs.Shared;
 using VetClinicManager.Mappers;
 using VetClinicManager.Models;
-using VetClinicManager.Models.Enums;
 
 namespace VetClinicManager.Services;
 
@@ -181,37 +179,18 @@ public class AnimalService : IAnimalService
     }
     
     // For Create/Edit view owner select list
-    public async Task<SelectList> GetOwnersForSelectListAsync(string? selectedOwnerId = null)
+    public async Task<IEnumerable<UserBriefDto>> GetOwnersForSelectListAsync()
     {
         var clients = await _userManager.GetUsersInRoleAsync("Client");
         
-        var items = clients
+        return clients
             .OrderBy(c => c.LastName)
-            .Select(c => new SelectListItem 
+            .Select(c => new UserBriefDto
             {
-                Value = c.Id,
-                Text = $"{c.FirstName} {c.LastName} ({c.Email})"
+                Id = c.Id,
+                FirstName = c.FirstName,
+                LastName = c.LastName,
+                Email = c.Email
             });
-        
-        return new SelectList(items, "Value", "Text", selectedOwnerId);
-    }
-    
-    // For Create/Edit view gender select list
-    public SelectList GetGendersSelectList(Gender? selectedGender = null)
-    {
-        var items = Enum.GetValues(typeof(Gender)).Cast<Gender>().Select(enumValue =>
-        {
-            var displayAttribute = typeof(Gender).GetField(enumValue.ToString())
-                ?.GetCustomAttributes(typeof(DisplayAttribute), false)
-                .FirstOrDefault() as DisplayAttribute;
-
-            return new SelectListItem
-            {
-                Value = ((int)enumValue).ToString(),
-                Text = displayAttribute?.GetName() ?? enumValue.ToString()
-            };
-        });
-        
-        return new SelectList(items, "Value", "Text", selectedGender);
     }
 }
