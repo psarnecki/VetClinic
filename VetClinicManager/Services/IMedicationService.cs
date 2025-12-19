@@ -1,4 +1,5 @@
 ﻿using VetClinicManager.Areas.Admin.DTOs.Medications;
+using VetClinicManager.DTOs.Shared;
 
 namespace VetClinicManager.Services;
 
@@ -20,4 +21,7 @@ public interface IMedicationService
     Task<bool> UpdateMedicationAsync(MedicationEditDto editDto);
     // For Delete POST action
     Task<bool> DeleteMedicationAsync(int id);
+    
+    // For Create/Edit view medications select list
+    Task<IEnumerable<MedicationBriefDto>> GetMedicationsForSelectListAsync();
 }

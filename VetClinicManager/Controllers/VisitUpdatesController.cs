@@ -12,11 +12,13 @@ namespace VetClinicManager.Controllers;
 public class VisitUpdatesController : Controller
 {
     private readonly IVisitUpdateService _visitUpdateService;
+    private readonly IMedicationService _medicationService;
     private readonly UserManager<User> _userManager;
     
-    public VisitUpdatesController(IVisitUpdateService visitUpdateService, UserManager<User> userManager)
+    public VisitUpdatesController(IVisitUpdateService visitUpdateService, IMedicationService medicationService, UserManager<User> userManager)
     {
         _visitUpdateService = visitUpdateService;
+        _medicationService = medicationService;
         _userManager = userManager;
     }
 
@@ -27,7 +29,7 @@ public class VisitUpdatesController : Controller
         
         if (createDto == null) return NotFound("The parent visit for this update could not be found.");
         
-        var medications = await _visitUpdateService.GetMedicationsForSelectListAsync();
+        var medications = await _medicationService.GetMedicationsForSelectListAsync();
         createDto.Medications = new SelectList(medications, "Id", "Name");
         
         return View(createDto);
@@ -40,7 +42,7 @@ public class VisitUpdatesController : Controller
     {
         if (!ModelState.IsValid)
         {
-            var medications = await _visitUpdateService.GetMedicationsForSelectListAsync();
+            var medications = await _medicationService.GetMedicationsForSelectListAsync();
             createDto.Medications = new SelectList(medications, "Id", "Name");
             
             return View(createDto);
@@ -62,7 +64,7 @@ public class VisitUpdatesController : Controller
         
         if (editDto == null) return NotFound();
         
-        var medications = await _visitUpdateService.GetMedicationsForSelectListAsync();
+        var medications = await _medicationService.GetMedicationsForSelectListAsync();
         editDto.Medications = new SelectList(medications, "Id", "Name");
 
         return View(editDto);
@@ -77,7 +79,7 @@ public class VisitUpdatesController : Controller
         
         if (!ModelState.IsValid)
         {
-            var medications = await _visitUpdateService.GetMedicationsForSelectListAsync();
+            var medications = await _medicationService.GetMedicationsForSelectListAsync();
             editDto.Medications = new SelectList(medications, "Id", "Name");
             
             return View(editDto);

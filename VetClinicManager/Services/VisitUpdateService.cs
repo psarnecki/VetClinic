@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VetClinicManager.Data;
-using VetClinicManager.DTOs.Shared;
 using VetClinicManager.DTOs.VisitUpdates;
 using VetClinicManager.Mappers;
-using VetClinicManager.Mappers.Shared;
 
 namespace VetClinicManager.Services;
 
@@ -130,15 +128,5 @@ public class VisitUpdateService : IVisitUpdateService
         await _context.SaveChangesAsync();
         
         return visitUpdate.VisitId;
-    }
-    
-    // For Medication select list
-    public async Task<IEnumerable<MedicationBriefDto>> GetMedicationsForSelectListAsync()
-    {
-        return await _context.Medications
-            .AsNoTracking()
-            .OrderBy(m => m.Name)
-            .ProjectToDto()
-            .ToListAsync();
     }
 }
