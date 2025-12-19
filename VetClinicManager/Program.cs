@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using VetClinicManager.Areas.Admin.Mappers;
 using VetClinicManager.Data;
 using VetClinicManager.Mappers;
+using VetClinicManager.Mappers.Shared;
 using VetClinicManager.Models;
 using VetClinicManager.Services;
 
@@ -34,6 +35,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddTransient<SeedData>();
 builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
 
+// Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<IFileService, FileService>();
@@ -42,13 +44,21 @@ builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
 builder.Services.AddScoped<IVisitUpdateService, VisitUpdateService>();
 
+// Mappers
 builder.Services.AddScoped<UserMapper>();
 builder.Services.AddScoped<MedicationMapper>();
 builder.Services.AddScoped<AnimalMapper>();
-builder.Services.AddScoped<UserBriefMapper>();
 builder.Services.AddScoped<HealthRecordMapper>();
 builder.Services.AddScoped<VisitMapper>();
 builder.Services.AddScoped<VisitUpdateMapper>();
+builder.Services.AddScoped<AnimalMedicationMapper>();
+
+// Brief mappers
+builder.Services.AddScoped<UserBriefMapper>();
+builder.Services.AddScoped<MedicationBriefMapper>();
+builder.Services.AddScoped<AnimalBriefMapper>();
+builder.Services.AddScoped<VisitUpdateBriefMapper>();
+builder.Services.AddScoped<PrescriptionBriefMapper>();
 
 var app = builder.Build();
 

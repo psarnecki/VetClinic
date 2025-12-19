@@ -15,22 +15,21 @@ public partial class AnimalMedicationMapper
     // --- Mappings to DTOs ---
     
     // Maps an AnimalMedication query to DTOs for the list in HealthRecord details
-    [MapProperty(nameof(AnimalMedication.Medication), nameof(AnimalMedicationListDto.MedicationName))]
     public partial IQueryable<AnimalMedicationListDto> ProjectToDto(IQueryable<AnimalMedication> q);
 
     // Maps AnimalMedication entity to a DTO for the list in HealthRecord details
-    [MapProperty(nameof(AnimalMedication.Medication), nameof(AnimalMedicationListDto.MedicationName))]
+    [MapProperty(nameof(@AnimalMedication.Medication), nameof(@AnimalMedicationListDto.MedicationName))]
     public partial AnimalMedicationListDto ToListDto(AnimalMedication entity);
 
     // Maps AnimalMedication entity to a DTO for the edit form
-    [MapProperty(nameof(AnimalMedication.Animal.Name), nameof(AnimalMedicationEditDto.AnimalName))]
-    [MapProperty(nameof(AnimalMedication.Medication.Name), nameof(AnimalMedicationEditDto.MedicationName))]
+    [MapProperty(nameof(@AnimalMedication.Animal.Name), nameof(AnimalMedicationEditDto.AnimalName))]
+    [MapProperty(nameof(@AnimalMedication.Medication.Name), nameof(AnimalMedicationEditDto.MedicationName))]
     [MapProperty(nameof(@AnimalMedication.Animal.HealthRecord.Id), nameof(AnimalMedicationEditDto.HealthRecordId))]
     public partial AnimalMedicationEditDto ToEditDto(AnimalMedication entity);
 
     // Maps AnimalMedication entity to a DTO for the delete confirmation view
-    [MapProperty(nameof(AnimalMedication.Animal.Name), nameof(AnimalMedicationDeleteDto.AnimalName))]
-    [MapProperty(nameof(AnimalMedication.Medication.Name), nameof(AnimalMedicationDeleteDto.MedicationName))]
+    [MapProperty(nameof(@AnimalMedication.Animal.Name), nameof(AnimalMedicationDeleteDto.AnimalName))]
+    [MapProperty(nameof(@AnimalMedication.Medication.Name), nameof(AnimalMedicationDeleteDto.MedicationName))]
     public partial AnimalMedicationDeleteDto ToDeleteDto(AnimalMedication entity);
     
     // --- Mappings from DTOs to Entity ---

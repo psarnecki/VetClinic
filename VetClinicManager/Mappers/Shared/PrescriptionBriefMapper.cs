@@ -8,6 +8,6 @@ namespace VetClinicManager.Mappers.Shared;
 public partial class PrescriptionBriefMapper
 {
     // Maps a Prescription entity to its brief DTO representation, including the Medication name
-    [MapProperty(nameof(Prescription.Medication.Name), nameof(PrescriptionBriefDto.MedicationName))]
+    [MapProperty(nameof(@Prescription.Medication.Name), nameof(PrescriptionBriefDto.MedicationName))]
     public partial PrescriptionBriefDto ToPrescriptionBriefDto(Prescription prescription);
 }
