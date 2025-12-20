@@ -9,22 +9,41 @@ public class HealthRecordService : IHealthRecordService
 {
     private readonly ApplicationDbContext _context;
     private readonly HealthRecordMapper _healthRecordMapper;
+    private readonly AnimalMedicationMapper _animalMedicationMapper;
 
-    public HealthRecordService(ApplicationDbContext context, HealthRecordMapper mapper)
+    public HealthRecordService(ApplicationDbContext context, HealthRecordMapper healthRecordMapper, AnimalMedicationMapper animalMedicationMapper)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _healthRecordMapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _healthRecordMapper = healthRecordMapper ?? throw new ArgumentNullException(nameof(healthRecordMapper));
+        _animalMedicationMapper = animalMedicationMapper ?? throw new ArgumentNullException(nameof(animalMedicationMapper));
     }
     
     // For Details GET action
     public async Task<HealthRecordDetailsDto?> GetDetailsAsync(int id)
     {
+        // KROK A: Pobierz Kartę Zdrowia (lekkie zapytanie)
         var healthRecord = await _context.HealthRecords
             .AsNoTracking()
-            .Include(hr => hr.Animal)
+            .Include(hr => hr.Animal) // Potrzebujemy tylko nazwy zwierzaka
             .FirstOrDefaultAsync(hr => hr.Id == id);
             
-        return healthRecord == null ? null : _healthRecordMapper.ToDetailsDto(healthRecord);
+        if (healthRecord == null) return null;
+
+        // Mapujemy główne DTO
+        var dto = _healthRecordMapper.ToDetailsDto(healthRecord);
+
+        // KROK B: Pobierz Leki (osobne, zoptymalizowane zapytanie)
+        // Tworzymy zapytanie tylko do tabeli leków dla tego konkretnego zwierzaka
+        var medicationsQuery = _context.AnimalMedications
+            .AsNoTracking()
+            .Where(am => am.AnimalId == healthRecord.AnimalId)
+            .OrderByDescending(am => am.StartDate);
+
+        // Używamy Mappera do projekcji (SELECT ... JOIN ... FROM Medications)
+        // To wypełni listę DTO nazwami leków bez pobierania całej bazy
+        dto.Medications = await _animalMedicationMapper.ProjectToDto(medicationsQuery).ToListAsync();
+
+        return dto;
     }
     
     // For Edit GET action

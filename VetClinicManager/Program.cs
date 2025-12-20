@@ -43,6 +43,7 @@ builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
 builder.Services.AddScoped<IVisitUpdateService, VisitUpdateService>();
+builder.Services.AddScoped<IAnimalMedicationService, AnimalMedicationService>();
 
 // Mappers
 builder.Services.AddScoped<UserMapper>();

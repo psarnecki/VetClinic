@@ -7,6 +7,8 @@ public class AnimalMedicationCreateDto
 {
     [Required]
     public int AnimalId { get; set; }
+    
+    public int HealthRecordId { get; set; } 
 
     [Required(ErrorMessage = "A medication must be selected.")]
     [Display(Name = "Medication")]

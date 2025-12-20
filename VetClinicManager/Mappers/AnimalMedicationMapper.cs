@@ -30,6 +30,7 @@ public partial class AnimalMedicationMapper
     // Maps AnimalMedication entity to a DTO for the delete confirmation view
     [MapProperty(nameof(@AnimalMedication.Animal.Name), nameof(AnimalMedicationDeleteDto.AnimalName))]
     [MapProperty(nameof(@AnimalMedication.Medication.Name), nameof(AnimalMedicationDeleteDto.MedicationName))]
+    [MapProperty(nameof(@AnimalMedication.Animal.HealthRecord.Id), nameof(AnimalMedicationDeleteDto.HealthRecordId))]
     public partial AnimalMedicationDeleteDto ToDeleteDto(AnimalMedication entity);
     
     // --- Mappings from DTOs to Entity ---
