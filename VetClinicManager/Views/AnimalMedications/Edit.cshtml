@@ -1,0 +1,61 @@
+﻿@model VetClinicManager.DTOs.AnimalMedications.AnimalMedicationEditDto
+
+@{
+    ViewData["Title"] = "Edit Medication Entry";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    
+    <hr />
+    
+    <h4 class="text-muted fw-light mb-4">
+        Patient: @Model.AnimalName
+    </h4>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Edit">
+                
+                <input type="hidden" asp-for="Id"/>
+                <input type="hidden" asp-for="AnimalId"/>
+                <input type="hidden" asp-for="AnimalName"/>
+                <input type="hidden" asp-for="HealthRecordId"/>
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="MedicationId" class="form-label"></label>
+                    <select asp-for="MedicationId" class="form-control" asp-items="Model.Medications">
+                        <option value="">-- Select Medication --</option>
+                    </select>
+                    <span asp-validation-for="MedicationId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="StartDate" class="form-label"></label>
+                    <input asp-for="StartDate" class="form-control" type="date"/>
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="EndDate" class="form-label"></label>
+                    <input asp-for="EndDate" class="form-control" type="date"/>
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                    <small class="form-text text-muted">Leave empty if the treatment is still ongoing.</small>
+                </div>
+
+                <div class="form-group mt-4 d-flex">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a asp-controller="HealthRecords" asp-action="Details" asp-route-id="@Model.HealthRecordId" class="btn btn-outline-secondary ms-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
