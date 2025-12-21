@@ -2,6 +2,7 @@
 using VetClinicManager.Data;
 using VetClinicManager.DTOs.AnimalMedications;
 using VetClinicManager.Mappers;
+using VetClinicManager.Models;
 
 namespace VetClinicManager.Services;
 
@@ -98,5 +99,34 @@ public class AnimalMedicationService : IAnimalMedicationService
         var savedChanges = await _context.SaveChangesAsync();
         
         return savedChanges > 0;
+    }
+    
+    // For synchronization when a prescription is added
+    public async Task SyncPrescriptionAddedAsync(int animalId, int medicationId, DateTime startDate, int prescriptionId)
+    {
+        var entity = new AnimalMedication
+        {
+            AnimalId = animalId,
+            MedicationId = medicationId,
+            StartDate = startDate,
+            PrescriptionId = prescriptionId,
+            EndDate = null
+        };
+
+        _context.AnimalMedications.Add(entity);
+        await _context.SaveChangesAsync();
+    }
+
+    // For synchronization when a prescription is deleted
+    public async Task SyncPrescriptionDeletedAsync(int prescriptionId)
+    {
+        var entity = await _context.AnimalMedications
+            .FirstOrDefaultAsync(am => am.PrescriptionId == prescriptionId);
+
+        if (entity != null)
+        {
+            _context.AnimalMedications.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
     }
 }

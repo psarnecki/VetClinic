@@ -17,4 +17,9 @@ public interface IAnimalMedicationService
     Task<bool> UpdateAnimalMedicationAsync(AnimalMedicationEditDto editDto);
     // For Delete POST action
     Task<bool> DeleteAnimalMedicationAsync(int id);
+    
+    // For synchronization when a prescription is added
+    Task SyncPrescriptionAddedAsync(int animalId, int medicationId, DateTime startDate, int prescriptionId);
+    // For synchronization when a prescription is deleted
+    Task SyncPrescriptionDeletedAsync(int prescriptionId);
 }
