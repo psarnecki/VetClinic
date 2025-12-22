@@ -41,7 +41,9 @@
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="VisitId" />
         
-        <button type="submit" class="btn btn-danger">Yes, delete</button>
-        <a asp-controller="Visits" asp-action="Details" asp-route-id="@Model.VisitId" class="btn btn-outline-secondary ms-2">Cancel</a>
+        <div class="form-group d-flex">
+            <button type="submit" class="btn btn-danger">Yes, delete</button>
+            <a asp-controller="Visits" asp-action="Details" asp-route-id="@Model.VisitId" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </div>
     </form>
 </div>

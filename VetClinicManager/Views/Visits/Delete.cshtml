@@ -77,7 +77,10 @@
     
     <form asp-action="Delete" class="mt-4">
         <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">Yes, delete</button>
-        <a asp-action="Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+        
+        <div class="form-group d-flex">
+            <button type="submit" class="btn btn-danger">Yes, delete</button>
+            <a asp-action="Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </div>
     </form>
 </div>

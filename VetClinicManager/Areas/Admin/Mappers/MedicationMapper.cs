@@ -7,6 +7,8 @@ namespace VetClinicManager.Areas.Admin.Mappers;
 [Mapper]
 public partial class MedicationMapper
 {
+    // --- Mappings to DTOs ---
+    
     // Mapping from Medication to MedicationListDto - single entity object (Index)
     public partial MedicationListDto ToMedicationListDto(Medication medication);
     
@@ -18,6 +20,8 @@ public partial class MedicationMapper
 
     // Mapping from Medication to MedicationDeleteDto (Delete GET)
     public partial MedicationDeleteDto ToMedicationDeleteDto(Medication medication);
+    
+    // --- Mappings from DTOs to Entity ---
 
     // Mapping from MedicationCreateDto to Medication (Create POST)
     public partial Medication ToMedication(MedicationCreateDto createDto);

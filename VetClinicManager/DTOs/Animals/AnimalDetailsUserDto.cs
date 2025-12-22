@@ -41,5 +41,5 @@ public class AnimalDetailsUserDto
     
     public bool HasHealthRecord => HealthRecordId.HasValue;
     public string HealthRecordButtonText => HasHealthRecord ? "View Health Record" : "Create Health Record";
-    public string HealthRecordButtonClass => HasHealthRecord ? "btn-info" : "btn-success";
+    public string HealthRecordButtonClass => HasHealthRecord ? "btn-success" : "btn-secondary";
 }

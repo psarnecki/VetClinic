@@ -8,7 +8,8 @@
     <div class="d-flex justify-content-between align-items-baseline">
         <h1>@ViewData["Title"]</h1>
         <div>
-            <a asp-controller="Animals" asp-action="Details" asp-route-id="@Model.AnimalId" class="btn btn-outline-secondary">Back to Animal Details</a>
+            <a asp-controller="Animals" asp-action="Details" asp-route-id="@Model.AnimalId" class="btn btn-primary">Animal Details</a>
+            <a asp-controller="Animals" asp-action="Index" class="btn btn-outline-secondary ms-2">Back to Animal List</a>
         </div>
     </div>
     

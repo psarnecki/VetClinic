@@ -22,8 +22,8 @@ public class UserEditDto
     [Display(Name = "Last Name")]
     public string LastName { get; set; }
 
-    [Display(Name = "Specialization")]
     [MaxLength(200)]
+    [Display(Name = "Specialization")]
     public string? Specialization { get; set; }
 
     public List<string> AvailableRoles { get; set; } = new List<string>();

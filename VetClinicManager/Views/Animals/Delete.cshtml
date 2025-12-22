@@ -61,10 +61,9 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
 
-        <div class="form-group d-flex mt-3">
-             <input type="submit" value="Delete" class="btn btn-danger" />
+        <div class="form-group d-flex">
+            <button type="submit" class="btn btn-danger">Yes, delete</button>
              <a asp-action="Index" class="btn btn-outline-secondary ms-2">Back to List</a>
         </div>
     </form>
-
 </div>
