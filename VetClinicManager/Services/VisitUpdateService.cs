@@ -39,7 +39,7 @@ public class VisitUpdateService : IVisitUpdateService
     }
     
     // For Edit GET action
-    public async Task<VisitUpdateEditDto?> GetForEditAsync(int id, string vetId)
+    public async Task<VisitUpdateEditDto?> GetForEditAsync(int id, string vetId, bool isAdmin)
     {
         var visitUpdate = await _context.VisitUpdates
             .AsNoTracking()
@@ -51,7 +51,7 @@ public class VisitUpdateService : IVisitUpdateService
         
         if (visitUpdate == null) return null;
         
-        if (visitUpdate.UpdatedByVetId != vetId) throw new UnauthorizedAccessException();
+        if (!isAdmin && visitUpdate.UpdatedByVetId != vetId) throw new UnauthorizedAccessException();
         
         var dto = _visitUpdateMapper.ToEditDto(visitUpdate);
         
@@ -59,13 +59,14 @@ public class VisitUpdateService : IVisitUpdateService
     }
     
     // For Delete GET action
-    public async Task<VisitUpdateDeleteDto?> GetForDeleteAsync(int id, string vetId)
+    public async Task<VisitUpdateDeleteDto?> GetForDeleteAsync(int id, string vetId, bool isAdmin)
     {
         var visitUpdate = await _context.VisitUpdates
             .AsNoTracking()
             .FirstOrDefaultAsync(vu => vu.Id == id);
         
-        if (visitUpdate == null || visitUpdate.UpdatedByVetId != vetId) return null;
+        if (visitUpdate == null) return null;
+        if (!isAdmin && visitUpdate.UpdatedByVetId != vetId) return null;
         
         return _visitUpdateMapper.ToDeleteDto(visitUpdate);
     }
@@ -110,7 +111,7 @@ public class VisitUpdateService : IVisitUpdateService
     }
     
     // For Edit POST action
-    public async Task<int> UpdateVisitUpdateAsync(VisitUpdateEditDto editDto, string vetId)
+    public async Task<int> UpdateVisitUpdateAsync(VisitUpdateEditDto editDto, string vetId, bool isAdmin)
     {
         var visitUpdateInDb = await _context.VisitUpdates
             .Include(vu => vu.Visit)
@@ -118,7 +119,7 @@ public class VisitUpdateService : IVisitUpdateService
             .FirstOrDefaultAsync(vu => vu.Id == editDto.Id);
             
         if (visitUpdateInDb == null) throw new KeyNotFoundException("Visit update not found.");
-        if (visitUpdateInDb.UpdatedByVetId != vetId) throw new UnauthorizedAccessException();
+        if (!isAdmin && visitUpdateInDb.UpdatedByVetId != vetId) throw new UnauthorizedAccessException();
 
         _visitUpdateMapper.UpdateFromDto(editDto, visitUpdateInDb);
         visitUpdateInDb.UpdateDate = DateTime.UtcNow;
@@ -158,14 +159,14 @@ public class VisitUpdateService : IVisitUpdateService
     }
     
     // For Delete POST action
-    public async Task<int> DeleteVisitUpdateAsync(int id, string vetId)
+    public async Task<int> DeleteVisitUpdateAsync(int id, string vetId, bool isAdmin)
     {
         var visitUpdate = await _context.VisitUpdates
             .Include(vu => vu.Prescriptions)
             .FirstOrDefaultAsync(vu => vu.Id == id);
             
         if (visitUpdate == null) throw new KeyNotFoundException("Visit update not found.");
-        if (visitUpdate.UpdatedByVetId != vetId) throw new UnauthorizedAccessException();
+        if (!isAdmin && visitUpdate.UpdatedByVetId != vetId) throw new UnauthorizedAccessException();
         
         foreach (var p in visitUpdate.Prescriptions)
         {

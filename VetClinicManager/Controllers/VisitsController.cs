@@ -37,9 +37,9 @@ public class VisitsController : Controller
             return View("IndexUser", visits);
         }
 
-        var vetId = User.IsInRole("Vet") ? currentUserId : null;
+        var vetId = User.IsInRole("Vet") && !User.IsInRole("Admin") ? currentUserId : null;
         var staffVisits = await _visitService.GetVisitsForStaffAsync(vetId);
-        var viewName = User.IsInRole("Vet") ? "IndexVet" : "IndexReceptionist";
+        var viewName = (User.IsInRole("Vet") && !User.IsInRole("Admin")) ? "IndexVet" : "IndexReceptionist";
         
         return View(viewName, staffVisits);
     }
@@ -64,13 +64,13 @@ public class VisitsController : Controller
 
         if (staffVisit == null) return NotFound();
 
-        if (User.IsInRole("Vet") && staffVisit.AssignedVet?.Id != currentUserId)
+        if (User.IsInRole("Vet") && !User.IsInRole("Admin") && staffVisit.AssignedVet?.Id != currentUserId)
         {
             TempData["ErrorMessage"] = "You can only access visits assigned to you.";
             return Forbid();
         }
 
-        var viewName = User.IsInRole("Vet") ? "DetailsVet" : "DetailsReceptionist";
+        var viewName = (User.IsInRole("Vet") || User.IsInRole("Admin")) ? "DetailsVet" : "DetailsReceptionist";
 
         return View(viewName, staffVisit);
     }
@@ -141,8 +141,10 @@ public class VisitsController : Controller
         var currentUserId = _userManager.GetUserId(User);
         
         if (currentUserId == null) return Unauthorized();
+        
+        bool isVetOnly = User.IsInRole("Vet") && !User.IsInRole("Admin");
 
-        var visitEditDto = await _visitService.GetForEditAsync(id, currentUserId, User.IsInRole("Vet"));
+        var visitEditDto = await _visitService.GetForEditAsync(id, currentUserId, isVetOnly);
         
         if (visitEditDto == null) return NotFound();
         
@@ -170,6 +172,8 @@ public class VisitsController : Controller
         var currentUserId = _userManager.GetUserId(User);
         
         if (currentUserId == null) return Unauthorized();
+        
+        bool isVetOnly = User.IsInRole("Vet") && !User.IsInRole("Admin");
 
         if (!ModelState.IsValid)
         {
@@ -183,7 +187,7 @@ public class VisitsController : Controller
             visitEditDto.Statuses = GetEnumSelectList<VisitStatus>(visitEditDto.Status);
             visitEditDto.Priorities = GetEnumSelectList<VisitPriority>(visitEditDto.Priority);
 
-            var originalVisit = await _visitService.GetForEditAsync(id, currentUserId, User.IsInRole("Vet"));
+            var originalVisit = await _visitService.GetForEditAsync(id, currentUserId, isVetOnly);
             if (originalVisit != null)
             {
                 visitEditDto.Animal = originalVisit.Animal;
@@ -192,7 +196,7 @@ public class VisitsController : Controller
             return View(visitEditDto);
         }
 
-        var success = await _visitService.UpdateVisitAsync(id, visitEditDto, currentUserId, User.IsInRole("Vet"));
+        var success = await _visitService.UpdateVisitAsync(id, visitEditDto, currentUserId, isVetOnly);
         
         if (!success)
         {

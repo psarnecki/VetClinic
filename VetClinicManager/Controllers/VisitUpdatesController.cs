@@ -60,7 +60,9 @@ public class VisitUpdatesController : Controller
     public async Task<IActionResult> Edit(int id)
     {
         var currentUserId = _userManager.GetUserId(User)!;
-        var editDto = await _visitUpdateService.GetForEditAsync(id, currentUserId);
+        var isAdmin = User.IsInRole("Admin");
+        
+        var editDto = await _visitUpdateService.GetForEditAsync(id, currentUserId, isAdmin);
         
         if (editDto == null) return NotFound();
         
@@ -88,7 +90,9 @@ public class VisitUpdatesController : Controller
         try
         {
             var currentUserId = _userManager.GetUserId(User)!;
-            var visitId = await _visitUpdateService.UpdateVisitUpdateAsync(editDto, currentUserId);
+            var isAdmin = User.IsInRole("Admin");
+            
+            var visitId = await _visitUpdateService.UpdateVisitUpdateAsync(editDto, currentUserId, isAdmin);
             
             TempData["SuccessMessage"] = "The update has been saved successfully.";
             return RedirectToAction("Details", "Visits", new { id = visitId });
@@ -101,7 +105,9 @@ public class VisitUpdatesController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var currentUserId = _userManager.GetUserId(User)!;
-        var deleteDto = await _visitUpdateService.GetForDeleteAsync(id, currentUserId);
+        var isAdmin = User.IsInRole("Admin");
+        
+        var deleteDto = await _visitUpdateService.GetForDeleteAsync(id, currentUserId, isAdmin);
         
         if (deleteDto == null) return NotFound();
 
@@ -116,7 +122,9 @@ public class VisitUpdatesController : Controller
         try
         {
             var currentUserId = _userManager.GetUserId(User)!;
-            var visitId = await _visitUpdateService.DeleteVisitUpdateAsync(dto.Id, currentUserId);
+            var isAdmin = User.IsInRole("Admin");
+            
+            var visitId = await _visitUpdateService.DeleteVisitUpdateAsync(dto.Id, currentUserId, isAdmin);
             
             TempData["SuccessMessage"] = "The update has been deleted successfully.";
             return RedirectToAction("Details", "Visits", new { id = visitId });

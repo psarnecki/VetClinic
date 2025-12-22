@@ -13,26 +13,32 @@ public class VisitService : IVisitService
     private readonly ApplicationDbContext _context;
     private readonly VisitMapper _visitMapper;
     private readonly UserManager<User> _userManager;
+    private readonly IAnimalMedicationService _animalMedicationService;
     
-    public VisitService(ApplicationDbContext context, VisitMapper visitMapper, UserManager<User> userManager)
+    public VisitService(ApplicationDbContext context, VisitMapper visitMapper, UserManager<User> userManager, IAnimalMedicationService animalMedicationService)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _visitMapper = visitMapper ?? throw new ArgumentNullException(nameof(visitMapper));
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+        _animalMedicationService = animalMedicationService ?? throw new ArgumentNullException(nameof(animalMedicationService));
     }
     
     private IQueryable<Visit> GetBaseListQuery()
     {
         return _context.Visits.AsNoTracking()
-            .Include(v => v.Animal).ThenInclude(a => a.Owner)
+            .Include(v => v.Animal)
+                .ThenInclude(a => a.Owner)
             .Include(v => v.AssignedVet);
     }
     
     private IQueryable<Visit> GetBaseDetailsQuery()
     {
         return GetBaseListQuery()
-            .Include(v => v.Updates).ThenInclude(u => u.UpdatedByVet)
-            .Include(v => v.Updates).ThenInclude(u => u.Prescriptions).ThenInclude(p => p.Medication);
+            .Include(v => v.Updates)
+                .ThenInclude(u => u.UpdatedByVet)
+            .Include(v => v.Updates)
+                .ThenInclude(u => u.Prescriptions)
+                .ThenInclude(p => p.Medication);
     }
     
     // For Staff Index GET action
@@ -133,9 +139,20 @@ public class VisitService : IVisitService
     // For Delete POST action
     public async Task<bool> DeleteVisitAsync(int id)
     {
-        var visit = await _context.Visits.FindAsync(id);
+        var visit = await _context.Visits
+            .Include(v => v.Updates)
+                .ThenInclude(u => u.Prescriptions) 
+            .FirstOrDefaultAsync(v => v.Id == id);
         
         if (visit == null) return true;
+        
+        foreach (var update in visit.Updates)
+        {
+            foreach (var prescription in update.Prescriptions)
+            {
+                await _animalMedicationService.SyncPrescriptionDeletedAsync(prescription.Id);
+            }
+        }
 
         _context.Visits.Remove(visit);
         var savedChanges = await _context.SaveChangesAsync();
