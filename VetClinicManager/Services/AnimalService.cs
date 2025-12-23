@@ -4,6 +4,7 @@ using VetClinicManager.Data;
 using VetClinicManager.DTOs.Animals;
 using VetClinicManager.DTOs.Shared;
 using VetClinicManager.Mappers;
+using VetClinicManager.Mappers.Shared;
 using VetClinicManager.Models;
 
 namespace VetClinicManager.Services;
@@ -12,13 +13,15 @@ public class AnimalService : IAnimalService
 {
     private readonly ApplicationDbContext _context;
     private readonly AnimalMapper _animalMapper;
+    private readonly UserBriefMapper _userBriefMapper;
     private readonly IFileService _fileService;
     private readonly UserManager<User> _userManager;
 
-    public AnimalService(ApplicationDbContext context, AnimalMapper animalMapper, IFileService fileService, UserManager<User> userManager)
+    public AnimalService(ApplicationDbContext context, AnimalMapper animalMapper, UserBriefMapper userBriefMapper, IFileService fileService, UserManager<User> userManager)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _animalMapper = animalMapper ?? throw new ArgumentNullException(nameof(animalMapper));
+        _userBriefMapper = userBriefMapper ?? throw new ArgumentNullException(nameof(userBriefMapper));
         _fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
     }
@@ -185,12 +188,6 @@ public class AnimalService : IAnimalService
         
         return clients
             .OrderBy(c => c.LastName)
-            .Select(c => new UserBriefDto
-            {
-                Id = c.Id,
-                FirstName = c.FirstName,
-                LastName = c.LastName,
-                Email = c.Email
-            });
+            .Select(c => _userBriefMapper.ToUserBriefDto(c));
     }
 }
