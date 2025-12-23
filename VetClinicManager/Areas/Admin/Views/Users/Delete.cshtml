@@ -7,6 +7,7 @@
 
 <div class="container mt-4">
     <h1>@ViewData["Title"]</h1>
+    
     <hr />
 
     <div class="alert alert-danger" role="alert">
@@ -46,8 +47,11 @@
 
     <form asp-area="Admin" asp-controller="Users" asp-action="Delete" method="post" class="mt-4">
         <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">Yes, delete user</button>
-        <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+        
+        <div class="form-group d-flex">
+            <button type="submit" class="btn btn-danger">Yes, delete user</button>
+            <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </div>
     </form>
 </div>
 

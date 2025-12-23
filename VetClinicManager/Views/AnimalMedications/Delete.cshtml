@@ -1,0 +1,56 @@
+﻿@model VetClinicManager.DTOs.AnimalMedications.AnimalMedicationDeleteDto
+
+@{
+    ViewData["Title"] = "Remove Medication";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    
+    <hr />
+
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Confirmation</h4>
+        <p>Are you sure you want to remove this medication from the chart? <strong>This operation cannot be undone.</strong></p>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            Medication Entry Details
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Patient</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.AnimalName)</dd>
+
+                <dt class="col-sm-3">Medication</dt>
+                <dd class="col-sm-9 fw-bold">@Html.DisplayFor(model => model.MedicationName)</dd>
+
+                <dt class="col-sm-3">Start Date</dt>
+                <dd class="col-sm-9">@Model.StartDate.ToShortDateString()</dd>
+                
+                <dt class="col-sm-3">End Date</dt>
+                <dd class="col-sm-9">
+                    @if (Model.EndDate.HasValue)
+                    {
+                        @Model.EndDate.Value.ToShortDateString()
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">In Progress</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+    </div>
+    
+    <form asp-action="Delete" class="mt-4">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="HealthRecordId" /> 
+
+        <div class="form-group d-flex">
+            <button type="submit" class="btn btn-danger">Yes, delete</button>
+            <a asp-controller="HealthRecords" asp-action="Details" asp-route-id="@Model.HealthRecordId" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </div>
+    </form>
+</div>

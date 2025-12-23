@@ -2,7 +2,7 @@
 using VetClinicManager.DTOs.Shared;
 using VetClinicManager.Models;
 
-namespace VetClinicManager.Mappers;
+namespace VetClinicManager.Mappers.Shared;
 
 [Mapper]
 public partial class UserBriefMapper

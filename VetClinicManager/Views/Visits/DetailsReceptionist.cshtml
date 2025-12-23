@@ -101,10 +101,10 @@
                         <th>Date</th>
                         <th>Updated by</th>
                         <th>Notes</th>
-                        <th>Prescribed Medications</th>
+                        <th class="text-nowrap">Prescribed Medications</th>
                         <th>Dosage</th>
                         <th>Attachments</th>
-                        <th>Actions</th>
+                        @*<th>Actions</th>*@
                     </tr>
                 </thead>
                 <tbody>
@@ -150,10 +150,12 @@
                                     <a href="@update.ImageUrl" target="_blank" class="btn btn-sm btn-outline-primary">View</a>
                                 }
                             </td>
-                            <td>
+                            @* 
+                            <td class="text-nowrap">
                                 <a asp-controller="VisitUpdates" asp-action="Edit" asp-route-id="@update.Id" class="btn btn-sm btn-primary">Edit</a>
                                 <a asp-controller="VisitUpdates" asp-action="Delete" asp-route-id="@update.Id" class="btn btn-sm btn-danger ms-1">Delete</a>
                             </td>
+                            *@
                         </tr>
                     }
                 </tbody>

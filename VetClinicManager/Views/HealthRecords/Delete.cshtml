@@ -15,7 +15,7 @@
     <form asp-action="Delete" method="post" class="mt-4">
         <input type="hidden" asp-for="Id" />
 
-        <div class="form-group d-flex mt-3">
+        <div class="form-group d-flex">
             <button type="submit" class="btn btn-danger">Yes, delete this record</button>
             <a asp-controller="HealthRecords" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary ms-2">Cancel</a>
         </div>

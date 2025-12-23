@@ -11,10 +11,7 @@ public class SeedData
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
 
-    public SeedData(
-        ApplicationDbContext context,
-        UserManager<User> userManager,
-        RoleManager<IdentityRole> roleManager)
+    public SeedData(ApplicationDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
     {
         _context = context;
         _userManager = userManager;
@@ -31,8 +28,8 @@ public class SeedData
         await SeedMedicationsAsync();
         await SeedVisitsAsync();
         await SeedVisitUpdatesAsync();
-        await SeedAnimalMedicationsAsync();
         await SeedPrescriptionsAsync();
+        await SeedAnimalMedicationsAsync();
     }
 
     private async Task SeedRolesAsync()
@@ -94,7 +91,7 @@ public class SeedData
             FirstName = "Jeremy",
             LastName = "Smith",
             EmailConfirmed = true
-        }
+            }
         };
 
         var passwords = new[] { "Admin123!", "Vet123!", "Rec123!", "Client123!", "Client123!" };
@@ -102,7 +99,8 @@ public class SeedData
 
         for (int i = 0; i < users.Count; i++)
         {
-            var existingUser = await _userManager.FindByEmailAsync(users[i].Email);
+            var existingUser = await _userManager.FindByEmailAsync(users[i].Email!);
+            
             if (existingUser == null)
             {
                 var result = await _userManager.CreateAsync(users[i], passwords[i]);
@@ -120,8 +118,9 @@ public class SeedData
 
         var client1 = await _userManager.FindByEmailAsync("client@vet.com");
         var client2 = await _userManager.FindByEmailAsync("client2@vet.com");
-
-
+        
+        if (client1 == null || client2 == null) return; 
+        
         var animals = new List<Animal>
         {
             new Animal
@@ -134,7 +133,7 @@ public class SeedData
                 Gender = Gender.Male,
                 ImageUrl = "/uploads/animals/default-dog.png",
                 OwnerId = client1.Id,
-                MicrochipId = "123456789012345",
+                MicrochipId = "123456789012345"
             },
             new Animal
             {
@@ -157,7 +156,7 @@ public class SeedData
                 Gender = Gender.Female,
                 ImageUrl = "/uploads/animals/default-cat-2.png",
                 OwnerId = client2.Id,
-                MicrochipId = "123456789012345",
+                MicrochipId = "123456789012345"
             }
         };
 
@@ -186,7 +185,7 @@ public class SeedData
             {
                 AnimalId = animals[1].Id,
                 IsSterilized = false,
-                ChronicDiseases = "Choroba nerek",
+                ChronicDiseases = "Kidney disease",
                 Allergies = "Pollen",
                 Vaccinations = "Rabies, Feline herpesvirus",
                 LastVaccinationDate = DateTime.Now.AddMonths(-6)
@@ -301,7 +300,9 @@ public class SeedData
         
         var vetUser = vets.FirstOrDefault();
         
-        var vetUserId = vetUser?.Id;
+        if (vetUser == null) return;
+        
+        var vetUserId = vetUser.Id;
 
         var updates = new List<VisitUpdate>
         {
@@ -337,12 +338,10 @@ public class SeedData
     
     private async Task SeedAnimalMedicationsAsync()
     {
-        if (await _context.AnimalMedications.AnyAsync()) return;
+        if (await _context.AnimalMedications.AnyAsync(am => am.PrescriptionId == null)) return;
         
         var animals = await _context.Animals.ToListAsync(); 
         var medications = await _context.Medications.ToListAsync();
-        var visits = await _context.Visits.ToListAsync();
-        var updates = await _context.VisitUpdates.ToListAsync(); 
 
         var animalMedications = new List<AnimalMedication>
         {
@@ -352,6 +351,7 @@ public class SeedData
                 MedicationId = medications[0].Id,
                 StartDate = DateTime.Now.AddDays(-10),
                 EndDate = DateTime.Now.AddDays(-3),
+                PrescriptionId = null
             },
             new AnimalMedication
             {
@@ -359,6 +359,7 @@ public class SeedData
                 MedicationId = medications[2].Id,
                 StartDate = DateTime.Now.AddDays(-2),
                 EndDate = DateTime.Now.AddDays(5),
+                PrescriptionId = null
             }
         };
 
@@ -370,6 +371,7 @@ public class SeedData
     {
         if (await _context.Prescriptions.AnyAsync()) return;
 
+        var animals = await _context.Animals.ToListAsync();
         var medications = await _context.Medications.ToListAsync();
         var visitUpdates = await _context.VisitUpdates.ToListAsync();
 
@@ -396,6 +398,37 @@ public class SeedData
         };
 
         await _context.Prescriptions.AddRangeAsync(prescriptions);
+        await _context.SaveChangesAsync();
+        
+        var syncedMedications = new List<AnimalMedication>
+        {
+            new AnimalMedication
+            {
+                AnimalId = animals[0].Id,
+                MedicationId = medications[1].Id,
+                StartDate = visitUpdates[0].UpdateDate,
+                PrescriptionId = prescriptions[0].Id,
+                EndDate = null
+            },
+            new AnimalMedication
+            {
+                AnimalId = animals[2].Id,
+                MedicationId = medications[2].Id,
+                StartDate = visitUpdates[2].UpdateDate,
+                PrescriptionId = prescriptions[1].Id,
+                EndDate = null
+            },
+            new AnimalMedication
+            {
+                AnimalId = animals[2].Id,
+                MedicationId = medications[1].Id,
+                StartDate = visitUpdates[2].UpdateDate,
+                PrescriptionId = prescriptions[2].Id,
+                EndDate = null
+            }
+        };
+
+        await _context.AnimalMedications.AddRangeAsync(syncedMedications);
         await _context.SaveChangesAsync();
     }
 }

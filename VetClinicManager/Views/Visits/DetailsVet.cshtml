@@ -164,7 +164,7 @@
         <div>
             <a asp-controller="Visits" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit Visit</a>
             <a asp-controller="VisitUpdates" asp-action="Create" asp-route-visitId="@Model.Id" class="btn btn-primary">Add Update</a>
-            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+            <a asp-action="Index" class="btn btn-outline-secondary ms-2">Back to List</a>
         </div>
         <a asp-action="GenerateVisitReport" asp-route-id="@Model.Id" class="btn btn-success" target="_blank">Export to PDF</a>
     </div>

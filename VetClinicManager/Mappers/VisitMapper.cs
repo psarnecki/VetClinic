@@ -22,21 +22,21 @@ public partial class VisitMapper
     public partial VisitListUserDto ToListUserDto(Visit visit);
     
     // Maps Visit entity to a DTO for lists viewed by staff
-    [MapProperty(nameof(Visit.Animal.Owner), nameof(VisitListVetRecDto.Owner))]
+    [MapProperty(nameof(@Visit.Animal.Owner), nameof(VisitListVetRecDto.Owner))]
     public partial VisitListVetRecDto ToListVetRecDto(Visit visit);
     
     // Maps Visit entity to a DTO for details viewed by a client
     public partial VisitDetailsUserDto ToDetailsUserDto(Visit visit);
     
     // Maps Visit entity to a DTO for details viewed by staff
-    [MapProperty(nameof(Visit.Animal.Owner), nameof(VisitDetailsVetRecDto.Owner))]
+    [MapProperty(nameof(@Visit.Animal.Owner), nameof(VisitDetailsVetRecDto.Owner))]
     public partial VisitDetailsVetRecDto ToDetailsVetRecDto(Visit visit);
     
     // Maps Visit entity to a DTO for the edit form
     public partial VisitEditDto ToEditDto(Visit visit);
     
     // Maps Visit entity to a DTO for the delete confirmation view
-    [MapProperty(nameof(Visit.Animal.Owner), nameof(VisitDeleteDto.Owner))]
+    [MapProperty(nameof(@Visit.Animal.Owner), nameof(VisitDeleteDto.Owner))]
     public partial VisitDeleteDto ToDeleteDto(Visit visit);
     
     // --- Mappings from DTOs to Entity ---

@@ -2,6 +2,8 @@
 using VetClinicManager.Areas.Admin.DTOs.Medications;
 using VetClinicManager.Areas.Admin.Mappers;
 using VetClinicManager.Data;
+using VetClinicManager.DTOs.Shared;
+using VetClinicManager.Mappers.Shared;
 
 namespace VetClinicManager.Services;
 
@@ -9,11 +11,13 @@ public class MedicationService : IMedicationService
 {
     private readonly ApplicationDbContext _context;
     private readonly MedicationMapper _medicationMapper;
+    private readonly MedicationBriefMapper _medicationBriefMapper;
 
-    public MedicationService(ApplicationDbContext context, MedicationMapper medicationMapper)
+    public MedicationService(ApplicationDbContext context, MedicationMapper medicationMapper, MedicationBriefMapper medicationBriefMapper)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _medicationMapper = medicationMapper ?? throw new ArgumentNullException(nameof(medicationMapper));
+        _medicationBriefMapper = medicationBriefMapper ?? throw new ArgumentNullException(nameof(medicationBriefMapper));
     }
 
     // For Index GET action
@@ -117,5 +121,15 @@ public class MedicationService : IMedicationService
         var savedChanges = await _context.SaveChangesAsync();
         
         return savedChanges > 0;
+    }
+    
+    // For Medication select list
+    public async Task<IEnumerable<MedicationBriefDto>> GetMedicationsForSelectListAsync()
+    {
+        return await _medicationBriefMapper.ProjectToDto(
+            _context.Medications
+                .AsNoTracking()
+                .OrderBy(m => m.Name)
+        ).ToListAsync();
     }
 }

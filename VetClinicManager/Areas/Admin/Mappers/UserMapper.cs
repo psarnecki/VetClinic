@@ -7,12 +7,19 @@ namespace VetClinicManager.Areas.Admin.Mappers;
 [Mapper]
 public partial class UserMapper 
 {
+    // --- Mappings to DTOs ---
+    
     // Mapping from User to UserListDto (Index)
     public partial UserListDto ToUserListDtoFromUser(User user);
     
     // Mapping from User to UserEditDto (Edit GET)
     public partial UserEditDto ToUserEditDto(User user);
+    
+    // Mapping from User to UserDeleteDto (Delete GET)
+    public partial UserDeleteDto ToUserDeleteDto(User user);
 
+    // --- Mappings from DTOs to Entity ---
+    
     // Mapping from UserCreateDto to User (Create POST)
     [MapProperty(nameof(UserCreateDto.Email), nameof(User.UserName))]
     [MapValue(nameof(User.EmailConfirmed), true)]
@@ -27,7 +34,4 @@ public partial class UserMapper
     [MapperIgnoreSource(nameof(UserEditDto.AvailableRoles))]
     [MapperIgnoreSource(nameof(UserEditDto.SelectedRoles))]
     public partial void UpdateUserFromDto(UserEditDto userDto, User user);
-
-    // Mapping from User to UserDeleteDto (Delete GET)
-    public partial UserDeleteDto ToUserDeleteDto(User user);
 }

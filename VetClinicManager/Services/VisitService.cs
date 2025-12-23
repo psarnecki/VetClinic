@@ -4,6 +4,7 @@ using VetClinicManager.Data;
 using VetClinicManager.DTOs.Shared;
 using VetClinicManager.DTOs.Visits;
 using VetClinicManager.Mappers;
+using VetClinicManager.Mappers.Shared;
 using VetClinicManager.Models;
 
 namespace VetClinicManager.Services;
@@ -12,27 +13,43 @@ public class VisitService : IVisitService
 {
     private readonly ApplicationDbContext _context;
     private readonly VisitMapper _visitMapper;
+    private readonly AnimalBriefMapper _animalBriefMapper;
+    private readonly UserBriefMapper _userBriefMapper;
     private readonly UserManager<User> _userManager;
+    private readonly IAnimalMedicationService _animalMedicationService;
     
-    public VisitService(ApplicationDbContext context, VisitMapper visitMapper, UserManager<User> userManager)
+    public VisitService(
+        ApplicationDbContext context,
+        VisitMapper visitMapper,
+        AnimalBriefMapper animalBriefMapper,
+        UserBriefMapper userBriefMapper,
+        UserManager<User> userManager,
+        IAnimalMedicationService animalMedicationService)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _visitMapper = visitMapper ?? throw new ArgumentNullException(nameof(visitMapper));
+        _animalBriefMapper = animalBriefMapper ?? throw new ArgumentNullException(nameof(animalBriefMapper));
+        _userBriefMapper = userBriefMapper ?? throw new ArgumentNullException(nameof(userBriefMapper));
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+        _animalMedicationService = animalMedicationService ?? throw new ArgumentNullException(nameof(animalMedicationService));
     }
     
     private IQueryable<Visit> GetBaseListQuery()
     {
         return _context.Visits.AsNoTracking()
-            .Include(v => v.Animal).ThenInclude(a => a.Owner)
+            .Include(v => v.Animal)
+                .ThenInclude(a => a.Owner)
             .Include(v => v.AssignedVet);
     }
     
     private IQueryable<Visit> GetBaseDetailsQuery()
     {
         return GetBaseListQuery()
-            .Include(v => v.Updates).ThenInclude(u => u.UpdatedByVet)
-            .Include(v => v.Updates).ThenInclude(u => u.Prescriptions).ThenInclude(p => p.Medication);
+            .Include(v => v.Updates)
+                .ThenInclude(u => u.UpdatedByVet)
+            .Include(v => v.Updates)
+                .ThenInclude(u => u.Prescriptions)
+                .ThenInclude(p => p.Medication);
     }
     
     // For Staff Index GET action
@@ -56,6 +73,8 @@ public class VisitService : IVisitService
     public async Task<VisitDetailsVetRecDto?> GetDetailsForStaffAsync(int id)
     {
         var visit = await GetBaseDetailsQuery().FirstOrDefaultAsync(v => v.Id == id);
+        
+        if (visit == null) return null;
         
         return _visitMapper.ToDetailsVetRecDto(visit);
     }
@@ -133,9 +152,20 @@ public class VisitService : IVisitService
     // For Delete POST action
     public async Task<bool> DeleteVisitAsync(int id)
     {
-        var visit = await _context.Visits.FindAsync(id);
+        var visit = await _context.Visits
+            .Include(v => v.Updates)
+                .ThenInclude(u => u.Prescriptions) 
+            .FirstOrDefaultAsync(v => v.Id == id);
         
         if (visit == null) return true;
+        
+        foreach (var update in visit.Updates)
+        {
+            foreach (var prescription in update.Prescriptions)
+            {
+                await _animalMedicationService.SyncPrescriptionDeletedAsync(prescription.Id);
+            }
+        }
 
         _context.Visits.Remove(visit);
         var savedChanges = await _context.SaveChangesAsync();
@@ -146,15 +176,11 @@ public class VisitService : IVisitService
     // For Animal select list
     public async Task<IEnumerable<AnimalBriefDto>> GetAnimalsForSelectListAsync()
     {
-        return await _context.Animals
-            .AsNoTracking()
-            .OrderBy(a => a.Name)
-            .Select(a => new AnimalBriefDto 
-            {
-                Id = a.Id,
-                Name = a.Name,
-                Species = a.Species
-            }).ToListAsync();
+        return await _animalBriefMapper.ProjectToDto(
+            _context.Animals
+                .AsNoTracking()
+                .OrderBy(a => a.Name)
+        ).ToListAsync();
     }
 
     // For Vet select list
@@ -164,11 +190,6 @@ public class VisitService : IVisitService
         
         return vets
             .OrderBy(v => v.LastName)
-            .Select(v => new UserBriefDto
-            {
-                Id = v.Id,
-                FirstName = v.FirstName,
-                LastName = v.LastName
-            });
+            .Select(v => _userBriefMapper.ToUserBriefDto(v));
     }
 }

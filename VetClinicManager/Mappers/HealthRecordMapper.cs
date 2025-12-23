@@ -10,15 +10,15 @@ public partial class HealthRecordMapper
     // --- Mappings TO DTOs ---
 
     // Maps HealthRecord entity to a DTO for the details view
-    [MapProperty(nameof(HealthRecord.Animal.Name), nameof(HealthRecordDetailsDto.AnimalName))]
+    [MapProperty(nameof(@HealthRecord.Animal.Name), nameof(HealthRecordDetailsDto.AnimalName))]
     public partial HealthRecordDetailsDto ToDetailsDto(HealthRecord entity);
 
     // Maps HealthRecord entity to a DTO for the edit form
-    [MapProperty(nameof(HealthRecord.Animal.Name), nameof(HealthRecordEditDto.AnimalName))]
+    [MapProperty(nameof(@HealthRecord.Animal.Name), nameof(HealthRecordEditDto.AnimalName))]
     public partial HealthRecordEditDto ToEditDto(HealthRecord entity);
     
     // Maps HealthRecord entity to a DTO for the delete confirmation view
-    [MapProperty(nameof(HealthRecord.Animal.Name), nameof(HealthRecordDeleteDto.AnimalName))]
+    [MapProperty(nameof(@HealthRecord.Animal.Name), nameof(HealthRecordDeleteDto.AnimalName))]
     public partial HealthRecordDeleteDto ToDeleteDto(HealthRecord entity);
     
     // --- Mappings from DTOs to Entity ---

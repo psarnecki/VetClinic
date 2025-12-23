@@ -5,72 +5,138 @@
 }
 
 <div class="container mt-4">
-    <h1>@ViewData["Title"]</h1>
-        
-    <hr />
-
-    <h4>Health Record Information</h4>
-    
-    <dl class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.IsSterilized)
-        </dt>
-        <dd class="col-sm-9">
-            <span class="badge @Model.IsSterilizedBadgeClass">@Model.IsSterilizedText</span> 
-        </dd>
-
-        @if (!string.IsNullOrEmpty(Model.ChronicDiseases))
-        {
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.ChronicDiseases)
-            </dt>
-            <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.ChronicDiseases)
-            </dd>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.Allergies))
-        {
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Allergies)
-            </dt>
-            <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.Allergies)
-            </dd>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.Vaccinations))
-        {
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Vaccinations)
-            </dt>
-            <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.Vaccinations)
-            </dd>
-        }
-
-        @if (Model.LastVaccinationDate.HasValue)
-        {
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.LastVaccinationDate)
-            </dt>
-            <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.LastVaccinationDate)
-            </dd>
-        }
-    </dl>
-
-    <div class="mt-4 d-flex">
-        @if (User.IsInRole("Admin") || User.IsInRole("Vet"))
-        {
-            <a asp-controller="HealthRecords" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit Health Record</a>
-            <a asp-controller="HealthRecords" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger ms-2">Delete</a>
-            
-            <span class="ms-2"></span>
-        }
-        <a asp-controller="Animals" asp-action="Index" class="btn btn-outline-secondary">Back to Animals List</a>
+    <div class="d-flex justify-content-between align-items-baseline">
+        <h1>@ViewData["Title"]</h1>
+        <div>
+            <a asp-controller="Animals" asp-action="Details" asp-route-id="@Model.AnimalId" class="btn btn-primary">Animal Details</a>
+            <a asp-controller="Animals" asp-action="Index" class="btn btn-outline-secondary ms-2">Back to Animal List</a>
+        </div>
     </div>
+    
+    <hr/>
+    
+    <div class="card">
+        <div class="card-header">
+            <h4>Health Record Information</h4>
+        </div>
 
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.IsSterilized)
+                </dt>
+                <dd class="col-sm-9">
+                    <span class="badge @Model.IsSterilizedBadgeClass">@Model.IsSterilizedText</span>
+                </dd>
+
+                @if (!string.IsNullOrEmpty(Model.ChronicDiseases))
+                {
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.ChronicDiseases)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.ChronicDiseases)
+                    </dd>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Allergies))
+                {
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Allergies)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Allergies)
+                    </dd>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Vaccinations))
+                {
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Vaccinations)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Vaccinations)
+                    </dd>
+                }
+
+                @if (Model.LastVaccinationDate.HasValue)
+                {
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.LastVaccinationDate)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.LastVaccinationDate)
+                    </dd>
+                }
+            </dl>
+
+            <div class="mt-4 d-flex">
+                @if (User.IsInRole("Admin") || User.IsInRole("Vet"))
+                {
+                    <a asp-controller="HealthRecords" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit Health Record</a>
+                    <a asp-controller="HealthRecords" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger ms-2">Delete</a>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mt-4">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Medication Chart</h5>
+                @if (User.IsInRole("Admin") || User.IsInRole("Vet"))
+                {
+                    <a asp-controller="AnimalMedications" asp-action="Create" asp-route-animalId="@Model.AnimalId" class="btn btn-sm btn-success">Add Medication</a>
+                }
+            </div>
+        </div>
+        <div class="card-body">
+            @if (Model.Medications != null && Model.Medications.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Medication</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var med in Model.Medications.OrderByDescending(m => m.StartDate))
+                            {
+                                <tr>
+                                    <td>@med.MedicationName.Name</td>
+                                    <td>@Html.DisplayFor(m => med.StartDate)</td>
+                                    <td>@if (med.EndDate.HasValue)
+                                        {
+                                            @Html.DisplayFor(m => med.EndDate)
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">In Progress</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Vet"))
+                                        {
+                                            <a asp-controller="AnimalMedications" asp-action="Edit" asp-route-id="@med.Id" class="btn btn-sm btn-primary">Edit</a>
+                                            <a asp-controller="AnimalMedications" asp-action="Delete" asp-route-id="@med.Id" class="btn btn-sm btn-danger ms-1">Delete</a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No medications recorded in the chart.</p>
+            }
+        </div>
+    </div>
 </div>
 
 @section Scripts {

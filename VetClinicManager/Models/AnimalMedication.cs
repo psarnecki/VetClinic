@@ -18,10 +18,12 @@ public class AnimalMedication
     public int MedicationId { get; set; }
     public Medication Medication { get; set; }
     
+    [ForeignKey("Prescription")]
+    public int? PrescriptionId { get; set; }
+    public Prescription? Prescription { get; set; }
+    
     [Required]
-    [DataType(DataType.Date)]
     public DateTime StartDate { get; set; }
     
-    [DataType(DataType.Date)]
     public DateTime? EndDate { get; set; }
 }

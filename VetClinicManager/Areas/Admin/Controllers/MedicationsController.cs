@@ -6,6 +6,7 @@ using VetClinicManager.Services;
 namespace VetClinicManager.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize]
 public class MedicationsController : Controller
 {
     private readonly IMedicationService _medicationService;
