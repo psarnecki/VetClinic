@@ -4,6 +4,7 @@ using VetClinicManager.Data;
 using VetClinicManager.DTOs.Shared;
 using VetClinicManager.DTOs.Visits;
 using VetClinicManager.Mappers;
+using VetClinicManager.Mappers.Shared;
 using VetClinicManager.Models;
 
 namespace VetClinicManager.Services;
@@ -12,13 +13,23 @@ public class VisitService : IVisitService
 {
     private readonly ApplicationDbContext _context;
     private readonly VisitMapper _visitMapper;
+    private readonly AnimalBriefMapper _animalBriefMapper;
+    private readonly UserBriefMapper _userBriefMapper;
     private readonly UserManager<User> _userManager;
     private readonly IAnimalMedicationService _animalMedicationService;
     
-    public VisitService(ApplicationDbContext context, VisitMapper visitMapper, UserManager<User> userManager, IAnimalMedicationService animalMedicationService)
+    public VisitService(
+        ApplicationDbContext context,
+        VisitMapper visitMapper,
+        AnimalBriefMapper animalBriefMapper,
+        UserBriefMapper userBriefMapper,
+        UserManager<User> userManager,
+        IAnimalMedicationService animalMedicationService)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _visitMapper = visitMapper ?? throw new ArgumentNullException(nameof(visitMapper));
+        _animalBriefMapper = animalBriefMapper ?? throw new ArgumentNullException(nameof(animalBriefMapper));
+        _userBriefMapper = userBriefMapper ?? throw new ArgumentNullException(nameof(userBriefMapper));
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         _animalMedicationService = animalMedicationService ?? throw new ArgumentNullException(nameof(animalMedicationService));
     }
@@ -62,6 +73,8 @@ public class VisitService : IVisitService
     public async Task<VisitDetailsVetRecDto?> GetDetailsForStaffAsync(int id)
     {
         var visit = await GetBaseDetailsQuery().FirstOrDefaultAsync(v => v.Id == id);
+        
+        if (visit == null) return null;
         
         return _visitMapper.ToDetailsVetRecDto(visit);
     }
@@ -163,15 +176,11 @@ public class VisitService : IVisitService
     // For Animal select list
     public async Task<IEnumerable<AnimalBriefDto>> GetAnimalsForSelectListAsync()
     {
-        return await _context.Animals
-            .AsNoTracking()
-            .OrderBy(a => a.Name)
-            .Select(a => new AnimalBriefDto 
-            {
-                Id = a.Id,
-                Name = a.Name,
-                Species = a.Species
-            }).ToListAsync();
+        return await _animalBriefMapper.ProjectToDto(
+            _context.Animals
+                .AsNoTracking()
+                .OrderBy(a => a.Name)
+        ).ToListAsync();
     }
 
     // For Vet select list
@@ -181,11 +190,6 @@ public class VisitService : IVisitService
         
         return vets
             .OrderBy(v => v.LastName)
-            .Select(v => new UserBriefDto
-            {
-                Id = v.Id,
-                FirstName = v.FirstName,
-                LastName = v.LastName
-            });
+            .Select(v => _userBriefMapper.ToUserBriefDto(v));
     }
 }
