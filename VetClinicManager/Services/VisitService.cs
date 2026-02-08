@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
 using VetClinicManager.Data;
 using VetClinicManager.DTOs.Shared;
 using VetClinicManager.DTOs.Visits;
 using VetClinicManager.Mappers;
 using VetClinicManager.Mappers.Shared;
 using VetClinicManager.Models;
+using VetClinicManager.Services.Reports;
 
 namespace VetClinicManager.Services;
 
@@ -191,5 +193,39 @@ public class VisitService : IVisitService
         return vets
             .OrderBy(v => v.LastName)
             .Select(v => _userBriefMapper.ToUserBriefDto(v));
+    }
+    
+    public async Task<(byte[] FileContents, string FileName)?> GeneratePdfReportAsync(int visitId, string userId, IEnumerable<string> userRoles)
+    {
+        var visit = await GetBaseDetailsQuery().FirstOrDefaultAsync(v => v.Id == visitId);
+
+        if (visit == null) return null;
+
+        bool isAdmin = userRoles.Contains("Admin");
+        bool isVet = userRoles.Contains("Vet");
+        bool isReceptionist = userRoles.Contains("Receptionist");
+        
+        if (isVet && !isAdmin && visit.AssignedVetId != userId)
+        {
+            throw new UnauthorizedAccessException();
+        }
+        
+        if (!isAdmin && !isVet && !isReceptionist && visit.Animal.OwnerId != userId)
+        {
+            throw new UnauthorizedAccessException();
+        }
+
+        var dto = _visitMapper.ToDetailsVetRecDto(visit);
+
+        bool isStaffView = isAdmin || isVet || isReceptionist;
+
+        var report = new VisitDetailsReport(dto, isStaffView);
+        var bytes = report.GeneratePdf();
+        
+        string safeAnimalName = dto.Animal.Name.Replace(" ", "_");
+        string dateString = dto.CreatedDate.ToString("yyyy-MM-dd");
+        string fileName = $"Visit_Report_{safeAnimalName}_{dateString}.pdf";
+        
+        return (bytes, fileName);
     }
 }

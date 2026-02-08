@@ -240,6 +240,29 @@ public class VisitsController : Controller
         return RedirectToAction(nameof(Index));
     }
     
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GenerateVisitReport(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return Unauthorized();
+        
+        var roles = await _userManager.GetRolesAsync(user);
+
+        try
+        {
+            var result = await _visitService.GeneratePdfReportAsync(id, user.Id, roles);
+            
+            if (result == null) return NotFound();
+        
+            return File(result.Value.FileContents, "application/pdf", result.Value.FileName);
+        }
+        catch(UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+    }
+    
     private SelectList GetEnumSelectList<TEnum>(object? selectedValue = null)
         where TEnum : struct, Enum
     {

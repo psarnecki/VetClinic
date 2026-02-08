@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 using VetClinicManager.Areas.Admin.Mappers;
 using VetClinicManager.Data;
 using VetClinicManager.Mappers;
@@ -9,6 +10,8 @@ using VetClinicManager.Models;
 using VetClinicManager.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
