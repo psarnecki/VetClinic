@@ -29,45 +29,61 @@
                     <span class="badge @Model.IsSterilizedBadgeClass">@Model.IsSterilizedText</span>
                 </dd>
 
-                @if (!string.IsNullOrEmpty(Model.ChronicDiseases))
-                {
-                    <dt class="col-sm-3">
-                        @Html.DisplayNameFor(model => model.ChronicDiseases)
-                    </dt>
-                    <dd class="col-sm-9">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.ChronicDiseases)
+                </dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.ChronicDiseases))
+                    {
                         @Html.DisplayFor(model => model.ChronicDiseases)
-                    </dd>
-                }
+                    }
+                    else
+                    {
+                        <span class="text-muted">None</span>
+                    }
+                </dd>
 
-                @if (!string.IsNullOrEmpty(Model.Allergies))
-                {
-                    <dt class="col-sm-3">
-                        @Html.DisplayNameFor(model => model.Allergies)
-                    </dt>
-                    <dd class="col-sm-9">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Allergies)
+                </dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.Allergies))
+                    {
                         @Html.DisplayFor(model => model.Allergies)
-                    </dd>
-                }
+                    }
+                    else
+                    {
+                        <span class="text-muted">None</span>
+                    }
+                </dd>
 
-                @if (!string.IsNullOrEmpty(Model.Vaccinations))
-                {
-                    <dt class="col-sm-3">
-                        @Html.DisplayNameFor(model => model.Vaccinations)
-                    </dt>
-                    <dd class="col-sm-9">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Vaccinations)
+                </dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.Vaccinations))
+                    {
                         @Html.DisplayFor(model => model.Vaccinations)
-                    </dd>
-                }
+                    }
+                    else
+                    {
+                        <span class="text-muted">None</span>
+                    }
+                </dd>
 
-                @if (Model.LastVaccinationDate.HasValue)
-                {
-                    <dt class="col-sm-3">
-                        @Html.DisplayNameFor(model => model.LastVaccinationDate)
-                    </dt>
-                    <dd class="col-sm-9">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.LastVaccinationDate)
+                </dt>
+                <dd class="col-sm-9">
+                    @if (Model.LastVaccinationDate.HasValue)
+                    {
                         @Html.DisplayFor(model => model.LastVaccinationDate)
-                    </dd>
-                }
+                    }
+                    else
+                    {
+                        <span class="text-muted">None</span>
+                    }
+                </dd>
             </dl>
 
             <div class="mt-4 d-flex">

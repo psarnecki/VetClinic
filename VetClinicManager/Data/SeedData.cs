@@ -176,8 +176,8 @@ public class SeedData
             {
                 AnimalId = animals[0].Id,
                 IsSterilized = true,
-                ChronicDiseases = "None",
-                Allergies = "None",
+                ChronicDiseases = null,
+                Allergies = null,
                 Vaccinations = "Rabies, Parvovirus",
                 LastVaccinationDate = DateTime.Now.AddMonths(-3)
             },
@@ -194,8 +194,8 @@ public class SeedData
             {
                 AnimalId = animals[2].Id,
                 IsSterilized = true,
-                ChronicDiseases = "None",
-                Allergies = "None",
+                ChronicDiseases = null,
+                Allergies = null,
                 Vaccinations = "Rabies, Panleukopenia",
                 LastVaccinationDate = DateTime.Now.AddMonths(-1)
             }
