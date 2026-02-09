@@ -206,6 +206,26 @@ public class AnimalsController : Controller
         return RedirectToAction(nameof(Index));
     }
     
+    // POST: Animals/RemoveImage/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin,Receptionist,Vet")]
+    public async Task<IActionResult> RemoveImage(int id)
+    {
+        var success = await _animalService.RemoveAnimalImageAsync(id);
+        
+        if (success)
+        {
+            TempData["SuccessMessage"] = "Animal photo has been removed successfully.";
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "Unable to remove the photo. The animal may not have a photo or does not exist.";
+        }
+        
+        return RedirectToAction(nameof(Edit), new { id });
+    }
+    
     private SelectList GetEnumSelectList<TEnum>(object? selectedValue = null) where TEnum : struct, Enum
     {
         var items = Enum.GetValues<TEnum>().Select(e =>

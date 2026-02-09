@@ -181,6 +181,20 @@ public class AnimalService : IAnimalService
         return savedChanges > 0;
     }
     
+    // For remove image POST action
+    public async Task<bool> RemoveAnimalImageAsync(int id)
+    {
+        var animal = await _context.Animals.FirstOrDefaultAsync(a => a.Id == id);
+        
+        if (animal == null || string.IsNullOrEmpty(animal.ImageUrl)) return false;
+        
+        _fileService.DeleteFile(animal.ImageUrl);
+        animal.ImageUrl = null;
+        await _context.SaveChangesAsync();
+        
+        return true;
+    }
+    
     // For Create/Edit view owner select list
     public async Task<IEnumerable<UserBriefDto>> GetOwnersForSelectListAsync()
     {
