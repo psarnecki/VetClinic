@@ -16,7 +16,10 @@ public class Visit
     [MaxLength]
     public string? Description { get; set; }
     
-    public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    
+    [Required]
+    public DateTime ScheduledAt { get; set; }
     
     public VisitStatus Status { get; set; }
     
