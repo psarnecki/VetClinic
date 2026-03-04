@@ -56,6 +56,7 @@ builder.Services.AddScoped<HealthRecordMapper>();
 builder.Services.AddScoped<VisitMapper>();
 builder.Services.AddScoped<VisitUpdateMapper>();
 builder.Services.AddScoped<AnimalMedicationMapper>();
+builder.Services.AddScoped<DashboardMapper>();
 
 // Brief mappers
 builder.Services.AddScoped<UserBriefMapper>();
