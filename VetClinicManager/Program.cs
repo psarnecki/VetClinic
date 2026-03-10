@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 using VetClinicManager.Areas.Admin.Mappers;
 using VetClinicManager.Data;
 using VetClinicManager.Mappers;
@@ -9,6 +10,8 @@ using VetClinicManager.Models;
 using VetClinicManager.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -44,6 +47,7 @@ builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
 builder.Services.AddScoped<IVisitUpdateService, VisitUpdateService>();
 builder.Services.AddScoped<IAnimalMedicationService, AnimalMedicationService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 // Mappers
 builder.Services.AddScoped<UserMapper>();
@@ -53,6 +57,7 @@ builder.Services.AddScoped<HealthRecordMapper>();
 builder.Services.AddScoped<VisitMapper>();
 builder.Services.AddScoped<VisitUpdateMapper>();
 builder.Services.AddScoped<AnimalMedicationMapper>();
+builder.Services.AddScoped<DashboardMapper>();
 
 // Brief mappers
 builder.Services.AddScoped<UserBriefMapper>();

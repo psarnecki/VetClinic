@@ -14,6 +14,10 @@ public class VisitCreateDto
     [Display(Name = "Description / Details")]
     public string? Description { get; set; }
     
+    [Required(ErrorMessage = "Scheduled date and time is required.")]
+    [Display(Name = "Scheduled Date & Time")]
+    public DateTime ScheduledAt { get; set; } = DateTime.UtcNow.AddDays(1);
+    
     [Display(Name = "Status")]
     public VisitStatus Status { get; set; }
     

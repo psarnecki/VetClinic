@@ -27,6 +27,9 @@ public interface IAnimalService
     // For Delete POST action
     Task<bool> DeleteAnimalAsync(int id);
     
+    // For remove image POST action
+    Task<bool> RemoveAnimalImageAsync(int id);
+    
     // For Create/Edit view select list
     Task<IEnumerable<UserBriefDto>> GetOwnersForSelectListAsync();
 }

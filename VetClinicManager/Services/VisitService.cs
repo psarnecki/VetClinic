@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
 using VetClinicManager.Data;
 using VetClinicManager.DTOs.Shared;
 using VetClinicManager.DTOs.Visits;
 using VetClinicManager.Mappers;
 using VetClinicManager.Mappers.Shared;
 using VetClinicManager.Models;
+using VetClinicManager.Services.Reports;
 
 namespace VetClinicManager.Services;
 
@@ -63,7 +65,7 @@ public class VisitService : IVisitService
         }
     
         var visits = await visitsQuery
-            .OrderByDescending(v => v.CreatedDate)
+            .OrderByDescending(v => v.ScheduledAt)
             .ToListAsync();
             
         return _visitMapper.ToListVetRecDtos(visits);
@@ -84,7 +86,7 @@ public class VisitService : IVisitService
     {
         var visits = await GetBaseListQuery()
             .Where(v => v.Animal.OwnerId == ownerId)
-            .OrderByDescending(v => v.CreatedDate)
+            .OrderByDescending(v => v.ScheduledAt)
             .ToListAsync();
             
         return _visitMapper.ToListUserDtos(visits);
@@ -107,7 +109,7 @@ public class VisitService : IVisitService
         
         if (visit == null) return null;
         
-        if (isVet && visit.AssignedVetId != userId) throw new UnauthorizedAccessException();
+        if (isVet && visit.AssignedVetId != userId) return null;
         
         return _visitMapper.ToEditDto(visit);
     }
@@ -126,7 +128,7 @@ public class VisitService : IVisitService
     public async Task<int> CreateVisitAsync(VisitCreateDto createDto)
     {
         var visit = _visitMapper.ToEntity(createDto);
-        visit.CreatedDate = DateTime.UtcNow;
+        visit.CreatedAt = DateTime.UtcNow;
 
         _context.Visits.Add(visit);
         await _context.SaveChangesAsync();
@@ -141,7 +143,7 @@ public class VisitService : IVisitService
         
         if (visit == null) return false;
         
-        if (isVet && visit.AssignedVetId != userId) throw new UnauthorizedAccessException();
+        if (isVet && visit.AssignedVetId != userId) return false;
         
         _visitMapper.UpdateFromDto(editDto, visit);
         await _context.SaveChangesAsync();
@@ -191,5 +193,39 @@ public class VisitService : IVisitService
         return vets
             .OrderBy(v => v.LastName)
             .Select(v => _userBriefMapper.ToUserBriefDto(v));
+    }
+    
+    public async Task<(byte[] FileContents, string FileName)?> GeneratePdfReportAsync(int visitId, string userId, IEnumerable<string> userRoles)
+    {
+        var visit = await GetBaseDetailsQuery().FirstOrDefaultAsync(v => v.Id == visitId);
+
+        if (visit == null) return null;
+
+        bool isAdmin = userRoles.Contains("Admin");
+        bool isVet = userRoles.Contains("Vet");
+        bool isReceptionist = userRoles.Contains("Receptionist");
+        
+        if (isVet && !isAdmin && visit.AssignedVetId != userId)
+        {
+            throw new UnauthorizedAccessException();
+        }
+        
+        if (!isAdmin && !isVet && !isReceptionist && visit.Animal.OwnerId != userId)
+        {
+            throw new UnauthorizedAccessException();
+        }
+
+        var dto = _visitMapper.ToDetailsVetRecDto(visit);
+
+        bool isStaffView = isAdmin || isVet || isReceptionist;
+
+        var report = new VisitDetailsReport(dto, isStaffView);
+        var bytes = report.GeneratePdf();
+        
+        string safeAnimalName = dto.Animal.Name.Replace(" ", "_");
+        string dateString = dto.ScheduledAt.ToString("yyyy-MM-dd");
+        string fileName = $"Visit_Report_{safeAnimalName}_{dateString}.pdf";
+        
+        return (bytes, fileName);
     }
 }

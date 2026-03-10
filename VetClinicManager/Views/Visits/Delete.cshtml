@@ -36,8 +36,11 @@
                      else { <span class="text-muted">No data</span> }
                 </dd>
 
-                <dt class="col-sm-4 col-md-3">Creation Date</dt>
-                <dd class="col-sm-8 col-md-9">@Model.CreatedDate</dd>
+                <dt class="col-sm-4 col-md-3">Scheduled Date</dt>
+                <dd class="col-sm-8 col-md-9">@Model.ScheduledAt.ToString("g")</dd>
+
+                <dt class="col-sm-4 col-md-3">Created On</dt>
+                <dd class="col-sm-8 col-md-9"><span class="text-muted">@Model.CreatedAt.ToString("g")</span></dd>
 
                 <dt class="col-sm-4 col-md-3">Status</dt>
                 <dd class="col-sm-8 col-md-9">

@@ -1,0 +1,295 @@
+﻿@using System.Globalization
+@model VetClinicManager.DTOs.Home.DashboardDto
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Dashboard</h1>
+        <div class="text-muted">
+            <i class="bi bi-calendar-event"></i> @DateTime.Now.ToString("dddd, MMMM dd, yyyy", CultureInfo.InvariantCulture)
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Total Animals</p>
+                            <h3 class="mb-0">@Model.TotalAnimals</h3>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" class="text-primary" viewBox="0 0 16 16">
+                                <circle fill="currentColor" cx="3.5" cy="7.5" r="1.3"/>
+                                <circle fill="currentColor" cx="6.3" cy="4.8" r="1.3"/>
+                                <circle fill="currentColor" cx="9.7" cy="4.8" r="1.3"/>
+                                <circle fill="currentColor" cx="12.5" cy="7.5" r="1.3"/>
+    
+                                <path fill="currentColor" d="M4.5 10.5c0-1.8 1.5-2.8 3.5-2.8s3.5 1 3.5 2.8c0 1.2-1.5 2.8-3.5 2.8s-3.5-1.3-3.5-2.8z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Today's Visits</p>
+                            <h3 class="mb-0">@Model.TodayVisits</h3>
+                        </div>
+                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-calendar-check text-success" viewBox="0 0 16 16">
+                                <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Upcoming Visits</p>
+                            <h3 class="mb-0">@Model.UpcomingVisits</h3>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-clock text-warning" viewBox="0 0 16 16">
+                                <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Total Clients</p>
+                            <h3 class="mb-0">@Model.TotalClients</h3>
+                        </div>
+                        <div class="bg-info bg-opacity-10 rounded-circle p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-people text-info" viewBox="0 0 16 16">
+                                <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Recent Visits</h5>
+                        <a asp-controller="Visits" asp-action="Index" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.RecentVisits.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Animal</th>
+                                        <th>Date & Time</th>
+                                        <th>Vet</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var visit in Model.RecentVisits)
+                                    {
+                                        <tr>
+                                            <td>@visit.Animal.Name</td>
+                                            <td>@visit.ScheduledAt.ToString("yyyy-MM-dd HH:mm")</td>
+                                            <td>
+                                                @if (visit.AssignedVet != null)
+                                                {
+                                                    <span>@visit.AssignedVet.FirstName @visit.AssignedVet.LastName</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Not assigned</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @switch (visit.Status.ToString())
+                                                {
+                                                    case "Scheduled":
+                                                        <span class="badge bg-primary">
+                                                            <i class="bi bi-clock"></i> Scheduled
+                                                        </span>
+                                                        break;
+                                                    case "InProgress":
+                                                        <span class="badge bg-warning">
+                                                            <i class="bi bi-hourglass-split"></i> In Progress
+                                                        </span>
+                                                        break;
+                                                    case "Completed":
+                                                        <span class="badge bg-success">
+                                                            <i class="bi bi-check-circle"></i> Completed
+                                                        </span>
+                                                        break;
+                                                    case "Cancelled":
+                                                        <span class="badge bg-danger">
+                                                            <i class="bi bi-x-circle"></i> Cancelled
+                                                        </span>
+                                                        break;
+                                                    default:
+                                                        <span class="badge bg-secondary">@visit.Status</span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td class="text-end">
+                                                <a asp-controller="Visits" asp-action="Details" asp-route-id="@visit.Id" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5 text-muted">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-calendar-x mb-3" viewBox="0 0 16 16">
+                                <path d="M6.146 7.146a.5.5 0 0 1 .708 0L8 8.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 9l1.147 1.146a.5.5 0 0 1-.708.708L8 9.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 9 6.146 7.854a.5.5 0 0 1 0-.708"/>
+                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                            </svg>
+                            <p>No visits recorded yet</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Recent Animals</h5>
+                        <a asp-controller="Animals" asp-action="Index" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentAnimals.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var animal in Model.RecentAnimals)
+                            {
+                                <a asp-controller="Animals" asp-action="Details" asp-route-id="@animal.Id" class="list-group-item list-group-item-action border-0 px-0">
+                                    <div class="d-flex align-items-center">
+                                        @if (!string.IsNullOrEmpty(animal.ImageUrl))
+                                        {
+                                            <img src="@animal.ImageUrl" alt="@animal.Name" class="rounded-circle me-3" style="width: 48px; height: 48px; object-fit: cover;">
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-secondary bg-opacity-10 rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-image text-secondary" viewBox="0 0 16 16">
+                                                    <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                                                    <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/>
+                                                </svg>
+                                            </div>
+                                        }
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-0">@animal.Name</h6>
+                                            <small class="text-muted">
+                                                @(animal.Species ?? "Unknown")
+                                                @if (animal.Owner != null)
+                                                {
+                                                    <span> · @animal.Owner.FirstName @animal.Owner.LastName</span>
+                                                }
+                                            </small>
+                                        </div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right text-muted" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                                        </svg>
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4 text-muted">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-heart mb-3" viewBox="0 0 16 16">
+                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523.943-.661 2.187.314 3.86.92 1.58 2.16 3.11 3.587 4.537 1.427 1.427 2.958 2.667 4.538 3.587 1.672.976 2.916.837 3.859.314 2.175-1.114 2.772-4.2 1.043-5.92l-.737-.717z"/>
+                            </svg>
+                            <p>No animals registered yet</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-3">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-3">Quick Actions</h5>
+                    <div class="d-flex gap-2 flex-wrap">
+                        @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+                        {
+                            <a asp-controller="Animals" asp-action="Create" class="btn btn-outline-primary">
+                                <i class="bi bi-plus-circle"></i> Add New Animal
+                            </a>
+                            <a asp-controller="Visits" asp-action="Create" class="btn btn-outline-success">
+                                <i class="bi bi-calendar-plus"></i> Schedule Visit
+                            </a>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-area="Admin" asp-controller="Medications" asp-action="Index" class="btn btn-outline-warning">
+                                <i class="bi bi-capsule"></i> Manage Medications
+                            </a>
+                            <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-danger">
+                                <i class="bi bi-people"></i> Manage Users
+                            </a>
+                        }
+                        @if (User.IsInRole("Vet"))
+                        {
+                            <a asp-controller="Visits" asp-action="Index" class="btn btn-outline-primary">
+                                <i class="bi bi-calendar-check"></i> My Visits
+                            </a>
+                            <a asp-area="Admin" asp-controller="Medications" asp-action="Index" class="btn btn-outline-warning">
+                                <i class="bi bi-capsule"></i> Medications List
+                            </a>
+                            <a asp-controller="Animals" asp-action="Index" class="btn btn-outline-info">
+                                <i class="bi bi-heart-pulse"></i> Animals
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+}

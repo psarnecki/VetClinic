@@ -30,4 +30,7 @@ public interface IVisitService
     // For Create/Edit view select lists
     Task<IEnumerable<AnimalBriefDto>> GetAnimalsForSelectListAsync();
     Task<IEnumerable<UserBriefDto>> GetVetsForSelectListAsync();
+    
+    // For Export to PDF action
+    Task<(byte[] FileContents, string FileName)?> GeneratePdfReportAsync(int visitId, string userId, IEnumerable<string> userRoles);
 }

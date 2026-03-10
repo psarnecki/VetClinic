@@ -34,7 +34,7 @@ public class AnimalDetailsVetRecDto
     [DataType(DataType.ImageUrl)]
     public string? ImageUrl { get; set; }
     
-    [Display(Name = "Last Visit")]
+    [Display(Name = "Last/Next Visit")]
     [DataType(DataType.Date)]
     public DateTime? LastVisitDate { get; set; }
     

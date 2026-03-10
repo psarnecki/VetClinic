@@ -10,9 +10,13 @@ public class VisitListUserDto
     
     public string Title { get; set; } = string.Empty;
     
-    [Display(Name = "Creation Date")]
+    [Display(Name = "Created Date")]
     [DisplayFormat(DataFormatString = "{0:d}")]
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreatedAt { get; set; }
+    
+    [Display(Name = "Scheduled Date")]
+    [DisplayFormat(DataFormatString = "{0:d}")]
+    public DateTime ScheduledAt { get; set; }
     
     public VisitStatus Status { get; set; }
     

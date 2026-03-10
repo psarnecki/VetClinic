@@ -38,6 +38,12 @@
                 </div>
 
                 <div class="form-group mb-3">
+                    <label asp-for="ScheduledAt" class="form-label"></label>
+                    <input asp-for="ScheduledAt" type="datetime-local" class="form-control" value="@Model.ScheduledAt.ToString("yyyy-MM-ddTHH:mm")" />
+                    <span asp-validation-for="ScheduledAt" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
                     <label asp-for="Status" class="form-label"></label>
                     <select asp-for="Status" class="form-control" asp-items="@Model.Statuses">
                          <option value="">-- Select status --</option>

@@ -176,8 +176,8 @@ public class SeedData
             {
                 AnimalId = animals[0].Id,
                 IsSterilized = true,
-                ChronicDiseases = "None",
-                Allergies = "None",
+                ChronicDiseases = null,
+                Allergies = null,
                 Vaccinations = "Rabies, Parvovirus",
                 LastVaccinationDate = DateTime.Now.AddMonths(-3)
             },
@@ -194,8 +194,8 @@ public class SeedData
             {
                 AnimalId = animals[2].Id,
                 IsSterilized = true,
-                ChronicDiseases = "None",
-                Allergies = "None",
+                ChronicDiseases = null,
+                Allergies = null,
                 Vaccinations = "Rabies, Panleukopenia",
                 LastVaccinationDate = DateTime.Now.AddMonths(-1)
             }
@@ -239,7 +239,8 @@ public class SeedData
             {
                 Title = "Rabies vaccination",
                 Description = "Routine vaccination.",
-                CreatedDate = DateTime.Now.AddDays(-10),
+                CreatedAt = DateTime.Now.AddDays(-10),
+                ScheduledAt = DateTime.Now.AddDays(-10),
                 Status = VisitStatus.Completed,
                 Priority = VisitPriority.Normal,
                 AnimalId = animals[0].Id,
@@ -249,7 +250,8 @@ public class SeedData
             {
                 Title = "Health checkup",
                 Description = "Routine checkup.",
-                CreatedDate = DateTime.Now.AddDays(-5),
+                CreatedAt = DateTime.Now.AddDays(-5),
+                ScheduledAt = DateTime.Now.AddDays(-5),
                 Status = VisitStatus.Completed,
                 Priority = VisitPriority.Normal, 
                 AnimalId = animals[1].Id,
@@ -259,7 +261,8 @@ public class SeedData
             {
                 Title = "Ear infection treatment",
                 Description = "Antibiotic administration and ear examination.",
-                CreatedDate = DateTime.Now.AddDays(-2),
+                CreatedAt = DateTime.Now.AddDays(-2),
+                ScheduledAt = DateTime.Now,
                 Status = VisitStatus.InProgress,
                 Priority = VisitPriority.Urgent, 
                 AnimalId = animals[2].Id,
@@ -269,7 +272,8 @@ public class SeedData
             {
                 Title = "Cast removal from broken limb",
                 Description = "Removal of unnecessary immobilization from injured paw.",
-                CreatedDate = DateTime.Now.AddDays(4),
+                CreatedAt = DateTime.Now.AddDays(-1),
+                ScheduledAt = DateTime.Now.AddDays(4),
                 Status = VisitStatus.Scheduled,
                 Priority = VisitPriority.Urgent, 
                 AnimalId = animals[2].Id,
@@ -279,7 +283,8 @@ public class SeedData
             {
                 Title = "Surgical operation",
                 Description = "Removal of swallowed toy from stomach.",
-                CreatedDate = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow.AddHours(-2),
+                ScheduledAt = DateTime.UtcNow,
                 Status = VisitStatus.InProgress,
                 Priority = VisitPriority.Critical, 
                 AnimalId = animals[0].Id,

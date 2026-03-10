@@ -66,8 +66,8 @@ public class VisitsController : Controller
 
         if (User.IsInRole("Vet") && !User.IsInRole("Admin") && staffVisit.AssignedVet?.Id != currentUserId)
         {
-            TempData["ErrorMessage"] = "You can only access visits assigned to you.";
-            return Forbid();
+            TempData["ErrorMessage"] = "Access denied. You can only access visits assigned to you.";
+            return RedirectToAction(nameof(Index));
         }
 
         var viewName = (User.IsInRole("Vet") || User.IsInRole("Admin")) ? "DetailsVet" : "DetailsReceptionist";
@@ -146,7 +146,15 @@ public class VisitsController : Controller
 
         var visitEditDto = await _visitService.GetForEditAsync(id, currentUserId, isVetOnly);
         
-        if (visitEditDto == null) return NotFound();
+        if (visitEditDto == null)
+        {
+            if (isVetOnly)
+            {
+                TempData["ErrorMessage"] = "Access denied. You can only edit visits assigned to you.";
+                return RedirectToAction(nameof(Index));
+            }
+            return NotFound();
+        }
         
         var vets = await _visitService.GetVetsForSelectListAsync();
 
@@ -200,6 +208,11 @@ public class VisitsController : Controller
         
         if (!success)
         {
+            if (isVetOnly)
+            {
+                TempData["ErrorMessage"] = "Access denied. You can only update visits assigned to you.";
+                return RedirectToAction(nameof(Index));
+            }
             TempData["ErrorMessage"] = "Could not update the visit. Please try again.";
             return View(visitEditDto);
         }
@@ -238,6 +251,29 @@ public class VisitsController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+    
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GenerateVisitReport(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return Unauthorized();
+        
+        var roles = await _userManager.GetRolesAsync(user);
+
+        try
+        {
+            var result = await _visitService.GeneratePdfReportAsync(id, user.Id, roles);
+            
+            if (result == null) return NotFound();
+        
+            return File(result.Value.FileContents, "application/pdf", result.Value.FileName);
+        }
+        catch(UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
     }
     
     private SelectList GetEnumSelectList<TEnum>(object? selectedValue = null)
