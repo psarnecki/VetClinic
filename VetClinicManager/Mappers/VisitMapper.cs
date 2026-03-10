@@ -48,6 +48,7 @@ public partial class VisitMapper
     [MapperIgnoreTarget(nameof(Visit.Id))]
     [MapperIgnoreTarget(nameof(Visit.Animal))]
     [MapperIgnoreTarget(nameof(Visit.AnimalId))]
+    [MapperIgnoreTarget(nameof(Visit.CreatedAt))]
     public partial void UpdateFromDto(VisitEditDto dto, Visit visit);
     
     // --- Mappings for collections to DTOs ---

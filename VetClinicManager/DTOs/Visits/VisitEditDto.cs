@@ -17,6 +17,10 @@ public class VisitEditDto
     [Display(Name = "Description")]
     public string? Description { get; set; }
     
+    [Required(ErrorMessage = "Scheduled date and time is required.")]
+    [Display(Name = "Scheduled Date & Time")]
+    public DateTime ScheduledAt { get; set; }
+    
     [Required(ErrorMessage = "Visit status is required.")] 
     [Display(Name = "Status")]
     public VisitStatus Status { get; set; }

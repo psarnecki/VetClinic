@@ -42,7 +42,8 @@
                         }
                         <span class="badge @priorityBadgeClass">@Html.DisplayFor(m => m.Priority)</span>
                     </p>
-                    <p><strong>Date:</strong> @Model.CreatedDate.ToString("g")</p>
+                    <p><strong>Scheduled Date:</strong> @Model.ScheduledAt.ToString("g")</p>
+                    <p><strong>Created On:</strong> <span class="text-muted">@Model.CreatedAt.ToString("g")</span></p>
                     <p><strong>Animal:</strong>
                         @if (Model.Animal != null)
                         {

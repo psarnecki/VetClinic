@@ -82,7 +82,11 @@ public class VisitDetailsReport : IDocument
                             });
                         }
 
-                        RowItem("Date", $"{_model.CreatedDate:dd.MM.yyyy HH:mm}");
+                        RowItem("Scheduled Date", $"{_model.ScheduledAt:dd.MM.yyyy HH:mm}");
+                        
+                        if (_isStaffView)
+                            RowItem("Created On", $"{_model.CreatedAt:dd.MM.yyyy HH:mm}");
+                        
                         RowItem("Animal", $"{_model.Animal.Name} ({_model.Animal.Species})");
                         
                         if (_model.Owner != null)

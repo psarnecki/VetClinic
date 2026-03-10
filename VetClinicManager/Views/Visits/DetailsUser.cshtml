@@ -1,4 +1,4 @@
-﻿@model VetClinicManager.DTOs.Visits.VisitDetailsUserDto 
+﻿@model VetClinicManager.DTOs.Visits.VisitDetailsUserDto
 @using VetClinicManager.Models.Enums
 
 @{
@@ -30,7 +30,7 @@
                         }
                         <span class="badge @statusBadgeClass">@Html.DisplayFor(m => m.Status)</span>
                     </p>
-                    <p><strong>Date:</strong> @Model.CreatedDate.ToString("g")</p>
+                    <p><strong>Scheduled Date:</strong> @Model.ScheduledAt.ToString("g")</p>
                     <p><strong>Animal:</strong>
                         @if (Model.Animal != null)
                         {

@@ -66,8 +66,8 @@ public class VisitsController : Controller
 
         if (User.IsInRole("Vet") && !User.IsInRole("Admin") && staffVisit.AssignedVet?.Id != currentUserId)
         {
-            TempData["ErrorMessage"] = "You can only access visits assigned to you.";
-            return Forbid();
+            TempData["ErrorMessage"] = "Access denied. You can only access visits assigned to you.";
+            return RedirectToAction(nameof(Index));
         }
 
         var viewName = (User.IsInRole("Vet") || User.IsInRole("Admin")) ? "DetailsVet" : "DetailsReceptionist";
@@ -146,7 +146,15 @@ public class VisitsController : Controller
 
         var visitEditDto = await _visitService.GetForEditAsync(id, currentUserId, isVetOnly);
         
-        if (visitEditDto == null) return NotFound();
+        if (visitEditDto == null)
+        {
+            if (isVetOnly)
+            {
+                TempData["ErrorMessage"] = "Access denied. You can only edit visits assigned to you.";
+                return RedirectToAction(nameof(Index));
+            }
+            return NotFound();
+        }
         
         var vets = await _visitService.GetVetsForSelectListAsync();
 
@@ -200,6 +208,11 @@ public class VisitsController : Controller
         
         if (!success)
         {
+            if (isVetOnly)
+            {
+                TempData["ErrorMessage"] = "Access denied. You can only update visits assigned to you.";
+                return RedirectToAction(nameof(Index));
+            }
             TempData["ErrorMessage"] = "Could not update the visit. Please try again.";
             return View(visitEditDto);
         }

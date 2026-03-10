@@ -9,7 +9,9 @@ public class VisitDeleteDto
     
     public string Title { get; set; }
     
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreatedAt { get; set; }
+    
+    public DateTime ScheduledAt { get; set; }
     
     public VisitStatus Status { get; set; }
     

@@ -65,7 +65,7 @@ public class VisitService : IVisitService
         }
     
         var visits = await visitsQuery
-            .OrderByDescending(v => v.CreatedDate)
+            .OrderByDescending(v => v.ScheduledAt)
             .ToListAsync();
             
         return _visitMapper.ToListVetRecDtos(visits);
@@ -86,7 +86,7 @@ public class VisitService : IVisitService
     {
         var visits = await GetBaseListQuery()
             .Where(v => v.Animal.OwnerId == ownerId)
-            .OrderByDescending(v => v.CreatedDate)
+            .OrderByDescending(v => v.ScheduledAt)
             .ToListAsync();
             
         return _visitMapper.ToListUserDtos(visits);
@@ -109,7 +109,7 @@ public class VisitService : IVisitService
         
         if (visit == null) return null;
         
-        if (isVet && visit.AssignedVetId != userId) throw new UnauthorizedAccessException();
+        if (isVet && visit.AssignedVetId != userId) return null;
         
         return _visitMapper.ToEditDto(visit);
     }
@@ -128,7 +128,7 @@ public class VisitService : IVisitService
     public async Task<int> CreateVisitAsync(VisitCreateDto createDto)
     {
         var visit = _visitMapper.ToEntity(createDto);
-        visit.CreatedDate = DateTime.UtcNow;
+        visit.CreatedAt = DateTime.UtcNow;
 
         _context.Visits.Add(visit);
         await _context.SaveChangesAsync();
@@ -143,7 +143,7 @@ public class VisitService : IVisitService
         
         if (visit == null) return false;
         
-        if (isVet && visit.AssignedVetId != userId) throw new UnauthorizedAccessException();
+        if (isVet && visit.AssignedVetId != userId) return false;
         
         _visitMapper.UpdateFromDto(editDto, visit);
         await _context.SaveChangesAsync();
@@ -223,7 +223,7 @@ public class VisitService : IVisitService
         var bytes = report.GeneratePdf();
         
         string safeAnimalName = dto.Animal.Name.Replace(" ", "_");
-        string dateString = dto.CreatedDate.ToString("yyyy-MM-dd");
+        string dateString = dto.ScheduledAt.ToString("yyyy-MM-dd");
         string fileName = $"Visit_Report_{safeAnimalName}_{dateString}.pdf";
         
         return (bytes, fileName);

@@ -39,7 +39,7 @@ public class AnimalService : IAnimalService
         return animals.Select(animal =>
         {
             var dto = _animalMapper.ToListVetRecDto(animal);
-            dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.CreatedDate) : null;
+            dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.ScheduledAt) : null;
             
             return dto;
         });
@@ -58,7 +58,7 @@ public class AnimalService : IAnimalService
         if (animal == null) return null;
 
         var dto = _animalMapper.ToAnimalDetailsVetRecDto(animal);
-        dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.CreatedDate) : null;
+        dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.ScheduledAt) : null;
     
         return dto;
     }
@@ -76,7 +76,7 @@ public class AnimalService : IAnimalService
         return animals.Select(animal =>
         {
             var dto = _animalMapper.ToListUserDto(animal);
-            dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.CreatedDate) : null;
+            dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.ScheduledAt) : null;
             
             return dto;
         });
@@ -94,7 +94,7 @@ public class AnimalService : IAnimalService
         if (animal == null) return null;
         
         var dto = _animalMapper.ToAnimalDetailsUserDto(animal);
-        dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.CreatedDate) : null;
+        dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.ScheduledAt) : null;
     
         return dto;
     }
