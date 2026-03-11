@@ -24,10 +24,30 @@
             <thead class="table-dark">
                 <tr>
                     <th></th>
-                    <th>@Html.DisplayNameFor(model => model.Name)</th>
-                    <th>@Html.DisplayNameFor(model => model.Species)</th>
-                    <th>@Html.DisplayNameFor(model => model.Breed)</th>
-                    <th>@Html.DisplayNameFor(model => model.LastVisitDate)</th>
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" class="text-white text-decoration-none">
+                            Name
+                            <i class="bi @ViewData["NameIcon"]"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["SpeciesSortParm"]" class="text-white text-decoration-none">
+                            Species
+                            <i class="bi @ViewData["SpeciesIcon"]"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["BreedSortParm"]" class="text-white text-decoration-none">
+                            Breed
+                            <i class="bi @ViewData["BreedIcon"]"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["LastVisitSortParm"]" class="text-white text-decoration-none">
+                            Last Visit Date
+                            <i class="bi @ViewData["LastVisitIcon"]"></i>
+                        </a>
+                    </th>
                     <th></th>
                 </tr>
             </thead>

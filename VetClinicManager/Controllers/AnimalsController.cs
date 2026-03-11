@@ -25,21 +25,34 @@ public class AnimalsController : Controller
 
     // GET: Animals
     [Authorize(Roles = "Admin,Receptionist,Vet,Client")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string sortOrder)
     {
+        ViewData["CurrentSort"] = sortOrder;
+        ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+        ViewData["SpeciesSortParm"] = sortOrder == "species" ? "species_desc" : "species";
+        ViewData["BreedSortParm"] = sortOrder == "breed" ? "breed_desc" : "breed";
+        ViewData["OwnerSortParm"] = sortOrder == "owner" ? "owner_desc" : "owner";
+        ViewData["LastVisitSortParm"] = sortOrder == "lastvisit" ? "lastvisit_desc" : "lastvisit";
+        
+        // Helper for icon CSS classes
+        ViewData["NameIcon"] = GetSortIcon(sortOrder, "name");
+        ViewData["SpeciesIcon"] = GetSortIcon(sortOrder, "species");
+        ViewData["BreedIcon"] = GetSortIcon(sortOrder, "breed");
+        ViewData["OwnerIcon"] = GetSortIcon(sortOrder, "owner");
+        ViewData["LastVisitIcon"] = GetSortIcon(sortOrder, "lastvisit");
+        
         if (User.IsInRole("Client"))
         {
             var currentUserId = _userManager.GetUserId(User);
             
             if (currentUserId == null) return Unauthorized();
                 
-            var animals = await _animalService.GetAnimalsForOwnerAsync(currentUserId);
+            var animals = await _animalService.GetAnimalsForOwnerAsync(currentUserId, sortOrder);
             return View("IndexUser", animals);
         }
         else
         {
-            var animals = await _animalService.GetAnimalsForStaffAsync();
-                
+            var animals = await _animalService.GetAnimalsForStaffAsync(sortOrder);
             return View("IndexVetRec", animals);
         }
     }
@@ -239,5 +252,20 @@ public class AnimalsController : Controller
             };
         });
         return new SelectList(items, "Value", "Text", selectedValue);
+    }
+    
+    // Helper method to determine sort icon CSS class
+    private string GetSortIcon(string? currentSort, string columnName)
+    {
+        if (string.IsNullOrEmpty(currentSort) && columnName == "name")
+            return "bi-arrow-up"; // Default sort by name ascending
+            
+        if (currentSort == columnName)
+            return "bi-arrow-up"; // Ascending
+            
+        if (currentSort == $"{columnName}_desc")
+            return "bi-arrow-down"; // Descending
+            
+        return "bi-arrow-down-up"; // Not sorted
     }
 }

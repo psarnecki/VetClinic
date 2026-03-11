@@ -6,12 +6,12 @@ namespace VetClinicManager.Services;
 public interface IAnimalService
 {
     // For Staff Index GET action
-    Task<IEnumerable<AnimalListVetRecDto>> GetAnimalsForStaffAsync();
+    Task<IEnumerable<AnimalListVetRecDto>> GetAnimalsForStaffAsync(string? sortOrder = null);
     // For Staff Details GET action
     Task<AnimalDetailsVetRecDto?> GetAnimalDetailsForStaffAsync(int id);
     
     // For Owner Index GET action
-    Task<IEnumerable<AnimalListUserDto>> GetAnimalsForOwnerAsync(string ownerId);
+    Task<IEnumerable<AnimalListUserDto>> GetAnimalsForOwnerAsync(string ownerId, string? sortOrder = null);
     // For Owner Details GET action
     Task<AnimalDetailsUserDto?> GetAnimalDetailsForOwnerAsync(int id, string ownerId);
     

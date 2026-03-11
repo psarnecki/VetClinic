@@ -27,7 +27,7 @@ public class AnimalService : IAnimalService
     }
     
     // For Staff Index GET action
-    public async Task<IEnumerable<AnimalListVetRecDto>> GetAnimalsForStaffAsync()
+    public async Task<IEnumerable<AnimalListVetRecDto>> GetAnimalsForStaffAsync(string? sortOrder = null)
     {
         var animals = await _context.Animals
             .AsNoTracking()
@@ -36,13 +36,30 @@ public class AnimalService : IAnimalService
             .Include(a => a.Visits)
             .ToListAsync();
         
-        return animals.Select(animal =>
+        var animalDtos = animals.Select(animal =>
         {
             var dto = _animalMapper.ToListVetRecDto(animal);
             dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.ScheduledAt) : null;
             
             return dto;
         });
+        
+        // Sorting
+        var sortedAnimals = sortOrder switch
+        {
+            "name_desc" => animalDtos.OrderByDescending(a => a.Name),
+            "species" => animalDtos.OrderBy(a => a.Species),
+            "species_desc" => animalDtos.OrderByDescending(a => a.Species),
+            "breed" => animalDtos.OrderBy(a => a.Breed),
+            "breed_desc" => animalDtos.OrderByDescending(a => a.Breed),
+            "owner" => animalDtos.OrderBy(a => a.Owner != null ? $"{a.Owner.FirstName} {a.Owner.LastName}" : ""),
+            "owner_desc" => animalDtos.OrderByDescending(a => a.Owner != null ? $"{a.Owner.FirstName} {a.Owner.LastName}" : ""),
+            "lastvisit" => animalDtos.OrderBy(a => a.LastVisitDate ?? DateTime.MinValue),
+            "lastvisit_desc" => animalDtos.OrderByDescending(a => a.LastVisitDate ?? DateTime.MinValue),
+            _ => animalDtos.OrderBy(a => a.Name) // Default
+        };
+
+        return sortedAnimals.ToList();
     }
     
     // For Staff Details GET action
@@ -64,7 +81,7 @@ public class AnimalService : IAnimalService
     }
 
     // For Owner Index GET action
-    public async Task<IEnumerable<AnimalListUserDto>> GetAnimalsForOwnerAsync(string ownerId)
+    public async Task<IEnumerable<AnimalListUserDto>> GetAnimalsForOwnerAsync(string ownerId, string? sortOrder = null)
     {
         var animals = await _context.Animals
             .AsNoTracking()
@@ -73,13 +90,28 @@ public class AnimalService : IAnimalService
             .Include(a => a.Visits)
             .ToListAsync();
 
-        return animals.Select(animal =>
+        var animalDtos = animals.Select(animal =>
         {
             var dto = _animalMapper.ToListUserDto(animal);
             dto.LastVisitDate = animal.Visits.Any() ? animal.Visits.Max(v => v.ScheduledAt) : null;
             
             return dto;
         });
+        
+        // Sorting
+        var sortedAnimals = sortOrder switch
+        {
+            "name_desc" => animalDtos.OrderByDescending(a => a.Name),
+            "species" => animalDtos.OrderBy(a => a.Species),
+            "species_desc" => animalDtos.OrderByDescending(a => a.Species),
+            "breed" => animalDtos.OrderBy(a => a.Breed),
+            "breed_desc" => animalDtos.OrderByDescending(a => a.Breed),
+            "lastvisit" => animalDtos.OrderBy(a => a.LastVisitDate ?? DateTime.MinValue),
+            "lastvisit_desc" => animalDtos.OrderByDescending(a => a.LastVisitDate ?? DateTime.MinValue),
+            _ => animalDtos.OrderBy(a => a.Name) // Default
+        };
+
+        return sortedAnimals.ToList();
     }
 
     // For Owner Details GET action
