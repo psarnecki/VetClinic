@@ -153,6 +153,16 @@ public class UserService : IUserService
              if (!removeRolesResult.Succeeded) return removeRolesResult;
         }
 
+        // Password reset (optional)
+        if (!string.IsNullOrWhiteSpace(userDto.NewPassword))
+        {
+            var removeResult = await _userManager.RemovePasswordAsync(user);
+            if (!removeResult.Succeeded) return removeResult;
+
+            var addResult = await _userManager.AddPasswordAsync(user, userDto.NewPassword);
+            if (!addResult.Succeeded) return addResult;
+        }
+
         return IdentityResult.Success;
     }
     
@@ -164,7 +174,7 @@ public class UserService : IUserService
         if (user == null) return IdentityResult.Success;
         
         var result = await _userManager.DeleteAsync(user);
-        
-        return result; 
+
+        return result;
     }
 }

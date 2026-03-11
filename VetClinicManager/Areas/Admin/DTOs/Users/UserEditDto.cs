@@ -30,4 +30,15 @@ public class UserEditDto
 
     [Display(Name = "Roles")]
     public List<string> SelectedRoles { get; set; } = new List<string>();
+
+    [MinLength(6, ErrorMessage = "Password must be at least 6 characters.")]
+    [MaxLength(100, ErrorMessage = "Password cannot exceed 100 characters.")]
+    [DataType(DataType.Password)]
+    [Display(Name = "New Password")]
+    public string? NewPassword { get; set; }
+
+    [DataType(DataType.Password)]
+    [Display(Name = "Confirm New Password")]
+    [Compare(nameof(NewPassword), ErrorMessage = "Passwords do not match.")]
+    public string? ConfirmPassword { get; set; }
 }

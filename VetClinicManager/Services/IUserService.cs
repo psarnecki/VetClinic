@@ -22,6 +22,4 @@ public interface IUserService
     Task<IdentityResult> UpdateUserAsync(UserEditDto userDto);
     // For Delete POST action
     Task<IdentityResult> DeleteUserAsync(string userId);
-
-    // TODO: Can add user password change functionality
 }

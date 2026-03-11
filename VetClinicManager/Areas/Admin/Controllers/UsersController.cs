@@ -95,7 +95,11 @@ public class UsersController : Controller
 
         var result = await _userService.UpdateUserAsync(model);
 
-        if (result.Succeeded) return RedirectToAction(nameof(Index));
+        if (result.Succeeded)
+        {
+            TempData["SuccessMessage"] = "User has been updated successfully.";
+            return RedirectToAction(nameof(Index));
+        }
         
         foreach (var error in result.Errors)
         {
