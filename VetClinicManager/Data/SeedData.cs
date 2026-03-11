@@ -28,8 +28,8 @@ public class SeedData
         await SeedMedicationsAsync();
         await SeedVisitsAsync();
         await SeedVisitUpdatesAsync();
-        await SeedPrescriptionsAsync();
         await SeedAnimalMedicationsAsync();
+        await SeedPrescriptionsAsync();
     }
 
     private async Task SeedRolesAsync()
@@ -70,6 +70,15 @@ public class SeedData
             },
             new User
             {
+                UserName = "vet2@vet.com",
+                Email = "vet2@vet.com",
+                FirstName = "Robert",
+                LastName = "Hughes",
+                Specialization = "Small animal veterinarian",
+                EmailConfirmed = true
+            },
+            new User
+            {
                 UserName = "receptionist@vet.com",
                 Email = "receptionist@vet.com",
                 FirstName = "Mary",
@@ -86,16 +95,16 @@ public class SeedData
             },
             new User
             {
-            UserName = "client2@vet.com",
-            Email = "client2@vet.com",
-            FirstName = "Jeremy",
-            LastName = "Smith",
-            EmailConfirmed = true
+                UserName = "client2@vet.com",
+                Email = "client2@vet.com",
+                FirstName = "Jeremy",
+                LastName = "Smith",
+                EmailConfirmed = true
             }
         };
 
-        var passwords = new[] { "Admin123!", "Vet123!", "Rec123!", "Client123!", "Client123!" };
-        var roles = new[] { "Admin", "Vet", "Receptionist", "Client", "Client" };
+        var passwords = new[] { "Admin123!", "Vet123!", "Vet123!", "Rec123!", "Client123!", "Client123!" };
+        var roles = new[] { "Admin", "Vet", "Vet", "Receptionist", "Client", "Client" };
 
         for (int i = 0; i < users.Count; i++)
         {
@@ -156,7 +165,39 @@ public class SeedData
                 Gender = Gender.Female,
                 ImageUrl = "/uploads/animals/default-cat-2.png",
                 OwnerId = client2.Id,
-                MicrochipId = "123456789012345"
+                MicrochipId = "987654321098765"
+            },
+            new Animal
+            {
+                Name = "Rocky",
+                Species = "Dog",
+                Breed = "Labrador Retriever",
+                DateOfBirth = new DateTime(2021, 3, 8),
+                BodyWeight = 28.0f,
+                Gender = Gender.Male,
+                ImageUrl = "/uploads/animals/default-dog-2.png",
+                OwnerId = client1.Id
+            },
+            new Animal
+            {
+                Name = "Luna",
+                Species = "Rabbit",
+                Breed = "Holland Lop",
+                DateOfBirth = new DateTime(2022, 11, 14),
+                BodyWeight = 1.8f,
+                Gender = Gender.Female,
+                ImageUrl = "/uploads/animals/default-rabbit.png",
+                OwnerId = client2.Id
+            },
+            new Animal
+            {
+                Name = "Nibbles",
+                Species = "Hamster",
+                Breed = "Syrian",
+                DateOfBirth = new DateTime(2023, 1, 5),
+                BodyWeight = 0.15f,
+                Gender = Gender.Male,
+                OwnerId = client1.Id,
             }
         };
 
@@ -198,6 +239,15 @@ public class SeedData
                 Allergies = null,
                 Vaccinations = "Rabies, Panleukopenia",
                 LastVaccinationDate = DateTime.Now.AddMonths(-1)
+            },
+            new HealthRecord
+            {
+                AnimalId = animals[3].Id,
+                IsSterilized = true,
+                ChronicDiseases = null,
+                Allergies = "Dust mites",
+                Vaccinations = "Rabies, Distemper, Parvovirus",
+                LastVaccinationDate = DateTime.Now.AddMonths(-2)
             }
         };
 
@@ -215,7 +265,10 @@ public class SeedData
             new Medication { Name = "Painkiller ABC" },
             new Medication { Name = "Ear drops DEF" },
             new Medication { Name = "Antifungal shampoo GHI" },
-            new Medication { Name = "Tick prevention JKL" }
+            new Medication { Name = "Tick prevention JKL" },
+            new Medication { Name = "Anti-inflammatory MNO" },
+            new Medication { Name = "Probiotic PQR" },
+            new Medication { Name = "Deworming tablets STU" }
         };
 
         await _context.Medications.AddRangeAsync(medications);
@@ -229,66 +282,128 @@ public class SeedData
         var animals = await _context.Animals.ToListAsync();
         var vets = await _userManager.GetUsersInRoleAsync("Vet");
         
-        var vetUser = vets.FirstOrDefault();
+        var vet1 = vets.FirstOrDefault(v => v.Email == "vet@vet.com");
+        var vet2 = vets.FirstOrDefault(v => v.Email == "vet2@vet.com");
         
-        var vetUserId = vetUser?.Id;
+        var vet1Id = vet1?.Id;
+        var vet2Id = vet2?.Id;
+        
+        var today = DateTime.Now.Date;
         
         var visits = new List<Visit>
         {
+            // Jessica Watson visits
             new Visit
             {
                 Title = "Rabies vaccination",
                 Description = "Routine vaccination.",
-                CreatedAt = DateTime.Now.AddDays(-10),
+                CreatedAt = DateTime.Now.AddDays(-8),
                 ScheduledAt = DateTime.Now.AddDays(-10),
                 Status = VisitStatus.Completed,
                 Priority = VisitPriority.Normal,
                 AnimalId = animals[0].Id,
-                AssignedVetId = vetUserId
+                AssignedVetId = vet1Id
             },
             new Visit
             {
                 Title = "Health checkup",
                 Description = "Routine checkup.",
-                CreatedAt = DateTime.Now.AddDays(-5),
+                CreatedAt = DateTime.Now.AddDays(-4),
                 ScheduledAt = DateTime.Now.AddDays(-5),
                 Status = VisitStatus.Completed,
                 Priority = VisitPriority.Normal, 
                 AnimalId = animals[1].Id,
-                AssignedVetId = vetUserId
+                AssignedVetId = vet1Id
             },
             new Visit
             {
                 Title = "Ear infection treatment",
                 Description = "Antibiotic administration and ear examination.",
                 CreatedAt = DateTime.Now.AddDays(-2),
-                ScheduledAt = DateTime.Now,
+                ScheduledAt = today.AddHours(DateTime.Now.Hour - 4),
                 Status = VisitStatus.InProgress,
                 Priority = VisitPriority.Urgent, 
                 AnimalId = animals[2].Id,
-                AssignedVetId = vetUserId
+                AssignedVetId = vet1Id
             },
             new Visit
             {
                 Title = "Cast removal from broken limb",
                 Description = "Removal of unnecessary immobilization from injured paw.",
                 CreatedAt = DateTime.Now.AddDays(-1),
-                ScheduledAt = DateTime.Now.AddDays(4),
+                ScheduledAt = DateTime.Now.AddDays(4).Date.AddHours(10),
                 Status = VisitStatus.Scheduled,
                 Priority = VisitPriority.Urgent, 
                 AnimalId = animals[2].Id,
-                AssignedVetId = vetUserId
+                AssignedVetId = vet1Id
             },
             new Visit
             {
                 Title = "Surgical operation",
                 Description = "Removal of swallowed toy from stomach.",
-                CreatedAt = DateTime.UtcNow.AddHours(-2),
-                ScheduledAt = DateTime.UtcNow,
+                CreatedAt = today.AddDays(-4),
+                ScheduledAt = today.AddHours(DateTime.Now.Hour + 8),
                 Status = VisitStatus.InProgress,
                 Priority = VisitPriority.Critical, 
                 AnimalId = animals[0].Id,
-                AssignedVetId = vetUserId
+                AssignedVetId = vet1Id
+            },
+            
+            // Robert Hughes visits
+            new Visit
+            {
+                Title = "Vaccination booster",
+                Description = "Scheduled booster dose for annual vaccination program.",
+                CreatedAt = DateTime.Now.AddDays(-14),
+                ScheduledAt = DateTime.Now.AddDays(-7).Date.AddHours(11),
+                Status = VisitStatus.Cancelled,
+                Priority = VisitPriority.Normal,
+                AnimalId = animals[4].Id,
+                AssignedVetId = vet2Id
+            },
+            new Visit
+            {
+                Title = "Post-surgery follow-up",
+                Description = "Checking healing progress after neutering procedure.",
+                CreatedAt = today.AddDays(-1),
+                ScheduledAt = today.AddHours(9),
+                Status = VisitStatus.Completed,
+                Priority = VisitPriority.Normal,
+                AnimalId = animals[3].Id,
+                AssignedVetId = vet2Id
+            },
+            new Visit
+            {
+                Title = "Annual wellness exam",
+                Description = "Comprehensive annual health examination and weight assessment.",
+                CreatedAt = today.AddDays(-3),
+                ScheduledAt = today.AddHours(DateTime.Now.Hour + 6),
+                Status = VisitStatus.Scheduled,
+                Priority = VisitPriority.Normal,
+                AnimalId = animals[4].Id,
+                AssignedVetId = vet2Id
+            },
+            new Visit
+            {
+                Title = "Dental cleaning",
+                Description = "Routine dental scaling and oral cavity inspection under sedation.",
+                CreatedAt = DateTime.Now,
+                ScheduledAt = today.AddDays(5),
+                Status = VisitStatus.Scheduled,
+                Priority = VisitPriority.Normal,
+                AnimalId = animals[3].Id,
+                AssignedVetId = vet2Id
+            },
+            new Visit
+            {
+                Title = "First health examination",
+                Description = "Initial examination of a new patient. Weight check, teeth and coat assessment.",
+                CreatedAt = DateTime.Now,
+                ScheduledAt = today.AddDays(3).AddHours(11),
+                Status = VisitStatus.Scheduled,
+                Priority = VisitPriority.Normal,
+                AnimalId = animals[5].Id,
+                AssignedVetId = vet1Id
             }
         };
 
@@ -303,11 +418,10 @@ public class SeedData
         var visits = await _context.Visits.ToListAsync();
         var vets = await _userManager.GetUsersInRoleAsync("Vet");
         
-        var vetUser = vets.FirstOrDefault();
+        var vet1 = vets.FirstOrDefault(v => v.Email == "vet@vet.com");
+        var vet2 = vets.FirstOrDefault(v => v.Email == "vet2@vet.com");
         
-        if (vetUser == null) return;
-        
-        var vetUserId = vetUser.Id;
+        if (vet1 == null || vet2 == null) return;
 
         var updates = new List<VisitUpdate>
         {
@@ -317,7 +431,7 @@ public class SeedData
                 UpdateDate = DateTime.Now.AddDays(-9),
                 ImageUrl = "/uploads/visit-updates/vaccine.png",
                 VisitId = visits[0].Id,
-                UpdatedByVetId = vetUserId
+                UpdatedByVetId = vet1.Id
             },
             new VisitUpdate
             {
@@ -325,7 +439,7 @@ public class SeedData
                 UpdateDate = DateTime.Now.AddDays(-4),
                 ImageUrl = "/uploads/visit-updates/checkup.png",
                 VisitId = visits[1].Id,
-                UpdatedByVetId = vetUserId
+                UpdatedByVetId = vet1.Id
             },
             new VisitUpdate
             {
@@ -333,7 +447,21 @@ public class SeedData
                 UpdateDate = DateTime.Now.AddDays(-1),
                 ImageUrl = "/uploads/visit-updates/ear-infection.png",
                 VisitId = visits[2].Id,
-                UpdatedByVetId = vetUserId
+                UpdatedByVetId = vet1.Id
+            },
+            new VisitUpdate
+            {
+                Notes = "Surgery in progress. Foreign object successfully located. Patient stable under anesthesia.",
+                UpdateDate = DateTime.Now.Date.AddHours(8).AddMinutes(30),
+                VisitId = visits[4].Id,
+                UpdatedByVetId = vet1.Id
+            },
+            new VisitUpdate
+            {
+                Notes = "Follow-up completed. Healing progresses well, stitches removed. No complications observed.",
+                UpdateDate = DateTime.Now.Date.AddHours(9).AddMinutes(30),
+                VisitId = visits[6].Id,
+                UpdatedByVetId = vet2.Id
             }
         };
 
