@@ -21,17 +21,23 @@ public class MedicationService : IMedicationService
     }
 
     // For Index GET action
-    public async Task<List<MedicationListDto>> GetAllMedicationsAsync()
+    public async Task<List<MedicationListDto>> GetAllMedicationsAsync(string? sortOrder = null)
     {
         var medications = await _context.Medications
             .AsNoTracking()
             .ToListAsync();
         
-        var medicationListDtos = medications
-            .Select(medication => _medicationMapper.ToMedicationListDto(medication))
-            .ToList();
+        var medicationDtos = medications
+            .Select(medication => _medicationMapper.ToMedicationListDto(medication));
         
-        return medicationListDtos;
+        // Sorting
+        var sortedDtos = sortOrder switch
+        {
+            "name_desc" => medicationDtos.OrderByDescending(m => m.Name),
+            _ => medicationDtos.OrderBy(m => m.Name) // Default
+        };
+        
+        return sortedDtos.ToList();
     }
 
     // For Details GET action
