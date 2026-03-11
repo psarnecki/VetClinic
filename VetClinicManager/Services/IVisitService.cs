@@ -6,12 +6,12 @@ namespace VetClinicManager.Services;
 public interface IVisitService
 {
     // For Staff Index GET action
-    Task<IEnumerable<VisitListVetRecDto>> GetVisitsForStaffAsync(string? vetId = null);
+    Task<IEnumerable<VisitListVetRecDto>> GetVisitsForStaffAsync(string? vetId = null, string? sortOrder = null);
     // For Staff Details GET action
     Task<VisitDetailsVetRecDto?> GetDetailsForStaffAsync(int id);
     
     // For Owner Index GET action
-    Task<IEnumerable<VisitListUserDto>> GetVisitsForOwnerAsync(string ownerId);
+    Task<IEnumerable<VisitListUserDto>> GetVisitsForOwnerAsync(string ownerId, string? sortOrder = null);
     // For Owner Details GET action
     Task<VisitDetailsUserDto?> GetDetailsForOwnerAsync(int id, string ownerId);
     

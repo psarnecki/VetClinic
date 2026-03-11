@@ -25,20 +25,38 @@ public class VisitsController : Controller
 
     // GET: Visits
     [Authorize(Roles = "Admin,Receptionist,Vet,Client")] 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string sortOrder)
     {
         var currentUserId = _userManager.GetUserId(User);
         
         if (currentUserId == null) return Unauthorized();
 
+        ViewData["CurrentSort"] = sortOrder;
+        ViewData["TitleSortParm"] = sortOrder == "title" ? "title_desc" : "title";
+        ViewData["ScheduledSortParm"] = sortOrder == "scheduled" ? "scheduled_desc" : "scheduled";
+        ViewData["StatusSortParm"] = sortOrder == "status" ? "status_desc" : "status";
+        ViewData["PrioritySortParm"] = sortOrder == "priority" ? "priority_desc" : "priority";
+        ViewData["AnimalSortParm"] = sortOrder == "animal" ? "animal_desc" : "animal";
+        ViewData["OwnerSortParm"] = sortOrder == "owner" ? "owner_desc" : "owner";
+        ViewData["VetSortParm"] = sortOrder == "vet" ? "vet_desc" : "vet";
+        
+        // Helper for icon CSS classes
+        ViewData["TitleIcon"] = GetSortIcon(sortOrder, "title");
+        ViewData["ScheduledIcon"] = GetSortIcon(sortOrder, "scheduled");
+        ViewData["StatusIcon"] = GetSortIcon(sortOrder, "status");
+        ViewData["PriorityIcon"] = GetSortIcon(sortOrder, "priority");
+        ViewData["AnimalIcon"] = GetSortIcon(sortOrder, "animal");
+        ViewData["OwnerIcon"] = GetSortIcon(sortOrder, "owner");
+        ViewData["VetIcon"] = GetSortIcon(sortOrder, "vet");
+
         if (User.IsInRole("Client"))
         {
-            var visits = await _visitService.GetVisitsForOwnerAsync(currentUserId);
+            var visits = await _visitService.GetVisitsForOwnerAsync(currentUserId, sortOrder);
             return View("IndexUser", visits);
         }
 
         var vetId = User.IsInRole("Vet") && !User.IsInRole("Admin") ? currentUserId : null;
-        var staffVisits = await _visitService.GetVisitsForStaffAsync(vetId);
+        var staffVisits = await _visitService.GetVisitsForStaffAsync(vetId, sortOrder);
         var viewName = (User.IsInRole("Vet") && !User.IsInRole("Admin")) ? "IndexVet" : "IndexReceptionist";
         
         return View(viewName, staffVisits);
@@ -291,5 +309,20 @@ public class VisitsController : Controller
         });
 
         return new SelectList(items, "Value", "Text", selectedValue);
+    }
+    
+    // Helper method to determine sort icon CSS class
+    private string GetSortIcon(string? currentSort, string columnName)
+    {
+        if (string.IsNullOrEmpty(currentSort) && columnName == "scheduled")
+            return "bi-arrow-down"; // Default sort by scheduled date descending
+            
+        if (currentSort == columnName)
+            return "bi-arrow-up"; // Ascending
+            
+        if (currentSort == $"{columnName}_desc")
+            return "bi-arrow-down"; // Descending
+            
+        return "bi-arrow-down-up"; // Not sorted
     }
 }
