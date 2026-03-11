@@ -7,7 +7,7 @@ namespace VetClinicManager.Services;
 public interface IUserService
 {
     // For Index GET action
-    Task<List<UserListDto>> GetAllUsersWithRolesAsync();
+    Task<List<UserListDto>> GetAllUsersWithRolesAsync(string? sortOrder = null);
 
     // For Create GET and Edit GET actions
     Task<List<string>> GetAllAvailableRolesAsync();
