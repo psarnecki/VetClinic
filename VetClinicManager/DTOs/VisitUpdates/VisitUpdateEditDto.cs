@@ -22,6 +22,8 @@ public class VisitUpdateEditDto
     
     public string? ExistingImageUrl { get; set; }
     
+    public bool RemoveImage { get; set; }
+    
     public SelectList? Medications { get; set; }
     
     public List<PrescriptionEditDto> Prescriptions { get; set; } = new();
