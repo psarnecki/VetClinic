@@ -34,6 +34,7 @@
                                 <i class="bi @ViewData["NameIcon"]"></i>
                             </a>
                         </th>
+                        <th>@Html.DisplayNameFor(model => model.Description)</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -43,6 +44,12 @@
                         <tr>
                             <td>
                                 <strong>@Html.DisplayFor(modelItem => item.Name)</strong>
+                            </td>
+                            <td class="text-muted small">
+                                @if (!string.IsNullOrEmpty(item.Description))
+                                {
+                                    @(item.Description.Length > 80 ? item.Description.Substring(0, 80) + "..." : item.Description)
+                                }
                             </td>
                             <td class="text-nowrap">
                                 <a asp-area="Admin" asp-controller="Medications" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Medication/material details">Details</a>

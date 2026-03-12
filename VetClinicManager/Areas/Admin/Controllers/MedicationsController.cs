@@ -61,6 +61,7 @@ public class MedicationsController : Controller
         
         _ = await _medicationService.CreateMedicationAsync(createDto);
 
+        TempData["SuccessMessage"] = "Medication/material created successfully.";
         return RedirectToAction(nameof(Index));
     }
 
@@ -91,11 +92,11 @@ public class MedicationsController : Controller
         
         if (success)
         {
-            TempData["SuccessMessage"] = "Medication updated successfully.";
+            TempData["SuccessMessage"] = "Medication/material updated successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError(string.Empty, "Unable to save changes. The medication may have been deleted by another user.");
+        ModelState.AddModelError(string.Empty, "Unable to save changes. The medication/material may have been deleted by another user.");
         return View(editDto);
     }
 
@@ -122,11 +123,11 @@ public class MedicationsController : Controller
 
         if (success)
         {
-            TempData["SuccessMessage"] = "Medication deleted successfully.";
+            TempData["SuccessMessage"] = "Medication/material deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        TempData["ErrorMessage"] = "This medication cannot be deleted because it is currently in use by at least one animal.";
+        TempData["ErrorMessage"] = "This medication/material cannot be deleted because it is currently in use by at least one animal.";
         return RedirectToAction(nameof(Delete), new { id = id }); 
     }
     
