@@ -8,4 +8,8 @@ public class MedicationCreateDto
     [MaxLength(150)]
     [Display(Name = "Name")]
     public string Name { get; set; } = string.Empty;
+
+    [MaxLength(500)]
+    [Display(Name = "Description")]
+    public string? Description { get; set; }
 }

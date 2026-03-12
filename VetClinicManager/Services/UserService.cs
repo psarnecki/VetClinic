@@ -20,7 +20,7 @@ public class UserService : IUserService
     }
     
     // For Index GET action
-    public async Task<List<UserListDto>> GetAllUsersWithRolesAsync()
+    public async Task<List<UserListDto>> GetAllUsersWithRolesAsync(string? sortOrder = null)
     {
         var users = await _userManager.Users.ToListAsync();
         var userListDtos = new List<UserListDto>();
@@ -33,7 +33,20 @@ public class UserService : IUserService
             userListDtos.Add(userDto);
         }
 
-        return userListDtos;
+        // Sorting
+        var sortedDtos = sortOrder switch
+        {
+            "firstname" => userListDtos.OrderBy(u => u.FirstName),
+            "firstname_desc" => userListDtos.OrderByDescending(u => u.FirstName),
+            "lastname_desc" => userListDtos.OrderByDescending(u => u.LastName),
+            "email" => userListDtos.OrderBy(u => u.Email),
+            "email_desc" => userListDtos.OrderByDescending(u => u.Email),
+            "roles" => userListDtos.OrderBy(u => string.Join(", ", u.Roles)),
+            "roles_desc" => userListDtos.OrderByDescending(u => string.Join(", ", u.Roles)),
+            _ => userListDtos.OrderBy(u => u.LastName) // Default
+        };
+
+        return sortedDtos.ToList();
     }
 
     // For Create GET and Edit GET actions
@@ -140,6 +153,16 @@ public class UserService : IUserService
              if (!removeRolesResult.Succeeded) return removeRolesResult;
         }
 
+        // Password reset (optional)
+        if (!string.IsNullOrWhiteSpace(userDto.NewPassword))
+        {
+            var removeResult = await _userManager.RemovePasswordAsync(user);
+            if (!removeResult.Succeeded) return removeResult;
+
+            var addResult = await _userManager.AddPasswordAsync(user, userDto.NewPassword);
+            if (!addResult.Succeeded) return addResult;
+        }
+
         return IdentityResult.Success;
     }
     
@@ -151,7 +174,7 @@ public class UserService : IUserService
         if (user == null) return IdentityResult.Success;
         
         var result = await _userManager.DeleteAsync(user);
-        
-        return result; 
+
+        return result;
     }
 }

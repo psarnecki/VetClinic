@@ -55,7 +55,7 @@ public class VisitService : IVisitService
     }
     
     // For Staff Index GET action
-    public async Task<IEnumerable<VisitListVetRecDto>> GetVisitsForStaffAsync(string? vetId = null)
+    public async Task<IEnumerable<VisitListVetRecDto>> GetVisitsForStaffAsync(string? vetId = null, string? sortOrder = null)
     {
         var visitsQuery = GetBaseListQuery();
 
@@ -64,11 +64,29 @@ public class VisitService : IVisitService
             visitsQuery = visitsQuery.Where(v => v.AssignedVetId == vetId);
         }
     
-        var visits = await visitsQuery
-            .OrderByDescending(v => v.ScheduledAt)
-            .ToListAsync();
-            
-        return _visitMapper.ToListVetRecDtos(visits);
+        var visits = await visitsQuery.ToListAsync();
+        
+        var visitDtos = _visitMapper.ToListVetRecDtos(visits);
+        
+        // Sorting
+        var sortedVisits = sortOrder switch
+        {
+            "title" => visitDtos.OrderBy(v => v.Title),
+            "title_desc" => visitDtos.OrderByDescending(v => v.Title),
+            "scheduled" => visitDtos.OrderBy(v => v.ScheduledAt),
+            "scheduled_desc" => visitDtos.OrderByDescending(v => v.ScheduledAt),
+            "status" => visitDtos.OrderBy(v => v.Status),
+            "status_desc" => visitDtos.OrderByDescending(v => v.Status),
+            "priority" => visitDtos.OrderBy(v => v.Priority),
+            "priority_desc" => visitDtos.OrderByDescending(v => v.Priority),
+            "animal" => visitDtos.OrderBy(v => v.Animal.Name),
+            "animal_desc" => visitDtos.OrderByDescending(v => v.Animal.Name),
+            "owner" => visitDtos.OrderBy(v => v.Owner != null ? $"{v.Owner.FirstName} {v.Owner.LastName}" : ""),
+            "owner_desc" => visitDtos.OrderByDescending(v => v.Owner != null ? $"{v.Owner.FirstName} {v.Owner.LastName}" : ""),
+            _ => visitDtos.OrderByDescending(v => v.ScheduledAt) // Default
+        };
+        
+        return sortedVisits.ToList();
     }
 
     // For Staff Details GET action
@@ -82,14 +100,31 @@ public class VisitService : IVisitService
     }
 
     // For Owner Index GET action
-    public async Task<IEnumerable<VisitListUserDto>> GetVisitsForOwnerAsync(string ownerId)
+    public async Task<IEnumerable<VisitListUserDto>> GetVisitsForOwnerAsync(string ownerId, string? sortOrder = null)
     {
         var visits = await GetBaseListQuery()
             .Where(v => v.Animal.OwnerId == ownerId)
-            .OrderByDescending(v => v.ScheduledAt)
             .ToListAsync();
-            
-        return _visitMapper.ToListUserDtos(visits);
+        
+        var visitDtos = _visitMapper.ToListUserDtos(visits);
+        
+        // Sorting
+        var sortedVisits = sortOrder switch
+        {
+            "title" => visitDtos.OrderBy(v => v.Title),
+            "title_desc" => visitDtos.OrderByDescending(v => v.Title),
+            "scheduled" => visitDtos.OrderBy(v => v.ScheduledAt),
+            "scheduled_desc" => visitDtos.OrderByDescending(v => v.ScheduledAt),
+            "status" => visitDtos.OrderBy(v => v.Status),
+            "status_desc" => visitDtos.OrderByDescending(v => v.Status),
+            "animal" => visitDtos.OrderBy(v => v.Animal.Name),
+            "animal_desc" => visitDtos.OrderByDescending(v => v.Animal.Name),
+            "vet" => visitDtos.OrderBy(v => v.AssignedVet != null ? $"{v.AssignedVet.FirstName} {v.AssignedVet.LastName}" : ""),
+            "vet_desc" => visitDtos.OrderByDescending(v => v.AssignedVet != null ? $"{v.AssignedVet.FirstName} {v.AssignedVet.LastName}" : ""),
+            _ => visitDtos.OrderByDescending(v => v.ScheduledAt) // Default
+        };
+        
+        return sortedVisits.ToList();
     }
 
     // For Owner Details GET action

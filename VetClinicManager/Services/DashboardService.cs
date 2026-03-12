@@ -53,7 +53,7 @@ public class DashboardService : IDashboardService
                 visitsQuery
                     .AsNoTracking()
                     .OrderByDescending(v => v.ScheduledAt)
-                    .Take(5)
+                    .Take(7)
             )
             .ToListAsync();
 
@@ -108,7 +108,7 @@ public class DashboardService : IDashboardService
                     .AsNoTracking()
                     .Where(v => animalIds.Contains(v.AnimalId))
                     .OrderByDescending(v => v.ScheduledAt)
-                    .Take(5)
+                    .Take(7)
             )
             .ToListAsync();
 

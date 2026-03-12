@@ -17,9 +17,21 @@ public class UsersController : Controller
     }
 
     // GET: Admin/Users (Index)
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string sortOrder)
     {
-        var userListDtos = await _userService.GetAllUsersWithRolesAsync();
+        ViewData["CurrentSort"] = sortOrder;
+        ViewData["FirstNameSortParm"] = sortOrder == "firstname" ? "firstname_desc" : "firstname";
+        ViewData["LastNameSortParm"] = sortOrder == "lastname" ? "lastname_desc" : "lastname";
+        ViewData["EmailSortParm"] = sortOrder == "email" ? "email_desc" : "email";
+        ViewData["RolesSortParm"] = sortOrder == "roles" ? "roles_desc" : "roles";
+
+        // Helper for icon CSS classes
+        ViewData["FirstNameIcon"] = GetSortIcon(sortOrder, "firstname");
+        ViewData["LastNameIcon"] = GetSortIcon(sortOrder, "lastname");
+        ViewData["EmailIcon"] = GetSortIcon(sortOrder, "email");
+        ViewData["RolesIcon"] = GetSortIcon(sortOrder, "roles");
+
+        var userListDtos = await _userService.GetAllUsersWithRolesAsync(sortOrder);
         
         return View(userListDtos);
     }
@@ -83,7 +95,11 @@ public class UsersController : Controller
 
         var result = await _userService.UpdateUserAsync(model);
 
-        if (result.Succeeded) return RedirectToAction(nameof(Index));
+        if (result.Succeeded)
+        {
+            TempData["SuccessMessage"] = "User has been updated successfully.";
+            return RedirectToAction(nameof(Index));
+        }
         
         foreach (var error in result.Errors)
         {
@@ -118,5 +134,20 @@ public class UsersController : Controller
         TempData["ErrorMessage"] = errorMessage;
         
         return RedirectToAction(nameof(Index));
+    }
+    
+    // Helper method to determine sort icon CSS class
+    private string GetSortIcon(string? currentSort, string columnName)
+    {
+        if (string.IsNullOrEmpty(currentSort) && columnName == "lastname")
+            return "bi-arrow-up"; // Default sort by last name ascending
+            
+        if (currentSort == columnName)
+            return "bi-arrow-up"; // Ascending
+            
+        if (currentSort == $"{columnName}_desc")
+            return "bi-arrow-down"; // Descending
+            
+        return "bi-arrow-down-up"; // Not sorted
     }
 }

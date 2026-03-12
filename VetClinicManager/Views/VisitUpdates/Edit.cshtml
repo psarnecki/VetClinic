@@ -32,12 +32,23 @@
 
                 @if (!string.IsNullOrEmpty(Model.ExistingImageUrl))
                 {
-                <div class="mb-3">
-                    <label class="form-label">Current Attachment</label>
-                    <div>
-                        <img src="@Model.ExistingImageUrl" class="img-thumbnail" style="max-width: 200px;" alt="Current Attachment" />
+                    <div class="mb-3">
+                        <label class="form-label">Current Attachment</label>
+                        <div class="d-flex align-items-start gap-3 p-2 border rounded bg-light">
+                            <a href="@Model.ExistingImageUrl" target="_blank">
+                                <img src="@Model.ExistingImageUrl" class="img-thumbnail" style="max-width: 150px; max-height: 150px; object-fit: cover;" alt="Current Attachment" />
+                            </a>
+                            <div>
+                                <div class="form-check mb-0 pt-2">
+                                    <input class="form-check-input" type="checkbox" asp-for="RemoveImage" id="removeImageCheck" />
+                                    <label class="form-check-label text-danger fw-bold" for="removeImageCheck">
+                                        <i class="bi bi-trash me-1"></i>Remove attachment
+                                    </label>
+                                </div>
+                                <small class="text-muted">To replace it, simply upload a new file below.</small>
+                            </div>
+                        </div>
                     </div>
-                </div>
                 }
 
                 <div class="mb-3">
@@ -100,7 +111,7 @@
                 <hr class="mt-1" />
                 
                 <div class="d-flex justify-content-start mt-3">
-                    <button type="submit" class="btn btn-primary me-1">Add Update</button>
+                    <button type="submit" class="btn btn-primary me-1">Save</button>
                     <a asp-controller="Visits" asp-action="Details" asp-route-id="@Model.VisitId" class="btn btn-outline-secondary">Cancel</a>
                 </div>
             </form>

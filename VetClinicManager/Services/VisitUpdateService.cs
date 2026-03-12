@@ -80,7 +80,7 @@ public class VisitUpdateService : IVisitUpdateService
         
         if (createDto.ImageFile != null)
         {
-            visitUpdate.ImageUrl = await _fileService.SaveFileAsync(createDto.ImageFile, "uploads/attachments");
+            visitUpdate.ImageUrl = await _fileService.SaveFileAsync(createDto.ImageFile, "uploads/visit-updates");
         }
         
         _context.VisitUpdates.Add(visitUpdate);
@@ -127,7 +127,12 @@ public class VisitUpdateService : IVisitUpdateService
         if (editDto.ImageFile != null)
         {
             _fileService.DeleteFile(visitUpdateInDb.ImageUrl);
-            visitUpdateInDb.ImageUrl = await _fileService.SaveFileAsync(editDto.ImageFile, "uploads/attachments");
+            visitUpdateInDb.ImageUrl = await _fileService.SaveFileAsync(editDto.ImageFile, "uploads/visit-updates");
+        }
+        else if (editDto.RemoveImage)
+        {
+            _fileService.DeleteFile(visitUpdateInDb.ImageUrl);
+            visitUpdateInDb.ImageUrl = null;
         }
         
         foreach (var oldPrescription in visitUpdateInDb.Prescriptions)

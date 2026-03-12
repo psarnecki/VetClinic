@@ -7,7 +7,7 @@ namespace VetClinicManager.Services;
 public interface IUserService
 {
     // For Index GET action
-    Task<List<UserListDto>> GetAllUsersWithRolesAsync();
+    Task<List<UserListDto>> GetAllUsersWithRolesAsync(string? sortOrder = null);
 
     // For Create GET and Edit GET actions
     Task<List<string>> GetAllAvailableRolesAsync();
@@ -22,6 +22,4 @@ public interface IUserService
     Task<IdentityResult> UpdateUserAsync(UserEditDto userDto);
     // For Delete POST action
     Task<IdentityResult> DeleteUserAsync(string userId);
-
-    // TODO: Can add user password change functionality
 }

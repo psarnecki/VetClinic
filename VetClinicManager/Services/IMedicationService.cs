@@ -6,7 +6,7 @@ namespace VetClinicManager.Services;
 public interface IMedicationService
 {
     // For Index GET action
-    Task<List<MedicationListDto>> GetAllMedicationsAsync();
+    Task<List<MedicationListDto>> GetAllMedicationsAsync(string? sortOrder = null);
 
     // For Details GET action
     Task<MedicationDetailsDto?> GetMedicationForDetailsAsync(int id);

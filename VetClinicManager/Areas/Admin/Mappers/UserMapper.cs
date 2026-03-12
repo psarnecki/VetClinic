@@ -33,5 +33,7 @@ public partial class UserMapper
     [MapperIgnoreTarget(nameof(User.UserName))]
     [MapperIgnoreSource(nameof(UserEditDto.AvailableRoles))]
     [MapperIgnoreSource(nameof(UserEditDto.SelectedRoles))]
+    [MapperIgnoreSource(nameof(UserEditDto.NewPassword))]
+    [MapperIgnoreSource(nameof(UserEditDto.ConfirmPassword))]
     public partial void UpdateUserFromDto(UserEditDto userDto, User user);
 }
