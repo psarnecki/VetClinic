@@ -21,6 +21,7 @@ try
 
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
+    builder.WebHost.UseStaticWebAssets();
 
     QuestPDF.Settings.License = LicenseType.Community;
 
