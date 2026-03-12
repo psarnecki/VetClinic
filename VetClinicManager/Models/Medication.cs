@@ -11,6 +11,9 @@ public class Medication
     [MaxLength(150)]
     public string Name { get; set; }
 
+    [MaxLength(500)]
+    public string? Description { get; set; }
+
     public ICollection<AnimalMedication> AnimalMedications { get; set; } = new List<AnimalMedication>();
     public ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
 }

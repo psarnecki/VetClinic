@@ -261,14 +261,46 @@ public class SeedData
 
         var medications = new List<Medication>
         {
-            new Medication { Name = "Antibiotic XYZ" },
-            new Medication { Name = "Painkiller ABC" },
-            new Medication { Name = "Ear drops DEF" },
-            new Medication { Name = "Antifungal shampoo GHI" },
-            new Medication { Name = "Tick prevention JKL" },
-            new Medication { Name = "Anti-inflammatory MNO" },
-            new Medication { Name = "Probiotic PQR" },
-            new Medication { Name = "Deworming tablets STU" }
+            new Medication
+            {
+                Name = "Antibiotic XYZ", 
+                Description = "Broad-spectrum antibiotic used to treat bacterial infections. Administer as prescribed by the veterinarian."
+            },
+            new Medication
+            {
+                Name = "Painkiller ABC", 
+                Description = "Non-steroidal anti-inflammatory drug (NSAID) for relief of mild to moderate pain and fever."
+            },
+            new Medication
+            {
+                Name = "Ear drops DEF", 
+                Description = "Topical solution for treatment of bacterial and fungal ear infections. Apply directly into the ear canal."
+            },
+            new Medication
+            {
+                Name = "Antifungal shampoo GHI", 
+                Description = "Medicated shampoo for treatment of fungal and bacterial skin conditions. Leave on for 5–10 minutes before rinsing."
+            },
+            new Medication
+            {
+                Name = "Tick prevention JKL", 
+                Description = "Monthly topical treatment for prevention of ticks, fleas and mites. Apply to the back of the neck."
+            },
+            new Medication
+            {
+                Name = "Anti-inflammatory MNO", 
+                Description = "Corticosteroid used to reduce inflammation and suppress immune response. Use only under veterinary supervision."
+            },
+            new Medication
+            {
+                Name = "Probiotic PQR", 
+                Description = "Dietary supplement supporting healthy gut flora. Recommended after antibiotic therapy or during digestive issues."
+            },
+            new Medication
+            {
+                Name = "Deworming tablets STU", 
+                Description = "Broad-spectrum antiparasitic tablets effective against roundworms, tapeworms and hookworms."
+            }
         };
 
         await _context.Medications.AddRangeAsync(medications);
