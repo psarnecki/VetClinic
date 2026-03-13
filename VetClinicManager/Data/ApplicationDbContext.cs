@@ -92,5 +92,38 @@ public class ApplicationDbContext : IdentityDbContext<User>
             .WithOne(p => p.Medication)
             .HasForeignKey(p => p.MedicationId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // Indexes
+
+        // Animals: filter by owner (used in every client view)
+        modelBuilder.Entity<Animal>()
+            .HasIndex(a => a.OwnerId)
+            .HasDatabaseName("Idx_Animals_OwnerId");
+
+        // Animals: sort by name (used on Index)
+        modelBuilder.Entity<Animal>()
+            .HasIndex(a => a.Name)
+            .HasDatabaseName("Idx_Animals_Name");
+
+        // Visits: filter by status (used in dashboard)
+        modelBuilder.Entity<Visit>()
+            .HasIndex(v => v.Status)
+            .HasDatabaseName("Idx_Visits_Status");
+
+        // Visits: sort and filter by scheduled date (used everywhere)
+        modelBuilder.Entity<Visit>()
+            .HasIndex(v => v.ScheduledAt)
+            .HasDatabaseName("Idx_Visits_ScheduledAt");
+
+        // Visits: composite index - vet sees only their visits filtered by status
+        modelBuilder.Entity<Visit>()
+            .HasIndex(v => new { v.AssignedVetId, v.Status })
+            .HasDatabaseName("Idx_Visits_AssignedVetId_Status");
+
+        // HealthRecords: filter by animal (1:1 but no auto index for FK)
+        modelBuilder.Entity<HealthRecord>()
+            .HasIndex(hr => hr.AnimalId)
+            .IsUnique()
+            .HasDatabaseName("Idx_HealthRecords_AnimalId");
     }
 }
