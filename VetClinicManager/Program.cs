@@ -51,7 +51,8 @@ try
     builder.Services.AddRazorPages();
 
     builder.Services.AddTransient<SeedData>();
-    builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
+    builder.Services.AddTransient<IEmailSender, EmailSender>();
+    builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
     // Services
     builder.Services.AddScoped<IUserService, UserService>();
