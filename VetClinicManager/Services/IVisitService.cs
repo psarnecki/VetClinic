@@ -1,5 +1,6 @@
 ﻿using VetClinicManager.DTOs.Shared;
 using VetClinicManager.DTOs.Visits;
+using VetClinicManager.Models;
 
 namespace VetClinicManager.Services;
 
@@ -32,5 +33,8 @@ public interface IVisitService
     Task<IEnumerable<UserBriefDto>> GetVetsForSelectListAsync();
     
     // For Export to PDF action
-    Task<(byte[] FileContents, string FileName)?> GeneratePdfReportAsync(int visitId, string userId, IEnumerable<string> userRoles);
+    Task<(byte[] FileContents, string FileName)?> GeneratePdfReportAsync(int visitId, string userId, IList<string> userRoles);
+
+    // For daily visit report background service
+    Task<List<Visit>> GetOpenVisitsForReportAsync();
 }
