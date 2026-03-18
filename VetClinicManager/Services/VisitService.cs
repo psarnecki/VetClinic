@@ -267,7 +267,7 @@ public class VisitService : IVisitService
     // For daily visit report background service
     public async Task<List<Visit>> GetOpenVisitsForReportAsync()
     {
-        var today = DateTime.UtcNow.Date;
+        var today = DateTime.Now.Date;
         var tomorrow = today.AddDays(1);
 
         return await GetBaseListQuery()

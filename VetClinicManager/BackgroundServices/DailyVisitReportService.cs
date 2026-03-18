@@ -83,8 +83,8 @@ public class DailyVisitReportService : BackgroundService
             {
                 var globalPdfData = reportGenerator.GenerateOpenVisitsReport(allOpenVisits);
 
-                var globalReportName = $"global-visits-report-{DateTime.Now:yyyy-MM-dd}.pdf";
-                var globalSubject = $"Daily Global Report - {DateTime.Now:yyyy-MM-dd} ({allOpenVisits.Count} visits)";
+                var globalReportName = $"clinic-visits-report-{DateTime.Now:yyyy-MM-dd}.pdf";
+                var globalSubject = $"Clinic Daily Visits Overview - {DateTime.Now:yyyy-MM-dd} ({allOpenVisits.Count} visits)";
 
                 foreach (var email in globalRecipients)
                 {
@@ -107,7 +107,7 @@ public class DailyVisitReportService : BackgroundService
                 {
                     var vetPdfData = reportGenerator.GenerateOpenVisitsReport(vetVisits);
 
-                    var vetReportName = $"my-visits-{DateTime.Now:yyyy-MM-dd}.pdf";
+                    var vetReportName = $"personal-schedule-{DateTime.Now:yyyy-MM-dd}.pdf";
                     var vetSubject = $"Your Daily Visits - {DateTime.Now:yyyy-MM-dd} ({vetVisits.Count} visits)";
 
                     await emailSender.SendEmailWithAttachmentAsync(vet.Email, vetSubject,
