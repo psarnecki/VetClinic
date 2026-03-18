@@ -5,11 +5,13 @@ using NLog;
 using NLog.Web;
 using QuestPDF.Infrastructure;
 using VetClinicManager.Areas.Admin.Mappers;
+using VetClinicManager.BackgroundServices;
 using VetClinicManager.Data;
 using VetClinicManager.Mappers;
 using VetClinicManager.Mappers.Shared;
 using VetClinicManager.Models;
 using VetClinicManager.Services;
+using VetClinicManager.Services.Reports;
 
 var logger = LogManager.Setup()
     .LoadConfigurationFromFile("nlog.config")
@@ -51,7 +53,9 @@ try
     builder.Services.AddRazorPages();
 
     builder.Services.AddTransient<SeedData>();
-    builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
+    builder.Services.AddTransient<EmailSender>();
+    builder.Services.AddTransient<IEmailSender, EmailSender>();
+    builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
     // Services
     builder.Services.AddScoped<IUserService, UserService>();
@@ -63,6 +67,10 @@ try
     builder.Services.AddScoped<IVisitUpdateService, VisitUpdateService>();
     builder.Services.AddScoped<IAnimalMedicationService, AnimalMedicationService>();
     builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+    // Background services
+    builder.Services.AddScoped<VisitReportGenerator>();
+    builder.Services.AddHostedService<DailyVisitReportService>();
 
     // Mappers
     builder.Services.AddScoped<UserMapper>();

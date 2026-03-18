@@ -230,7 +230,7 @@ public class VisitService : IVisitService
             .Select(v => _userBriefMapper.ToUserBriefDto(v));
     }
     
-    public async Task<(byte[] FileContents, string FileName)?> GeneratePdfReportAsync(int visitId, string userId, IEnumerable<string> userRoles)
+    public async Task<(byte[] FileContents, string FileName)?> GeneratePdfReportAsync(int visitId, string userId, IList<string> userRoles)
     {
         var visit = await GetBaseDetailsQuery().FirstOrDefaultAsync(v => v.Id == visitId);
 
@@ -262,5 +262,18 @@ public class VisitService : IVisitService
         string fileName = $"Visit_Report_{safeAnimalName}_{dateString}.pdf";
         
         return (bytes, fileName);
+    }
+
+    // For daily visit report background service
+    public async Task<List<Visit>> GetOpenVisitsForReportAsync()
+    {
+        var today = DateTime.Now.Date;
+        var tomorrow = today.AddDays(1);
+
+        return await GetBaseListQuery()
+            .Where(v => (v.Status == Models.Enums.VisitStatus.Scheduled || v.Status == Models.Enums.VisitStatus.InProgress)
+                     && v.ScheduledAt >= today && v.ScheduledAt < tomorrow)
+            .OrderBy(v => v.ScheduledAt)
+            .ToListAsync();
     }
 }
