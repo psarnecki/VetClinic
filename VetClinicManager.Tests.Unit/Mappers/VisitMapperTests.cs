@@ -1,5 +1,4 @@
 using FluentAssertions;
-using NUnit.Framework;
 using VetClinicManager.DTOs.Visits;
 using VetClinicManager.Mappers;
 using VetClinicManager.Models;
@@ -13,7 +12,7 @@ public class VisitMapperTests
     private readonly VisitMapper _mapper = new();
 
     [Test]
-    public void ToListVetRecDto_ShouldMapVisitAnimalOwnerAndVet()
+    public void ToListVetRecDto_ShouldMapVisitWithAnimalOwnerAndVet()
     {
         var owner = new User
         {
@@ -71,7 +70,7 @@ public class VisitMapperTests
     }
 
     [Test]
-    public void ToEntity_ShouldMapCreateDtoToVisit()
+    public void ToEntity_WhenMappingFromCreateDto_ShouldMapVisitFields()
     {
         var createDto = new VisitCreateDto
         {
@@ -95,7 +94,7 @@ public class VisitMapperTests
     }
 
     [Test]
-    public void ToListVetRecDto_UnassignedVisit_AssignedVetDtoIsNull()
+    public void ToListVetRecDto_WhenAssignedVetIsNull_ShouldSetAssignedVetToNull()
     {
         var owner = new User
         {

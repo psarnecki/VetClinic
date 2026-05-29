@@ -1,5 +1,4 @@
 using FluentAssertions;
-using NUnit.Framework;
 using VetClinicManager.DTOs.Animals;
 using VetClinicManager.Mappers;
 using VetClinicManager.Models;
@@ -13,9 +12,8 @@ public class AnimalMapperTests
     private readonly AnimalMapper _mapper = new();
 
     [Test]
-    public void ToListVetRecDto_ShouldMapAnimalAndOwner()
+    public void ToListVetRecDto_ShouldMapAnimalFieldsAndOwner()
     {
-        // Arrange
         var owner = new User
         {
             Id = "u1",
@@ -36,10 +34,8 @@ public class AnimalMapperTests
             Owner = owner
         };
 
-        // Act
         AnimalListVetRecDto dto = _mapper.ToListVetRecDto(animal);
 
-        // Assert
         dto.Id.Should().Be(42);
         dto.Name.Should().Be("Buddy");
         dto.Species.Should().Be("Dog");
@@ -51,9 +47,8 @@ public class AnimalMapperTests
     }
 
     [Test]
-    public void ToEntity_ShouldMapCreateDtoToAnimal()
+    public void ToEntity_WhenMappingFromCreateDto_ShouldMapAnimalFields()
     {
-        // Arrange
         var createDto = new AnimalCreateDto
         {
             Name = "Luna",
@@ -62,10 +57,8 @@ public class AnimalMapperTests
             Gender = Gender.Female
         };
 
-        // Act
         Animal entity = _mapper.ToEntity(createDto);
 
-        // Assert
         entity.Name.Should().Be("Luna");
         entity.Species.Should().Be("Cat");
         entity.BodyWeight.Should().Be(3.2f);
@@ -73,7 +66,7 @@ public class AnimalMapperTests
     }
 
     [Test]
-    public void ToListUserDto_ShouldMapAnimalWithoutOwnerField()
+    public void ToListUserDto_ShouldMapCoreAnimalFieldsAndFlattenHealthRecordId()
     {
         var animal = new Animal
         {
@@ -81,7 +74,15 @@ public class AnimalMapperTests
             Name = "Rex",
             Species = "Dog",
             BodyWeight = 12f,
-            Gender = Gender.Male
+            Gender = Gender.Male,
+            OwnerId = "owner-1",
+            Owner = new User
+            {
+                Id = "owner-1",
+                UserName = "owner@test.local",
+                Email = "owner@test.local"
+            },
+            HealthRecord = new HealthRecord { Id = 99 }
         };
 
         var dto = _mapper.ToListUserDto(animal);
@@ -89,5 +90,6 @@ public class AnimalMapperTests
         dto.Id.Should().Be(5);
         dto.Name.Should().Be("Rex");
         dto.Species.Should().Be("Dog");
+        dto.HealthRecordId.Should().Be(99);
     }
 }
